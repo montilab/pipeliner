@@ -29,32 +29,30 @@ if (params.paired) {
     .splitCsv(header: true)
     .map {row -> [row.Sample_Name, [row.Read1, row.Read2]]}
     .ifEmpty {error "File ${params.reads} not parsed properly"}
-    .into {read_files_fastqc; read_files_trimming}
+    .into {reads_fastqc; reads_trimgalore}
 } else {
   Channel
     .fromPath(params.reads)
     .splitCsv(header: true)
     .map {row -> [row.Sample_Name, [row.Read]]}
     .ifEmpty {error "File ${params.reads} not parsed properly"}
-    .into {read_files_fastqc; read_files_trimming}
+    .into {reads_fastqc; reads_trimgalore}
 }
 
 // Validate inputs
 if (params.star_index && params.aligner == 'star') {
-  starindex = Channel
+  star_index = Channel
     .fromPath(params.star_index)
     .ifEmpty {exit 1, "STAR index not found: ${params.star_index}"}
     .toList()
 }
-
 if (params.gtf) {
   Channel
     .fromPath(params.gtf)
     .ifEmpty {exit 1, "GTF annotation file not found: ${params.gtf}"}
     .toList()
-    .into {gtf_starindex; gtf_bowtieindex;gtf_star;gtf_bowtie;gtf_stringtieFPKM;}
+    .into {gtf_indexing; gtf_mapping; gtf_stringtie;}
 }
-
 if (params.bed) {
   bed = Channel
     .fromPath(params.bed)
@@ -62,9 +60,7 @@ if (params.bed) {
     .toList()
 }
 
-fasta = file(params.fasta)
-gtf   = file(params.gtf)
-bed   = file(params.bed)
+
 
 log.info " P I P E L I N E R  ~  v${version}"
 log.info "===================================="
@@ -90,17 +86,14 @@ logParams(params, "nextflow_paramters.txt")
 def logParams(p, n) {
   File file = new File(n)
   file.write "Parameter:\tValue\n"
-
   for(s in p) {
      file << "${s.key}:\t${s.value}\n"
   }
 }
 
-
 // ---------------------------------------------//
 //                BEGIN PIPELINE                //
 // ---------------------------------------------//
-
 
 // FASTQC 
 process fastqc {
@@ -109,7 +102,7 @@ process fastqc {
   publishDir "${params.outdir}/$sampleid/fastqc", mode: 'copy'
 
   input:
-  set sampleid, reads from read_files_fastqc
+  set sampleid, reads from reads_fastqc
 
   output:
   set sampleid, '*_fastqc.{zip,html}' into fastqc_results
@@ -126,6 +119,9 @@ process fastqc {
   }
 }
 
+// Delete reads_fastqc
+
+
 // TRIM GALORE
 process trim_galore {
   tag "$sampleid"
@@ -133,7 +129,7 @@ process trim_galore {
   publishDir "${params.outdir}/$sampleid/trimgalore", mode: 'copy'
 
   input:
-  set sampleid, reads from read_files_trimming
+  set sampleid, reads from reads_trimgalore
 
   output:
   set sampleid, '*fq.gz' into trimmed_reads
@@ -152,8 +148,11 @@ process trim_galore {
   }
 }
 
+// Delete reads_trimgalore
+
+
 // STAR - BUILD INDEX
-if (params.aligner == 'star' && !params.star_index && fasta) {
+if (params.aligner == 'star' && !params.star_index && file(params.fasta)) {
   process star_indexing {
 
     publishDir path: "${params.outdir}/star_files", saveAs: { params.save_reference ? it : null }, mode: 'copy'
@@ -161,11 +160,11 @@ if (params.aligner == 'star' && !params.star_index && fasta) {
     cache 'deep'
 
     input:
-    file fasta from fasta
-    file gtf from gtf_starindex
+    file fasta from file(params.fasta)
+    file gtf from gtf_indexing
 
     output:
-    file "star_index" into starindex
+    file "star_index" into star_index
 
     script:
     """
@@ -189,17 +188,19 @@ if (params.aligner == 'star') {
     publishDir "${params.outdir}/$sampleid/star", mode: 'copy'
 
     input:
-    file index from starindex.first()
-    file gtf from gtf_star.first()
+    file index from star_index.first()
+    file gtf from gtf_mapping.first()
     set sampleid, file (reads:'*') from trimmed_reads
 
     output:
-    set sampleid, file("*.bam") into  bam_files, bam_count, bam_stringtieFPKM1, bam_stringtieFPKM2, bam_rseqc
+    set sampleid, file("*.bam") into bam_files, bam_count, bam_stringtieFPKM1, bam_stringtieFPKM2, bam_rseqc
     set sampleid, '*.out' into alignment_logs
-    set sampleid, '*SJ.out.tab' into alignment_tab
+    set sampleid, '*.tab' into alignment_tab
 
     script:
     """
+    echo $index
+
     STAR \\
     --genomeDir $index \\
     --sjdbGTFfile $gtf \\
@@ -213,6 +214,8 @@ if (params.aligner == 'star') {
     """
   }
 }
+
+
 
 // MULTIQC
 process multiqc {
@@ -240,5 +243,5 @@ process multiqc {
 // ---------------------------------------------//
 
 workflow.onComplete {
-  println ( workflow.success ? "Success: Pipeline Completed!" : "Error: Something went wrong." )
+  println (workflow.success ? "Success: Pipeline Completed!" : "Error: Something went wrong.")
 }
