@@ -4,61 +4,67 @@
 version = 1.1
 
 // Configurable variables
-params.fasta = '/home/feds/Documents/pythonvillage/pypliner3/Gallus_example/ggal_data/genome.index.fa'
-params.gtf   = '/home/feds/Documents/pythonvillage/pypliner3/Gallus_example/ggal_data/genome.bed.gff'
-params.reads_file = '/home/feds/Documents/pythonvillage/pypliner3/Gallus_example/ggal_data/ggal_alpha.csv'
-params.outdir = '/home/feds/Documents/pythonvillage/pypliner3/Gallus_example/results/results'
-params.bed = '/home/feds/Documents/pythonvillage/pypliner3/Gallus_example/ggal_data/ggal_refseq.bed'
+params.indir  = '/home/feds/Documents/pythonvillage/pypliner3/Gallus_example/ggal_data'
+params.outdir = '/home/feds/Documents/pythonvillage/pypliner3/Gallus_example/ggal_results'
+
+params.fasta = "${params.indir}/genome_reference.fa"
+params.gtf   = "${params.indir}/genome_annotation.gff"
+params.reads = "${params.indir}/ggal_alpha.csv"
+params.bed   = "${params.indir}/ggal_refseq.bed"
+
 params.aligner = 'star'
-params.starindex = false
+params.star_index = false
 params.paired = true
-params.saveReference = true
+params.save_reference = true
 
-// Read and Map reads with samples using csv file
+
+// ---------------------------------------------//
+//                VALIDATE FILES                //
+// ---------------------------------------------//
+
+// Read and map reads with samples using csv file
 if (params.paired) {
-    Channel
-        .fromPath(params.reads_file)
-        .splitCsv(header: true)
-        .map {row -> [row.Sample_Name, [row.Read1, row.Read2]]}
-        .ifEmpty { error "File ${params.reads_file} not parsed properly" }
-        .into {read_files_fastqc; read_files_trimming}
+  Channel
+    .fromPath(params.reads)
+    .splitCsv(header: true)
+    .map {row -> [row.Sample_Name, [row.Read1, row.Read2]]}
+    .ifEmpty {error "File ${params.reads} not parsed properly"}
+    .into {read_files_fastqc; read_files_trimming}
 } else {
-    Channel
-        .fromPath(params.reads_file)
-        .splitCsv(header: true)
-        .map {row -> [row.Sample_Name, [row.Read]]}
-        .ifEmpty { error "File ${params.reads_file} not parsed properly" }
-        .into {read_files_fastqc; read_files_trimming}
+  Channel
+    .fromPath(params.reads)
+    .splitCsv(header: true)
+    .map {row -> [row.Sample_Name, [row.Read]]}
+    .ifEmpty {error "File ${params.reads} not parsed properly"}
+    .into {read_files_fastqc; read_files_trimming}
 }
-
 
 // Validate inputs
-if (params.starindex && params.aligner == 'star'){
-    starindex = Channel
-        .fromPath(params.starindex)
-        .ifEmpty { exit 1, "STAR index not found: ${params.starindex}" }
-        .toList()
-}
-
-if (params.gtf){
-    Channel
-    .fromPath(params.gtf)
-    .ifEmpty { exit 1, "GTF annotation file not found: ${params.gtf}" }
+if (params.star_index && params.aligner == 'star') {
+  starindex = Channel
+    .fromPath(params.star_index)
+    .ifEmpty {exit 1, "STAR index not found: ${params.star_index}"}
     .toList()
-    .into { gtf_makeSTARindex; gtf_bowtieindex;gtf_star;gtf_bowtie;gtf_stringtieFPKM;  }
 }
 
-if( params.bed ){
-    bed = Channel
-        .fromPath(params.bed)
-        .ifEmpty { exit 1, "BED annotation file not found: ${params.bed}" }
-        .toList()
-
+if (params.gtf) {
+  Channel
+    .fromPath(params.gtf)
+    .ifEmpty {exit 1, "GTF annotation file not found: ${params.gtf}"}
+    .toList()
+    .into {gtf_starindex; gtf_bowtieindex;gtf_star;gtf_bowtie;gtf_stringtieFPKM;}
 }
+
+if (params.bed) {
+  bed = Channel
+    .fromPath(params.bed)
+    .ifEmpty {exit 1, "BED annotation file not found: ${params.bed}"}
+    .toList()
+}
+
 fasta = file(params.fasta)
 gtf   = file(params.gtf)
-bed = file(params.bed)
-
+bed   = file(params.bed)
 
 log.info " P I P E L I N E R  ~  v${version}"
 log.info "===================================="
@@ -66,18 +72,16 @@ log.info "Reads         : ${params.reads}"
 log.info "Genome        : ${params.genome}"
 log.info "FASTA         : ${params.fasta}"
 log.info "Annotation    : ${params.gtf}"
-log.info "Output dir    : ${params.outdir}"
+log.info "Input Dir     : ${params.indir}"
+log.info "Output Dir    : ${params.outdir}"
 
-        if(params.aligner == 'star')
-        {
-        log.info "Aligner        : STAR"
-                if (params.starindex)
-                        log.info "STAR Index: ${params.starindex}"
+log.info "Aligner       : ${params.aligner}"
+if (params.star_index) {
+  log.info "STAR Index: ${params.star_index}"
+}
 
-        }
-
-log.info "Current home  : $HOME"
 log.info "Current user  : $USER"
+log.info "Current home  : $HOME"
 log.info "Current path  : $PWD"
 log.info "===================================="
 
@@ -126,7 +130,7 @@ process fastqc {
 process trim_galore {
   tag "$sampleid"
   cache 'deep'
-  publishDir "${params.outdir}/$sampleid/trim_galore", mode: 'copy'
+  publishDir "${params.outdir}/$sampleid/trimgalore", mode: 'copy'
 
   input:
   set sampleid, reads from read_files_trimming
@@ -149,29 +153,29 @@ process trim_galore {
 }
 
 // STAR - BUILD INDEX
-if (params.aligner == 'star' && !params.starindex && fasta) {
-  process makeSTARindex {
+if (params.aligner == 'star' && !params.star_index && fasta) {
+  process star_indexing {
 
-    publishDir path: "${params.outdir}/reference_genome", saveAs: { params.saveReference ? it : null }, mode: 'copy'
+    publishDir path: "${params.outdir}/star_files", saveAs: { params.save_reference ? it : null }, mode: 'copy'
     tag "$fasta"
     cache 'deep'
 
     input:
     file fasta from fasta
-    file gtf from gtf_makeSTARindex
+    file gtf from gtf_starindex
 
     output:
-    file "star" into starindex
+    file "star_index" into starindex
 
     script:
     """
-    mkdir star
+    mkdir star_index
     STAR \\
     --runMode genomeGenerate \\
     --runThreadN ${task.cpus} \\
     --sjdbGTFfile $gtf \\
     --sjdbOverhang 149 \\
-    --genomeDir star/ \\
+    --genomeDir star_index/ \\
     --genomeFastaFiles $fasta
     """
   }
@@ -179,10 +183,10 @@ if (params.aligner == 'star' && !params.starindex && fasta) {
 
 // STAR - MAP READS
 if (params.aligner == 'star') {
-  process star {
+  process star_mapping {
     tag "$sampleid"
     cache 'deep'
-    publishDir "${params.outdir}/$sampleid/STAR", mode: 'copy'
+    publishDir "${params.outdir}/$sampleid/star", mode: 'copy'
 
     input:
     file index from starindex.first()
@@ -196,8 +200,8 @@ if (params.aligner == 'star') {
 
     script:
     """
-    prefix='${sampleid}.'
-    STAR --genomeDir $index \\
+    STAR \\
+    --genomeDir $index \\
     --sjdbGTFfile $gtf \\
     --readFilesIn $reads  \\
     --runThreadN ${task.cpus} \\
@@ -205,21 +209,21 @@ if (params.aligner == 'star') {
     --outWigType bedGraph \\
     --outSAMtype BAM SortedByCoordinate \\
     --readFilesCommand zcat \\
-    --outFileNamePrefix \$prefix
+    --outFileNamePrefix \'${sampleid}.'
     """
   }
 }
 
 // MULTIQC
 process multiqc {
-  publishDir "${params.outdir}/MultiQC", mode: 'copy'
+  publishDir "${params.outdir}/multiqc_files", mode: 'copy'
 
   input:
   file ('fastqc/*') from fastqc_results.flatten().toList()
   file ('trimgalore/*') from trimgalore_results.flatten().toList()
   file ('alignment/*') from alignment_logs.flatten().toList()
   //file ('stringtie/*') from stringtie_log.flatten().toList()
-  //file('counts/*') from fpkm_counts.flatten().toList()
+  //file ('counts/*') from fpkm_counts.flatten().toList()
   //file ('rseqc/*') from gene_coverage_results.flatten().toList()
   //file ('rseqc/*') from junction_annotation_results.flatten().toList()
 
@@ -232,7 +236,6 @@ process multiqc {
   multiqc -f ${params.outdir}
   """
 }
-
 
 // ---------------------------------------------//
 
