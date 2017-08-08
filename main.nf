@@ -70,20 +70,18 @@ log.info "FASTA         : ${params.fasta}"
 log.info "Annotation    : ${params.gtf}"
 log.info "Input Dir     : ${params.indir}"
 log.info "Output Dir    : ${params.outdir}"
-
 log.info "Aligner       : ${params.aligner}"
 if (params.star_index) {
-  log.info "STAR Index: ${params.star_index}"
+  log.info "Index         : ${params.star_index}"
 }
-
 log.info "Current user  : $USER"
 log.info "Current home  : $HOME"
 log.info "Current path  : $PWD"
 log.info "===================================="
 
-logParams(params, "nextflow_paramters.txt")
+log_params(params, "nextflow_paramters.txt")
 
-def logParams(p, n) {
+def log_params(p, n) {
   File file = new File(n)
   file.write "Parameter:\tValue\n"
   for(s in p) {
@@ -193,14 +191,12 @@ if (params.aligner == 'star') {
     set sampleid, file (reads:'*') from trimmed_reads
 
     output:
-    set sampleid, file("*.bam") into bam_files, bam_count, bam_stringtieFPKM1, bam_stringtieFPKM2, bam_rseqc
+    set sampleid, file("*.bam") into bam_files, bam_counts, bam_stringtie1, bam_stringtie2, bam_rseqc
     set sampleid, '*.out' into alignment_logs
     set sampleid, '*.tab' into alignment_tab
 
     script:
     """
-    echo $index
-
     STAR \\
     --genomeDir $index \\
     --sjdbGTFfile $gtf \\
@@ -209,12 +205,132 @@ if (params.aligner == 'star') {
     --twopassMode Basic \\
     --outWigType bedGraph \\
     --outSAMtype BAM SortedByCoordinate \\
-    --readFilesCommand zcat \\
+    --readFilesCommand gunzip -c \\
     --outFileNamePrefix \'${sampleid}.'
     """
   }
 }
 
+// RSEQC
+def num_bams
+bam_counts.count().subscribe{ num_bams = it }
+
+process rseqc {
+  tag "$sampleid"
+  publishDir "${params.outdir}/$sampleid/rseqc", mode: 'copy'
+
+  input:
+  set sampleid, file(bamfiles) from bam_rseqc
+  file bed from file(params.bed)
+
+  output:
+  file ("*.{txt,pdf,r,xls}") into rseqc_results
+  file ('*.bam_stats') into bam_stats_results
+  file ('*geneBodyCoverage.*') into gene_coverage_results
+  stdout into gene_coverage_log
+  file ('*junction.*') into junction_annotation_results
+  //file('junc_annot.junction.xls') into junction
+  //file('gene_coverage.geneBodyCoverage.txt') into coverage
+    
+  script:
+  """
+  samtools index $bamfiles
+  bam_stat.py -i $bamfiles > ${sampleid}.bam_stats
+  geneBody_coverage.py -r $bed -i $bamfiles -o ${sampleid}
+  junction_annotation.py -i $bamfiles -o ${sampleid} -r $bed
+  """
+}
+
+// STRINGTIE
+if(params.aligner == "star" | params.aligner == "bowtie") {
+  process stringtie1 {
+    tag "$sampleid"
+    publishDir "${params.outdir}/${sampleid}/stringtie1", mode: 'copy'
+
+    input:
+    set sampleid, file(bamfiles) from bam_stringtie1
+    file gtf from file(params.gtf)
+
+    output:
+    file '*_transcripts.gtf' into gtf_list
+
+    script:
+    """
+    stringtie $bamfiles \\
+    -o ${bamfiles}_transcripts.gtf \\
+    -v \\
+    -G $gtf \\
+    """
+  }
+  process gtf_mering {
+    publishDir "${params.outdir}/stringtiemerge", mode: 'copy'
+
+    input:
+    val gtfs from gtf_list.toList()
+    file gtf from file(params.gtf)
+
+    output:
+    file 'merged.gtf' into merged_gtf
+
+    script:
+    """
+    stringtie --merge ${gtfs.flatten().join(' ')} -G $gtf -e -F -T -o merged.gtf
+    """
+  }
+
+bam_stringtie2
+    .combine(merged_gtf)
+    .into {stringtie_input}
+
+process stringtie2 {
+    tag "$sampleid"
+    publishDir "${params.outdir}/${sampleid}/stringtie2", mode: 'copy'
+
+    input:
+    // set sampleid, file(bamfiles) from bam_stringtie2
+    set sampleid, file(bamfiles), file(mergedgtf) from stringtie_input
+    // file mergedgtf from merged_gtf
+
+    output:
+    file '*_transcripts.gtf' into final_gtf_list
+    file '*.gene_abund.txt' into gene_abund
+    file '*.cov_refs.gtf'
+    stdout into stringtie_log
+
+    script:
+    """
+    stringtie $bamfiles \\
+        -o ${bamfiles}_transcripts.gtf \\
+        -v \\
+        -G $mergedgtf \\
+        -A ${bamfiles}.gene_abund.txt \\
+        -C ${bamfiles}.cov_refs.gtf \\
+        -e \\
+        -b ${bamfiles}_ballgown
+   echo "File name: $bamfiles Stringtie version "\$(stringtie --version)
+    """
+  }
+
+
+  // Make gene count and transcript count matrix
+  process aggregate_counts {
+     publishDir "${params.outdir}/counts", mode: "copy"
+
+     input:
+     val abund_file_list from gene_abund.toList()
+
+     output:
+     file "fpkm.csv" into fpkm_counts
+     file "tpm.csv" into tpm_counts
+
+     script:
+     String file_list = abund_file_list .flatten() .join(' ')
+     """
+     python $PWD/aggrcounts.py $file_list
+     """
+  }
+
+}
 
 
 // MULTIQC
@@ -225,10 +341,10 @@ process multiqc {
   file ('fastqc/*') from fastqc_results.flatten().toList()
   file ('trimgalore/*') from trimgalore_results.flatten().toList()
   file ('alignment/*') from alignment_logs.flatten().toList()
+  file ('rseqc/*') from gene_coverage_results.flatten().toList()
+  file ('rseqc/*') from junction_annotation_results.flatten().toList()
   //file ('stringtie/*') from stringtie_log.flatten().toList()
   //file ('counts/*') from fpkm_counts.flatten().toList()
-  //file ('rseqc/*') from gene_coverage_results.flatten().toList()
-  //file ('rseqc/*') from junction_annotation_results.flatten().toList()
 
   output:
   file "*multiqc_report.html"
