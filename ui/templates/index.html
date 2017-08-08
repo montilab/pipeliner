@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="author" content="Anthony Federico">
+    <title>Pipeliner ~ v1.1</title>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,700" rel="stylesheet">	
+  </head>
+
+<style>
+body { 
+	background: #061539; 
+	font-family: 'Montserrat', sans-serif;
+}
+
+</style>
+  <body>
+  <br>
+    <h2 class="ui center aligned header">
+      <div class="content" style="color:white">
+        Pipeliner ~ v1.1
+        <div class="sub header" style="color:white">
+          Flexible RNA-seq Pipeline built with Nextflow
+        </div>
+      </div>
+    </h2>
+
+    <div class="ui container center aligned">  
+
+      <div class="ui tablet stackable mini steps">
+        <div id="input-step" class="step">
+          <i class="folder icon"></i>
+          <div class="content">
+            <div class="title">Input</div>
+            <div class="description">Path to data files</div>
+          </div>
+        </div>
+        <div id="settings-step" class="step">
+          <i class="settings icon"></i>
+          <div class="content">
+            <div class="title">Settings</div>
+            <div class="description">Customize your workflow</div>
+          </div>
+        </div>
+        <div id="output-step" class="step">
+          <i class="browser icon"></i>
+          <div class="content">
+            <div class="title">Output</div>
+            <div class="description">Path to save results</div>
+          </div>
+        </div>
+      </div>    
+
+      <div class="ui hidden divider"></div>
+
+      <div class="ui big icon labeled fluid input">
+        <div class="ui label" style="width:150px"><i class="folder open icon"></i>Input</div>
+        <input id="input-path" type="text" placeholder="/user/rnaseq/data">   
+        <i id="input-button" class="circular search link icon"></i>
+      </div>
+
+      <div class="ui hidden divider"></div>
+
+      <table class="ui celled striped compact table">
+        <thead>
+          <tr>
+            <th colspan="3">Files Found</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="collapsing"><i class="file icon"></i> Genome Annotation (GTF/GFF)</td>
+            <td id="annotation-file"></td>
+            <td class="right aligned collapsing"><i id="annotation-file-status" class="large red remove icon"></i></td>
+          </tr>
+          <tr>
+            <td class="collapsing"><i class="file icon"></i> Genome Reference (FASTA/FA)</td>
+            <td id="reference-file"></td>
+            <td class="right aligned collapsing"><i id="reference-file-status" class="large red remove icon"></i></td>
+          </tr>
+          <tr>
+            <td class="collapsing"><i class="file icon"></i> Sequencing Reads (CSV)</td>
+            <td id="reads-file"></td>
+            <td class="right aligned collapsing"><i id="reads-file-status" class="large red remove icon"></i></td>
+          </tr>
+          <tr>
+            <td class="collapsing"><i class="file icon"></i> Aligment (SAM/BAM)</td>
+            <td id="alignment-file"></td>
+            <td class="right aligned collapsing"><i id="alignment-file-status" class="large red remove icon"></i></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="ui hidden divider"></div>
+      <div class="ui big labeled icon fluid input">
+        <div class="ui label" style="width:150px"><i class="folder open icon"></i>Output</div>
+        <input id="output-path" type="text" placeholder="/user/rnaseq/results">
+        <i id="output-path-status" class="active large red remove icon"></i>
+      </div>
+    </div>
+  </body>
+</html>
+
+<script>
+function editclass(id, attr) {
+  $('#'+id).attr('class', attr)
+}
+
+var input = function() {
+  $.post({
+    type: "POST",
+    url: "/input",
+    data: {"input": $("#input-path").val()},
+    success: function(response){
+      var success = JSON.parse(response)['success']
+      var files = JSON.parse(response)['files']
+      if (success) {
+        for (var file in files) {
+          document.getElementById(file).innerHTML = files[file]
+          if (files[file] != 'undefined') {
+            editclass(file+'-status', 'large green check icon')
+          } else {
+            editclass(file+'-status', 'large red remove icon')
+          }
+        }
+        if (files['reads-file'] != 'undefined') { 
+          if (files['annotation-file'] != 'undefined') {
+            if (files['reference-file'] != 'undefined') {
+              editclass('input-step', 'completed step')
+            } else {editclass('input-step', 'step')}
+          } else {editclass('input-step', 'step')}
+        } else {editclass('input-step', 'step')}
+      }
+    }
+  })
+}
+var output = function() {
+  $.post({
+    type: "POST",
+    url: "/output",
+    data: {"output": $("#output-path").val()},
+    success: function(response){
+      var success = JSON.parse(response)['success']
+      if (success) {
+        editclass('output-step', 'completed step')
+        editclass('output-path-status', 'active large green check icon')
+      } else {
+        editclass('output-step', 'step')
+        editclass('output-path-status', 'active large red remove icon')
+      }
+    }
+  })
+}
+
+
+$(document).on("blur", "#input-path", input)
+$(document).on("click", "#input-button", input)
+$(document).on("blur", "#output-path", output)
+$(document).keypress(function(e) {
+  if (e.which === 13) {
+    var focus = document.activeElement.id
+    if (focus == "input-path") {input()} 
+    else if (focus == "output-path") {output()}
+  }
+})
+
+</script>
