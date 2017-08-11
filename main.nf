@@ -345,8 +345,6 @@ process multiqc {
   file "*multiqc_data"
 
   script:
-  println fastqc_results
-  println fastqc_results.flatten().toList()
   """
   multiqc -f ${params.outdir}
   """
