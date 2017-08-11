@@ -119,7 +119,6 @@ process fastqc {
 
 // Delete reads_fastqc
 
-
 // TRIM GALORE
 process trim_galore {
   tag "$sampleid"
@@ -147,7 +146,6 @@ process trim_galore {
 }
 
 // Delete reads_trimgalore
-
 
 // STAR - BUILD INDEX
 if (params.aligner == 'star' && !params.star_index && file(params.fasta)) {
@@ -213,7 +211,7 @@ if (params.aligner == 'star') {
 
 // RSEQC
 def num_bams
-bam_counts.count().subscribe{ num_bams = it }
+bam_counts.count().subscribe{num_bams=it}
 
 process rseqc {
   tag "$sampleid"
@@ -287,9 +285,7 @@ process stringtie2 {
     publishDir "${params.outdir}/${sampleid}/stringtie2", mode: 'copy'
 
     input:
-    // set sampleid, file(bamfiles) from bam_stringtie2
     set sampleid, file(bamfiles), file(mergedgtf) from stringtie_input
-    // file mergedgtf from merged_gtf
 
     output:
     file '*_transcripts.gtf' into final_gtf_list
@@ -300,21 +296,20 @@ process stringtie2 {
     script:
     """
     stringtie $bamfiles \\
-        -o ${bamfiles}_transcripts.gtf \\
-        -v \\
-        -G $mergedgtf \\
-        -A ${bamfiles}.gene_abund.txt \\
-        -C ${bamfiles}.cov_refs.gtf \\
-        -e \\
-        -b ${bamfiles}_ballgown
-   echo "File name: $bamfiles Stringtie version "\$(stringtie --version)
+    -o ${bamfiles}_transcripts.gtf \\
+    -v \\
+    -G $mergedgtf \\
+    -A ${bamfiles}.gene_abund.txt \\
+    -C ${bamfiles}.cov_refs.gtf \\
+    -e \\
+    -b ${bamfiles}_ballgown
     """
   }
 
 
   // Make gene count and transcript count matrix
   process aggregate_counts {
-     publishDir "${params.outdir}/counts", mode: "copy"
+     publishDir "${params.outdir}/counts_files", mode: "copy"
 
      input:
      val abund_file_list from gene_abund.toList()
@@ -324,7 +319,7 @@ process stringtie2 {
      file "tpm.csv" into tpm_counts
 
      script:
-     String file_list = abund_file_list .flatten() .join(' ')
+     String file_list = abund_file_list.flatten().join(' ')
      """
      python $PWD/aggrcounts.py $file_list
      """
@@ -332,25 +327,26 @@ process stringtie2 {
 
 }
 
-
 // MULTIQC
 process multiqc {
   publishDir "${params.outdir}/multiqc_files", mode: 'copy'
 
   input:
-  file ('fastqc/*') from fastqc_results.flatten().toList()
+  file ('fastqc/*')     from fastqc_results.flatten().toList()
   file ('trimgalore/*') from trimgalore_results.flatten().toList()
-  file ('alignment/*') from alignment_logs.flatten().toList()
-  file ('rseqc/*') from gene_coverage_results.flatten().toList()
-  file ('rseqc/*') from junction_annotation_results.flatten().toList()
-  //file ('stringtie/*') from stringtie_log.flatten().toList()
-  //file ('counts/*') from fpkm_counts.flatten().toList()
+  file ('alignment/*')  from alignment_logs.flatten().toList()
+  file ('rseqc/*')      from gene_coverage_results.flatten().toList()
+  file ('rseqc/*')      from junction_annotation_results.flatten().toList()
+  file ('stringtie/*')  from stringtie_log.flatten().toList()
+  file ('counts/*')     from fpkm_counts.flatten().toList()
 
   output:
   file "*multiqc_report.html"
   file "*multiqc_data"
 
   script:
+  println fastqc_results
+  println fastqc_results.flatten().toList()
   """
   multiqc -f ${params.outdir}
   """
