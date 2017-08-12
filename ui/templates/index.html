@@ -4,19 +4,21 @@
     <meta charset="utf-8">
     <meta name="author" content="Anthony Federico">
     <title>Pipeliner ~ v1.1</title>
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.css">
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,700" rel="stylesheet">	
   </head>
 
 <style>
 body { 
-	background: #061539; 
-	font-family: 'Montserrat', sans-serif;
+  background: #17111F; 
 }
-
+.palette-purple {
+    color: #17111F !important; 
+}
+.palette-orange {
+    color: #E53B31 !important;
+}
 </style>
+
   <body>
   <br>
     <h2 class="ui center aligned header">
@@ -52,7 +54,10 @@ body {
             <div class="description">Path to save results</div>
           </div>
         </div>
-      </div>    
+        <div id="submit-step" class="step">
+          <button id="config" class="ui secondary button">Config</button>
+        </div>
+      </div>
 
       <div class="ui hidden divider"></div>
 
@@ -61,8 +66,6 @@ body {
         <input id="input-path" type="text" placeholder="/user/rnaseq/data">   
         <i id="input-button" class="circular search link icon"></i>
       </div>
-
-      <div class="ui hidden divider"></div>
 
       <table class="ui celled striped compact table">
         <thead>
@@ -73,71 +76,230 @@ body {
         <tbody>
           <tr>
             <td class="collapsing"><i class="file icon"></i> Genome Annotation (GTF/GFF)</td>
-            <td id="annotation-file"></td>
-            <td class="right aligned collapsing"><i id="annotation-file-status" class="large red remove icon"></i></td>
+            <td id="annotation-files"></td>
+            <td class="right aligned collapsing"><i id="annotation-files-status" class="large red remove icon"></i></td>
           </tr>
           <tr>
             <td class="collapsing"><i class="file icon"></i> Genome Reference (FASTA/FA)</td>
-            <td id="reference-file"></td>
-            <td class="right aligned collapsing"><i id="reference-file-status" class="large red remove icon"></i></td>
+            <td id="reference-files"></td>
+            <td class="right aligned collapsing"><i id="reference-files-status" class="large red remove icon"></i></td>
           </tr>
           <tr>
             <td class="collapsing"><i class="file icon"></i> Sequencing Reads (CSV)</td>
-            <td id="reads-file"></td>
-            <td class="right aligned collapsing"><i id="reads-file-status" class="large red remove icon"></i></td>
+            <td id="reads-files"></td>
+            <td class="right aligned collapsing"><i id="reads-files-status" class="large red remove icon"></i></td>
+          </tr>
+          <tr id="reads-accordian" hidden>
+            <td></td>
+            <td class="ui styled fluid accordion">
+                <div class="active title">
+                  <i class="dropdown icon"></i>
+                  Reads Found
+                </div>
+                <div class="active content">
+                  <table class="ui very basic celled compact table">
+                    <thead>
+                      <tr>
+                        <th>Sample</th>
+                        <th>Read 1</th>
+                        <th>Read 2</th>
+                      </tr>
+                    </thead>  
+                    <tbody id="reads-found"></tbody>
+                  </table>
+                </div>
+            </td>
           </tr>
           <tr>
             <td class="collapsing"><i class="file icon"></i> Aligment (SAM/BAM)</td>
-            <td id="alignment-file"></td>
-            <td class="right aligned collapsing"><i id="alignment-file-status" class="large red remove icon"></i></td>
+            <td id="alignment-files"></td>
+            <td class="right aligned collapsing"><i id="alignment-files-status" class="large red remove icon"></i></td>
           </tr>
         </tbody>
       </table>
 
+      <div class="ui hidden divider palette-orange">Please select only one annotation file</div>
       <div class="ui hidden divider"></div>
+
+      <div class="ui attached segment left aligned">
+        <form class="ui form">
+          <h4 class="ui dividing header">Settings</h4>
+          <div class="field">
+            <div class="four fields">
+              <div class="field">
+                <label>Aligner</label>
+                <select class="ui selection dropdown">
+                  <option value="star">Star</option>
+                  <option value="bowtie">Bowtie</option>
+                  <option value="kallisto">Kallisto</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Read Ends</label>
+                <select class="ui fluid dropdown">
+                  <option value="paired">Paired End</option>
+                  <option value="single">Single End</option>
+                </select>              
+              </div>
+              <div class="field">
+                <label>Genome</label>
+                <input type="text">           
+              </div>
+              <div class="field">
+                <label>Email</label>
+                <input type="text">           
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="ui bottom attached segment">
+        <div class="ui big breadcrumb">
+          <div class="section">Fastqc</div>
+          <i class="right chevron icon divider"></i>
+          <div class="section">Trim Galore</div>
+          <i class="right chevron icon divider"></i>
+          <div class="section">Star</div>
+          <i class="right chevron icon divider"></i>
+          <div class="section">Counts/Stringtie/Resqc</div>
+          <i class="right chevron icon divider"></i>
+          <div class="section">Multiqc</div>
+        </div>
+      </div>
+
       <div class="ui big labeled icon fluid input">
         <div class="ui label" style="width:150px"><i class="folder open icon"></i>Output</div>
         <input id="output-path" type="text" placeholder="/user/rnaseq/results">
         <i id="output-path-status" class="active large red remove icon"></i>
-      </div>
+      </div> 
     </div>
+    <br>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.js"></script>
   </body>
 </html>
 
 <script>
+var FILES = []
+
 function editclass(id, attr) {
   $('#'+id).attr('class', attr)
 }
 
-var input = function() {
+
+function delFile(f){
+  for (var filetype in FILES) {
+    for (var filename in FILES[filetype]) {
+      if (FILES[filetype][filename] == f) {
+        FILES[filetype].splice(filename, 1)
+      }
+    }
+  }
+}
+$(document).on("click", ".input.delete.icon", function(event) {
+  var label = $(event.target).closest("div")
+  var filename = label.prop("id")
+  label.remove()
+  delFile(filename)
+  refreshInput()
+})
+
+
+function addFile(f) {
+  return "<div id='"+f+"' style='display:inline;'>   \
+            <a class='ui blue large label'>          \
+              "+f+"<i class='input delete icon'></i> \
+            </a>                                     \
+         </div>"
+}
+function clearInputFiles() {
+  for (filetype in filetypes) {
+    document.getElementById(filetypes[filetype]).innerHTML = ""
+  }
+}
+
+// -------------------------------------------------------------------------- //
+// Input                                                                      //
+// -------------------------------------------------------------------------- //
+const filetypes = ['annotation-files', 'reference-files', 'reads-files', 'alignment-files']
+
+function addSample(s) {
+  return "<tr><td>"+s[0]+"</td><td>"+s[1]+"</td><td>"+s[2]+"</td></tr>"
+}
+function parseReads(pathtocsv) {
+  $.post({
+    type: "POST",
+    url: "/parsereads",
+    data: {"pathtocsv": pathtocsv},
+    success: function(response){
+      var success = JSON.parse(response)['success']
+      var reads = JSON.parse(response)['reads']
+      document.getElementById('reads-found').innerHTML = ""
+      if (success) {
+        document.getElementById('reads-accordian').hidden = false
+        for (var sample in reads) {
+          document.getElementById('reads-found').innerHTML += addSample(reads[sample])
+        }
+      }
+    }
+  })
+}
+
+function validateInputFile(filetype) {
+  if (FILES[filetype].length == 1) {
+    editclass(filetype+'-status', 'large green check icon')
+    return true
+  } else {
+    editclass(filetype+'-status', 'large red remove icon')    
+    return false
+  }
+}
+
+function refreshInput() {
+  parseReads($("#input-path").val()+'/'+FILES['reads-files'][0])        
+
+  for (filetype in FILES) {
+    validateInputFile(filetype)
+  } 
+
+  var required_1 = ['annotation-files', 'reference-files', 'reads-files']
+  valid = true
+  for (filetype in required_1) {
+    if (!validateInputFile(filetypes[filetype])) {
+      valid = false
+      editclass('input-step', 'step')
+    }
+  }
+  if (valid) {
+    editclass('input-step', 'completed step')
+  }
+}
+
+function input() {
+  clearInputFiles()
   $.post({
     type: "POST",
     url: "/input",
     data: {"input": $("#input-path").val()},
     success: function(response){
       var success = JSON.parse(response)['success']
-      var files = JSON.parse(response)['files']
+      FILES = JSON.parse(response)['files']
       if (success) {
-        for (var file in files) {
-          document.getElementById(file).innerHTML = files[file]
-          if (files[file] != 'undefined') {
-            editclass(file+'-status', 'large green check icon')
-          } else {
-            editclass(file+'-status', 'large red remove icon')
+        for (var filetype in FILES) {
+          for (var filename in FILES[filetype]) {
+            document.getElementById(filetype).innerHTML += addFile(FILES[filetype][filename])
           }
         }
-        if (files['reads-file'] != 'undefined') { 
-          if (files['annotation-file'] != 'undefined') {
-            if (files['reference-file'] != 'undefined') {
-              editclass('input-step', 'completed step')
-            } else {editclass('input-step', 'step')}
-          } else {editclass('input-step', 'step')}
-        } else {editclass('input-step', 'step')}
+        refreshInput()
       }
     }
   })
 }
-var output = function() {
+
+// -------------------------------------------------------------------------- //
+// Output                                                                     //
+// -------------------------------------------------------------------------- //
+function output() {
   $.post({
     type: "POST",
     url: "/output",
@@ -155,10 +317,19 @@ var output = function() {
   })
 }
 
+// -------------------------------------------------------------------------- //
+// Submit                                                                     //
+// -------------------------------------------------------------------------- //
+function generateConfig() {
+  console.log(FILES)
+}
 
-$(document).on("blur", "#input-path", input)
-$(document).on("click", "#input-button", input)
+// -------------------------------------------------------------------------- //
+// Actions                                                                    //
+// -------------------------------------------------------------------------- //
+$(document).on("click", "#config", generateConfig)
 $(document).on("blur", "#output-path", output)
+$(document).on("click", "#input-button", input)
 $(document).keypress(function(e) {
   if (e.which === 13) {
     var focus = document.activeElement.id
@@ -167,4 +338,11 @@ $(document).keypress(function(e) {
   }
 })
 
+// -------------------------------------------------------------------------- //
+// Framework Settings                                                         //
+// -------------------------------------------------------------------------- //
+$(function() {
+  $('.ui.dropdown').dropdown();
+  $('.ui.accordion').accordion();
+});
 </script>
