@@ -8,13 +8,13 @@ gedit ~/.bashrc
 
 # Create a new environment
 cd ~/miniconda2/envs
-conda create -n pypliner2 python=2.7
+conda create -n pipeliner python=2.7
 
 # Make sure you see it in the correct location
 conda info --envs
 
 # Activate it
-source activate pypliner2
+source activate pipeliner
 
 # Install dependencies
 conda install -c bioconda java-jdk fastqc trim-galore star multiqc samtools rseqc stringtie
@@ -23,7 +23,7 @@ conda install -c bioconda java-jdk fastqc trim-galore star multiqc samtools rseq
 java -version
 
 # Install Nextflow executable
-cd ~/Documents/pythonvillage/pypliner3/Gallus_example
+cd ~/Documents/rnaseq/pipeliner/Gallus_example
 curl -s https://get.nextflow.io | bash
 
 # Test Nextflow executable
