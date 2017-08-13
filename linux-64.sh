@@ -1,13 +1,13 @@
 # Various scripts for Ubuntu 16.04 environment setup
 
-# First install miniconda3
+# First install miniconda2
 https://conda.io/miniconda.html
 
 # Edit the path so miniconda3 is invoked when calling 'conda'
 gedit ~/.bashrc
 
 # Create a new environment
-cd ~/miniconda3/envs
+cd ~/miniconda2/envs
 conda create -n pipeliner python=2.7
 
 # Make sure you see it in the correct location
