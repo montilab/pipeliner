@@ -55,7 +55,11 @@ body {
           </div>
         </div>
         <div id="submit-step" class="step">
-          <button id="config" class="ui secondary button">Config</button>
+          <div class="ui buttons">
+            <button id="config" class="ui black button">Config</button>
+            <div class="or"></div>
+            <button id="submit" class="ui black button">Submit</button>
+          </div>        
         </div>
       </div>
 
@@ -111,6 +115,11 @@ body {
             </td>
           </tr>
           <tr>
+            <td class="collapsing"><i class="file icon"></i> Mapping Index (INDEX)</td>
+            <td id="index-files"></td>
+            <td class="right aligned collapsing"><i id="index-files-status" class="large red remove icon"></i></td>
+          </tr>
+          <tr>
             <td class="collapsing"><i class="file icon"></i> Aligment (SAM/BAM)</td>
             <td id="alignment-files"></td>
             <td class="right aligned collapsing"><i id="alignment-files-status" class="large red remove icon"></i></td>
@@ -118,9 +127,12 @@ body {
         </tbody>
       </table>
 
-      <div class="ui hidden divider palette-orange">Please select only one annotation file</div>
+      <div id="input-message" class="ui hidden divider palette-orange"></div>
       <div class="ui hidden divider"></div>
 
+      <!--//////////-->
+      <!-- Settings -->
+      <!--//////////-->
       <div class="ui attached segment left aligned">
         <form class="ui form">
           <h4 class="ui dividing header">Settings</h4>
@@ -155,6 +167,8 @@ body {
       </div>
       <div class="ui bottom attached segment">
         <div class="ui big breadcrumb">
+          <div class="section">Reads</div>
+          <i class="right chevron icon divider"></i>
           <div class="section">Fastqc</div>
           <i class="right chevron icon divider"></i>
           <div class="section">Trim Galore</div>
@@ -166,63 +180,75 @@ body {
           <div class="section">Multiqc</div>
         </div>
       </div>
+      <div id="settings-message" class="ui hidden divider palette-orange"></div>
+      <div class="ui hidden divider"></div>
 
+      <!--////////-->
+      <!-- Output -->
+      <!--////////-->
       <div class="ui big labeled icon fluid input">
         <div class="ui label" style="width:150px"><i class="folder open icon"></i>Output</div>
         <input id="output-path" type="text" placeholder="/user/rnaseq/results">
         <i id="output-path-status" class="active large red remove icon"></i>
       </div> 
+      <div id="output-message" class="ui hidden divider palette-orange"></div>
+      <div class="ui hidden divider"></div>
     </div>
-    <br>
+
+    <!-- Load jquery libraries last -->
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.js"></script>
+    <script src="/../static/js/underscore-min.js"></script>
   </body>
 </html>
 
 <script>
+// -------------------------------------------------------------------------- //
+// Global Variables                                                           //
+// -------------------------------------------------------------------------- //
 var FILES = []
 
-function editclass(id, attr) {
-  $('#'+id).attr('class', attr)
+var STEPS = {"input": false, 
+             "settings": true, 
+             "output": false}
+
+const filetypes = ['annotation-files', 
+                   'reference-files', 
+                   'reads-files', 
+                   'alignment-files']
+
+const option_1 = [filetypes[0], filetypes[1], filetypes[2]]
+var   option_1_valid = option_1.reduce(function(obj, x) {obj[x] = false; return obj;}, {});
+const option_2 = [filetypes[3]]
+var   option_2_valid = option_2.reduce(function(obj, x) {obj[x] = false; return obj;}, {});
+
+// -------------------------------------------------------------------------- //
+// Helper Functions                                                           //
+// -------------------------------------------------------------------------- //
+function showMessage(id, message) {
+  document.getElementById(id).innerHTML = message;
 }
-
-
-function delFile(f){
-  for (var filetype in FILES) {
-    for (var filename in FILES[filetype]) {
-      if (FILES[filetype][filename] == f) {
-        FILES[filetype].splice(filename, 1)
-      }
-    }
-  }
-}
-$(document).on("click", ".input.delete.icon", function(event) {
-  var label = $(event.target).closest("div")
-  var filename = label.prop("id")
-  label.remove()
-  delFile(filename)
-  refreshInput()
-})
-
-
-function addFile(f) {
-  return "<div id='"+f+"' style='display:inline;'>   \
-            <a class='ui blue large label'>          \
-              "+f+"<i class='input delete icon'></i> \
-            </a>                                     \
-         </div>"
-}
-function clearInputFiles() {
-  for (filetype in filetypes) {
-    document.getElementById(filetypes[filetype]).innerHTML = ""
-  }
+function editElement(id, attr, edit) {
+  $('#'+id).attr(attr, edit)
 }
 
 // -------------------------------------------------------------------------- //
 // Input                                                                      //
 // -------------------------------------------------------------------------- //
-const filetypes = ['annotation-files', 'reference-files', 'reads-files', 'alignment-files']
+$(document).on("click", ".input.delete.icon", function (event) {
+  var label = $(event.target).closest("div")
+  label.remove()
+  for (var filetype in FILES) {
+    for (var filename in FILES[filetype]) {
+      if (FILES[filetype][filename] == label.prop("id")) {
+        FILES[filetype].splice(filename, 1)
+      }
+    }
+  }
+  refreshInput() 
+})
 
+//------------------------------------------------------------------------------
 function addSample(s) {
   return "<tr><td>"+s[0]+"</td><td>"+s[1]+"</td><td>"+s[2]+"</td></tr>"
 }
@@ -245,38 +271,56 @@ function parseReads(pathtocsv) {
   })
 }
 
-function validateInputFile(filetype) {
+// -----------------------------------------------------------------------------
+function validateOption(array, dictionary, filetype, bool) {
+  if (_.contains(array, filetype)) {
+    dictionary[filetype] = bool
+  }
+}
+function validateFiletype(filetype) {
   if (FILES[filetype].length == 1) {
-    editclass(filetype+'-status', 'large green check icon')
-    return true
+    validateOption(option_1, option_1_valid, filetype, true)
+    validateOption(option_2, option_2_valid, filetype, true)
+    editElement(filetype+'-status', 'class', 'large green check icon')
   } else {
-    editclass(filetype+'-status', 'large red remove icon')    
-    return false
+    validateOption(option_1, option_1_valid, filetype, false)
+    validateOption(option_2, option_2_valid, filetype, false)
+    editElement(filetype+'-status', 'class', 'large red remove icon')
   }
 }
-
-function refreshInput() {
-  parseReads($("#input-path").val()+'/'+FILES['reads-files'][0])        
-
-  for (filetype in FILES) {
-    validateInputFile(filetype)
-  } 
-
-  var required_1 = ['annotation-files', 'reference-files', 'reads-files']
-  valid = true
-  for (filetype in required_1) {
-    if (!validateInputFile(filetypes[filetype])) {
-      valid = false
-      editclass('input-step', 'step')
-    }
+function validateOptions(callback=stepsComplete) {
+  if (_.every(option_1_valid, _.first()) || _.every(option_2_valid, _.first())) {
+    STEPS['input'] = true
+    editElement('input-step', 'class', 'completed step') 
+  } else {
+    STEPS['input'] = false
+    editElement('input-step', 'class', 'step')
   }
-  if (valid) {
-    editclass('input-step', 'completed step')
+  callback()
+}
+function refreshInput(callback=validateOptions) {
+  parseReads($("#input-path").val()+'/'+FILES['reads-files'][0])
+  for (var filetype in FILES) {
+    validateFiletype(filetype)
+  }
+  callback()
+}
+// -----------------------------------------------------------------------------
+
+function clearFiles() {
+  for (filetype in filetypes) {
+    document.getElementById(filetypes[filetype]).innerHTML = ""
   }
 }
-
+function addFile(filename) {
+  return "<div id='"+filename+"' style='display:inline;'>   \
+            <a class='ui blue large label'>                 \
+              "+filename+"<i class='input delete icon'></i> \
+            </a>                                            \
+         </div>"
+}
 function input() {
-  clearInputFiles()
+  clearFiles()
   $.post({
     type: "POST",
     url: "/input",
@@ -295,6 +339,9 @@ function input() {
     }
   })
 }
+// -------------------------------------------------------------------------- //
+// Settings                                                                   //
+// -------------------------------------------------------------------------- //
 
 // -------------------------------------------------------------------------- //
 // Output                                                                     //
@@ -307,27 +354,48 @@ function output() {
     success: function(response){
       var success = JSON.parse(response)['success']
       if (success) {
-        editclass('output-step', 'completed step')
-        editclass('output-path-status', 'active large green check icon')
+        STEPS['output'] = true
+        editElement('output-step', 'class', 'completed step')
+        editElement('output-path-status', 'class', 'active large green check icon')
       } else {
-        editclass('output-step', 'step')
-        editclass('output-path-status', 'active large red remove icon')
+        STEPS['output'] = false
+        editElement('output-step', 'class', 'step')
+        editElement('output-path-status', 'class', 'active large red remove icon')
       }
+      stepsComplete()
     }
   })
 }
 
 // -------------------------------------------------------------------------- //
-// Submit                                                                     //
+// Compelete                                                                  //
 // -------------------------------------------------------------------------- //
-function generateConfig() {
-  console.log(FILES)
+function stepsComplete() {
+  console.log(STEPS)
+  if (_.every(STEPS, _.first())) {
+    editElement('config', 'class', 'ui positive button') 
+    editElement('submit', 'class', 'ui positive button')
+    return true
+  } else {
+    editElement('config', 'class', 'ui black button') 
+    editElement('submit', 'class', 'ui black button') 
+    return false    
+  }
 }
+$(document).on("click", "#config", function() {
+  if (stepsComplete()) {
+    console.log(FILES)
+  }
+})
+$(document).on("click", "#submit", function() {
+  if (stepsComplete()) {
+    console.log(FILES)
+  }
+})
 
 // -------------------------------------------------------------------------- //
 // Actions                                                                    //
 // -------------------------------------------------------------------------- //
-$(document).on("click", "#config", generateConfig)
 $(document).on("blur", "#output-path", output)
 $(document).on("click", "#input-button", input)
 $(document).keypress(function(e) {
