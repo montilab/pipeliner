@@ -2,6 +2,10 @@
 // Global Variables                                                           //
 // -------------------------------------------------------------------------- //
 var FILES = []
+var SETTINGS = {'aligner'        : 'star',
+                'star_index'     : false,
+                'paired'         : true,
+                'save_reference' : true}
 
 var STEPS = {"input": false, 
              "settings": true, 
@@ -181,9 +185,25 @@ function stepsComplete() {
     return false    
   }
 }
+
+function config() {
+  $.post({
+    type: "POST",
+    url: "/config",
+    data: {"input"    : $("#input-path").val(),
+           "output"   : $("#output-path").val(),
+           "files"    : JSON.stringify(FILES),
+           "settings" : JSON.stringify(SETTINGS)},
+    success: function(response){
+      var success = JSON.parse(response)['success']
+    }
+  }) 
+}
 $(document).on("click", "#config", function() {
   if (stepsComplete()) {
     console.log(FILES)
+    console.log(JSON.stringify(FILES))
+    config()
   }
 })
 $(document).on("click", "#submit", function() {

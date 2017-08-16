@@ -61,6 +61,15 @@ def output():
   except FileNotFoundError:
     return json.dumps({'success': False})
 
+
+@app.route('/config', methods=['POST'])
+def config():
+  helpers.createConfig(request.form['input'],
+                       request.form['output'],
+                       json.loads(request.form['files']),
+                       json.loads(request.form['settings']))                      
+  return json.dumps({'success': True})
+
 # ======== Main ============================================================== #
 if __name__ == "__main__":
   app.run(debug=True, use_reloader=True)
