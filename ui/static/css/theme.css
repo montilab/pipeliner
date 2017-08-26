@@ -9,3 +9,11 @@ body {
 .palette-orange {
     color: #E53B31 !important;
 }
+
+
+.nextflow-label {
+	width: 175px;
+}
+.nextflow-input {
+	width: 450px;
+}

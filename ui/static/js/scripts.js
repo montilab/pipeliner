@@ -30,7 +30,7 @@ function showMessage(id, message, cleanup=false) {
     setTimeout(function(){showMessage(id, " ", true)}, 3000)
   }
 }
-function editElement(id, attr, edit) {
+function eledit(id, attr, edit) {
   $('#'+id).attr(attr, edit)
 }
 // -------------------------------------------------------------------------- //
@@ -56,7 +56,7 @@ function addSample(s) {
 function parseReads(pathtocsv) {
   $.post({
     type: "POST",
-    url: "/parsereads",
+    url: "/parse_reads",
     data: {"pathtocsv": pathtocsv},
     success: function(response){
       var success = JSON.parse(response)['success']
@@ -82,20 +82,20 @@ function validateFiletype(filetype) {
   if (FILES[filetype].length == 1) {
     validateOption(option_1, option_1_valid, filetype, true)
     validateOption(option_2, option_2_valid, filetype, true)
-    editElement(filetype+'-status', 'class', 'large green check icon')
+    eledit(filetype+'-status', 'class', 'large green check icon')
   } else {
     validateOption(option_1, option_1_valid, filetype, false)
     validateOption(option_2, option_2_valid, filetype, false)
-    editElement(filetype+'-status', 'class', 'large red remove icon')
+    eledit(filetype+'-status', 'class', 'large red remove icon')
   }
 }
 function validateOptions(callback=stepsComplete) {
   if (_.every(option_1_valid, _.first()) || _.every(option_2_valid, _.first())) {
     STEPS['input'] = true
-    editElement('input-step', 'class', 'completed step') 
+    eledit('input-step', 'class', 'completed step') 
   } else {
     STEPS['input'] = false
-    editElement('input-step', 'class', 'step')
+    eledit('input-step', 'class', 'step')
   }
   callback()
 }
@@ -158,12 +158,12 @@ function output() {
       var success = JSON.parse(response)['success']
       if (success) {
         STEPS['output'] = true
-        editElement('output-step', 'class', 'completed step')
-        editElement('output-path-status', 'class', 'active large green check icon')
+        eledit('output-step', 'class', 'completed step')
+        eledit('output-path-status', 'class', 'active large green check icon')
       } else {
         STEPS['output'] = false
-        editElement('output-step', 'class', 'step')
-        editElement('output-path-status', 'class', 'active large red remove icon')
+        eledit('output-step', 'class', 'step')
+        eledit('output-path-status', 'class', 'active large red remove icon')
       }
       stepsComplete()
     }
@@ -176,12 +176,12 @@ function output() {
 function stepsComplete() {
   console.log(STEPS)
   if (_.every(STEPS, _.first())) {
-    editElement('config', 'class', 'ui positive button') 
-    editElement('submit', 'class', 'ui positive button')
+    eledit('config', 'class', 'ui positive button') 
+    eledit('submit', 'class', 'ui positive button')
     return true
   } else {
-    editElement('config', 'class', 'ui black button') 
-    editElement('submit', 'class', 'ui black button') 
+    eledit('config', 'class', 'ui black button') 
+    eledit('submit', 'class', 'ui black button') 
     return false    
   }
 }
@@ -212,11 +212,42 @@ $(document).on("click", "#submit", function() {
   }
 })
 
+const SUCCESS = "active large green check icon"
+const FAILURE = "active large red remove icon"
+
+// -------------------------------------------------------------------------- //
+// Nextflow                                                                   //
+// -------------------------------------------------------------------------- //
+function nextflow() {
+  $.post({
+    type: "POST",
+    url: "/nextflow",
+    data: {"nextflow-path"    : $("#nextflow-path").val(),
+           "pipeline-name"    : $("#pipeline-name").val(),
+           "environment-name" : $("#environment-name").val()},
+    success: function(response){
+      var success = JSON.parse(response)['success']
+      if (success) {
+        var validation = JSON.parse(response)['validation']
+        _.each(validation, function(value, key){ 
+          if (value) {
+            eledit(key+'-status', 'class', SUCCESS)
+          } else {
+            eledit(key+'-status', 'class', FAILURE)
+          }
+        })
+      }
+    }
+  })
+}
+
 // -------------------------------------------------------------------------- //
 // Actions                                                                    //
 // -------------------------------------------------------------------------- //
 $(document).on("blur", "#output-path", output)
 $(document).on("click", "#input-button", input)
+$(document).on("blur", ".nextflow-input", nextflow)
+
 $(document).keypress(function(e) {
   if (e.which === 13) {
     var focus = document.activeElement.id

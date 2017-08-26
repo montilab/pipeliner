@@ -4,8 +4,11 @@
     <meta charset="utf-8">
     <meta name="author" content="Anthony Federico">
     <title>Pipeliner ~ v1.1</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.css">
-    <link rel="stylesheet" href="../static/css/theme.css?=v1502634183525">
+
+    <link rel="stylesheet" type="text/css" href="../static/css/console.css?=v1502634525">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.css">
+    <link rel="stylesheet" href="../static/css/theme.css?=v1502634183526">
 
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
   </head>
@@ -16,8 +19,8 @@ function dynamicJS(path) {
 }
 $('head').append(dynamicJS('../static/js/semantic.js')); 
 $('head').append(dynamicJS('../static/js/scripts.js')); 
+$('head').append(dynamicJS('../static/js/console.js'));
 </script>
-
 
   <body>
   <br>
@@ -206,10 +209,65 @@ $('head').append(dynamicJS('../static/js/scripts.js'));
       </div> 
       <div id="output-message" class="ui hidden divider palette-orange"></div>
       <div class="ui hidden divider"></div>
+
+      <!-- Nextflow -->
+      <div class="ui large labeled icon input">
+        <div class="ui label nextflow-label">
+          <i class="file open icon"></i>Nextflow
+        </div>
+        <input id="nextflow-path" class="nextflow-input" placeholder="/user/rnaseq/nextflow">
+        <i id="nextflow-path-status" class="active large red remove icon"></i>
+      </div> 
+      <br><br>
+      <div class="ui large labeled icon input">
+        <div class="ui label nextflow-label">
+          <i class="file open icon"></i>Pipeline
+        </div>
+        <input id="pipeline-name" class="nextflow-input" placeholder="pipeline.nf">
+        <i id="pipeline-name-status" class="active large red remove icon"></i>
+      </div>
+      <br><br>      
+      <div class="ui large labeled icon input">
+        <div class="ui label nextflow-label">
+          <i class="cubes open icon"></i>Environment
+        </div>
+        <input id="environment-name" class="nextflow-input" placeholder="pipeliner">
+        <i id="environment-name-status" class="active large red remove icon"></i>
+      </div> 
     </div>
 
+    <div class="ui hidden divider"></div>
+
+    <!-- Console -->
+    <div class=menu>
+      <div class="circles close"></div>
+      <div class="circles minimize"></div>
+      <div class="circles zoom"></div>
+    </div>
+    <div class="screen">
+      <textarea id="console" type="text" spellcheck="false" readonly></textarea>
+    </div>
+    <br>
+    <div class="ui container center aligned">  
+      <div class="ui vertical animated green compact button" id="nextflow-start" tabindex="0">
+        <div class="visible content">Start</div>
+        <div class="hidden content"><i class="play icon"></i></div>
+      </div>
+      <div class="ui vertical animated red compact button" id="nextflow-stop" tabindex="0">
+        <div class="visible content">Stop</div>
+        <div class="hidden content"><i class="pause icon"></i></div>
+      </div>
+      <div class="ui vertical animated blue compact button" id="nextflow-resume" tabindex="0">
+        <div class="visible content">Resume</div>
+        <div class="hidden content"><i class="forward icon"></i></div>
+      </div>
+    </div>
+
+    <div class="ui hidden divider"></div>
+
     <!-- Load jquery libraries last -->
-    <script src="https://cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.js"></script>
     <script src="/../static/js/underscore.min.js"></script>
   </body>
 </html>

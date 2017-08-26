@@ -1,0 +1,76 @@
+#console {
+  position: relative;
+  color: #ffffff;
+  background-color: #151515;
+  width: 100%;
+  height: 100%;
+  resize: none;
+  outline: none;
+  border: none;
+  overflow: auto;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  -o-box-shadow: none;
+}
+
+.circles {
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  border: 1px solid #000;
+  position: relative;
+  top: 6px;
+  left: 6px;
+  background-color: #ff3b47;
+  border-color: #9d252b;
+  display: inline-block;
+}
+
+.minimize {
+  left: 11px;
+  background-color: #ffc100;
+  border-color: #9d802c;
+}
+
+.zoom {
+  left: 16px;
+  background-color: #00d742;
+  border-color: #049931;
+}
+
+.menu {
+  width: 550px;
+  box-sizing: border-box;
+  height: 25px;
+  background-color: #bbb;
+  margin: 0 auto;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+}
+
+.screen {
+  background-color: #151515;
+  box-sizing: border-box;
+  width: 550px;
+  height: 250px;  
+  margin: 0 auto;
+  padding: 20px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  overflow: hidden;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+ 
+::-webkit-scrollbar-track {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+}
+ 
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
