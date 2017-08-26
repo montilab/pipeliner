@@ -6,3 +6,14 @@
 ![Compatibility](https://img.shields.io/badge/Compatibility-Linux%20%2F%20OSX-orange.svg)
 ![Dependencies](https://img.shields.io/badge/dependencies-up%20to%20date-brightgreen.svg)
 [![GitHub Issues](https://img.shields.io/github/issues/Crypto-AI/Gemini.svg)](https://github.com/Crypto-AI/Gemini/issues)
+
+#### Pipeline Dependencies
+|            | Latest Version |
+|------------|----------------|
+| FastQC      | Python 3.6    |
+| Trim Galore | Python 3.6    |
+| RSeQC       | Python 2.7    |
+| StringTie   |               |
+| STAR        | Python 3.6    |
+| Kallisto    |               |
+| MultiQC     | Python 3.5    |
