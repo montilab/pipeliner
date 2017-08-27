@@ -1,16 +1,19 @@
 body { 
   background: #1F2232 !important; 
 }
-
 .palette-purple {
     color: #1F2232 !important; 
 }
-
 .palette-orange {
     color: #E53B31 !important;
 }
 
-
+.config-label {
+	width: 150px;
+}
+.nextflow-button {
+	width: 95px;	
+}
 .nextflow-label {
 	width: 175px;
 }

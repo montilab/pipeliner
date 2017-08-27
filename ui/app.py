@@ -33,7 +33,6 @@ def input():
     except FileNotFoundError:
         return json.dumps({'success': False, 'files': files, 'message': "Path Not Found"})
 
-
 @app.route('/parse_reads', methods=['POST'])
 def parse_reads():
     pathtocsv = request.form['pathtocsv']
@@ -59,12 +58,13 @@ def output():
 
 @app.route('/config', methods=['POST'])
 def config():
-    helpers.createConfig(request.form['input'],
-                         request.form['output'],
-                         json.loads(request.form['files']),
-                         json.loads(request.form['settings']))                      
+    indir = request.form['indir']
+    outdir = request.form['outdir']
+    files = json.loads(request.form['files'])
+    settings = json.loads(request.form['settings'])
+    nfdir = request.form['nfdir']
+    helpers.createConfig(indir, outdir, files, settings, nfdir)
     return json.dumps({'success': True})
-
 
 @app.route('/nextflow', methods=['POST'])
 def nextflow():
@@ -97,11 +97,10 @@ def start(script):
 @socketio.on('nextflow_start')
 def nextflow_start(message):
     resuming = message['resuming']
-    env = None
-    nfdir = '/home/feds/Documents/pythonvillage/pypliner3/Gallus_example'
-    pipeline = 'main.nf'
+    nfdir    = message['nfdir']
+    pipeline = message['pipeline']
+    env      = message['env']
     helpers.createNextflow(nfdir, pipeline, env=env, outfile='start.sh', resuming=resuming)
-
     if os.path.isfile('start.sh'):
         global T
         try:       
@@ -139,3 +138,4 @@ C:/Users/feds/Desktop/pypliner/results
 /home/feds/Documents/pythonvillage/pypliner3/Gallus_example/ggal_results
 /home/feds/Documents/pythonvillage/uitestdata
 """
+

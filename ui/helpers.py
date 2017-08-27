@@ -22,18 +22,12 @@ def parseReads(pathtocsv):
         sample.append('')    
     return samples
 
-def createConfig(indir, outdir, files, settings):
-    project = "config_test"
-    indir = "/Users/defna/pythonvillage/pypliner3/Gallus_example/ggal_data"
-    outdir = "/Users/defna/pythonvillage/pypliner3/Gallus_example/results"
-    files = {'annotation-files': ['genome_annotation.gff'], 'reference-files': ['genome_reference.fa'], 'reads-files': ['ggal_alpha.csv'], 'alignment-files': []}
-    settings = {'aligner': 'star', 'star_index': False, 'paired': True, 'save_reference': True}
-
+def createConfig(indir, outdir, files, settings, nfdir=''):
+    project = "nextflow"
     config = 'params {{\n\tindir  = "{0}"\n\toutdir = "{1}"\n'.format(indir,outdir)
     config += '\n\tfasta = "${{params.indir}}/{0}"'.format(files['reference-files'][0])
     config += '\n\tgtf   = "${{params.indir}}/{0}"'.format(files['annotation-files'][0])
     config += '\n\treads = "${{params.indir}}/{0}"'.format(files['reads-files'][0])
-
     config += "\n"
     for setting in settings:
         if type(settings[setting]) == str:
@@ -41,28 +35,22 @@ def createConfig(indir, outdir, files, settings):
         if type(settings[setting]) == bool: 
             config += '\n\t{0} = {1}'.format(setting, str(settings[setting]).lower())
     config += "\n}"
-    
-    print(config)
 
-    #with open('{0}.config'.format(project), 'w') as outfile:
-    #   outfile.write(config)
+    if nfdir == '':
+        path = '{0}.config'.format(project)
+    else:
+        path = '{0}/{1}.config'.format('/'.join(nfdir.split('/')[:-1]), project)
 
+    with open(path, 'w') as outfile:
+       outfile.write(config)
 
-#createConfig(1,1,1,1)
-
-def createNextflow(nfdir, pipeline, outfile, env=None, resuming=False):
+def createNextflow(nfdir, pipeline, outfile, env='', resuming=False):
     with open(outfile, 'w') as writer:
         writer.write('#!/bin/bash\n')
-        if env is not None:
+        if env is not '':
             writer.write('source activate {0}\n'.format(env))
         writer.write('cd ~\n')
-        writer.write('cd {0}\n'.format(nfdir))
-        writer.write('./nextflow {0}'.format(pipeline))
+        writer.write('cd {0}\n'.format('/'.join(nfdir.split('/')[:-1])))
+        writer.write('./nextflow {0} -c nextflow.config'.format(pipeline))
         if resuming:
             writer.write(' -resume')
-
-env = 'pypliner3'
-nfdir = '/home/feds/Documents/pythonvillage/pypliner3/Gallus_example'
-pipeline = 'main.nf'
-
-#createNextflow(nfdir, pipeline, outfile='start.sh')

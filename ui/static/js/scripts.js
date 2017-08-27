@@ -1,15 +1,19 @@
 // -------------------------------------------------------------------------- //
 // Global Variables                                                           //
 // -------------------------------------------------------------------------- //
-var FILES = []
+var FILES = {}
 var SETTINGS = {'aligner'        : 'star',
                 'star_index'     : false,
                 'paired'         : true,
                 'save_reference' : true}
 
-var STEPS = {"input": false, 
-             "settings": true, 
-             "output": false}
+var NEXTFLOW = {"nextflow-path"    : false,
+                "pipeline-name"    : false,
+                "environment-name" : false}
+
+var STEPS = {"input"    : false, 
+             "settings" : true, 
+             "output"   : false}
 
 const filetypes = ['annotation-files', 
                    'reference-files', 
@@ -21,13 +25,16 @@ var   option_1_valid = option_1.reduce(function(obj, x) {obj[x] = false; return 
 const option_2 = [filetypes[3]]
 var   option_2_valid = option_2.reduce(function(obj, x) {obj[x] = false; return obj;}, {});
 
+const SUCCESS = "active large green check icon"
+const FAILURE = "active large red remove icon"
+
 // -------------------------------------------------------------------------- //
 // Helper Functions                                                           //
 // -------------------------------------------------------------------------- //
-function showMessage(id, message, cleanup=false) {
-  document.getElementById(id).innerHTML = message;
+function showMessage(message, cleanup=false) {
+  document.getElementById('message').innerHTML = message;
   if (!cleanup) {
-    setTimeout(function(){showMessage(id, " ", true)}, 3000)
+    setTimeout(function(){showMessage(" ", true)}, 3000)
   }
 }
 function eledit(id, attr, edit) {
@@ -82,11 +89,11 @@ function validateFiletype(filetype) {
   if (FILES[filetype].length == 1) {
     validateOption(option_1, option_1_valid, filetype, true)
     validateOption(option_2, option_2_valid, filetype, true)
-    eledit(filetype+'-status', 'class', 'large green check icon')
+    eledit(filetype+'-status', 'class', SUCCESS)
   } else {
     validateOption(option_1, option_1_valid, filetype, false)
     validateOption(option_2, option_2_valid, filetype, false)
-    eledit(filetype+'-status', 'class', 'large red remove icon')
+    eledit(filetype+'-status', 'class', FAILURE)
   }
 }
 function validateOptions(callback=stepsComplete) {
@@ -137,7 +144,7 @@ function input() {
       var success = JSON.parse(response)['success']
       var message = JSON.parse(response)['message']
       if (!success) {
-        showMessage("input-message", message)
+        showMessage(message)
       }
     }
   })
@@ -159,11 +166,11 @@ function output() {
       if (success) {
         STEPS['output'] = true
         eledit('output-step', 'class', 'completed step')
-        eledit('output-path-status', 'class', 'active large green check icon')
+        eledit('output-path-status', 'class', SUCCESS)
       } else {
         STEPS['output'] = false
         eledit('output-step', 'class', 'step')
-        eledit('output-path-status', 'class', 'active large red remove icon')
+        eledit('output-path-status', 'class', FAILURE)
       }
       stepsComplete()
     }
@@ -174,46 +181,32 @@ function output() {
 // Compelete                                                                  //
 // -------------------------------------------------------------------------- //
 function stepsComplete() {
-  console.log(STEPS)
   if (_.every(STEPS, _.first())) {
-    eledit('config', 'class', 'ui positive button') 
-    eledit('submit', 'class', 'ui positive button')
+    eledit('export', 'class', 'ui positive button') 
+    eledit('nextflow', 'class', 'ui positive button')
     return true
   } else {
-    eledit('config', 'class', 'ui black button') 
-    eledit('submit', 'class', 'ui black button') 
+    eledit('export', 'class', 'ui black button') 
+    eledit('nextflow', 'class', 'ui black button') 
     return false    
   }
 }
 
-function config() {
-  $.post({
-    type: "POST",
-    url: "/config",
-    data: {"input"    : $("#input-path").val(),
-           "output"   : $("#output-path").val(),
-           "files"    : JSON.stringify(FILES),
-           "settings" : JSON.stringify(SETTINGS)},
-    success: function(response){
-      var success = JSON.parse(response)['success']
+$(document).on("click", "#nextflow", function(e) {
+  if (stepsComplete()) {
+    view = e.target.innerHTML
+    if (view == "Nextflow") {
+      e.target.innerHTML = "Return"
+      $("#nextflow-view").attr("hidden",false);
+      $("#config-view").attr("hidden",true);
     }
-  }) 
-}
-$(document).on("click", "#config", function() {
-  if (stepsComplete()) {
-    console.log(FILES)
-    console.log(JSON.stringify(FILES))
-    config()
+    else if (view == "Return") {
+      e.target.innerHTML = "Nextflow"
+      $("#nextflow-view").attr("hidden",true);
+      $("#config-view").attr("hidden",false);
+    }
   }
 })
-$(document).on("click", "#submit", function() {
-  if (stepsComplete()) {
-    console.log(FILES)
-  }
-})
-
-const SUCCESS = "active large green check icon"
-const FAILURE = "active large red remove icon"
 
 // -------------------------------------------------------------------------- //
 // Nextflow                                                                   //
@@ -232,15 +225,16 @@ function nextflow() {
         _.each(validation, function(value, key){ 
           if (value) {
             eledit(key+'-status', 'class', SUCCESS)
+            NEXTFLOW[key] = true
           } else {
             eledit(key+'-status', 'class', FAILURE)
+            NEXTFLOW[key] = false
           }
         })
       }
     }
   })
 }
-
 // -------------------------------------------------------------------------- //
 // Actions                                                                    //
 // -------------------------------------------------------------------------- //
@@ -255,3 +249,21 @@ $(document).keypress(function(e) {
     else if (focus == "output-path") {output()}
   }
 })
+
+
+
+/*
+// FOR DEBUGGING 
+$(document).ready(function() {
+  e = document.getElementById("input-button")
+  e.click()
+  e = document.getElementById("output-path")
+  e.focus()
+  e.blur()
+  e = document.getElementById("nextflow")
+  e.click()
+  e = document.getElementById("nextflow-path")
+  e.focus()
+  e.blur()
+})
+*/
