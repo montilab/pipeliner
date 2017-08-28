@@ -1,33 +1,34 @@
 import os
-import csv
 
-def createFiles():
-    return {'annotation-files' : [],
-            'reference-files'  : [],
-            'reads-files'      : [],
-            'alignment-files'  : []}
+filexts = {'annotation-files' : ['.gtf', '.gff'],
+           'reference-files'  : ['.fasta', '.fa'],
+           'csv-files'        : ['.csv'],
+           'alignment-files'  : ['.sam', '.bam']}
 
 def searchFiles(path, exts):
     directory = [f for f in os.listdir(path) if not f.startswith('.')]
     return [f for f in directory if f.lower().endswith(tuple(exts))]
 
-def parseReads(pathtocsv):
-  with open(pathtocsv, 'r') as infile:
-    samples = [row for row in csv.reader(infile)][1:]
-    for sample in samples:
-      sample[1] = sample[1].split('/')[-1]
-      try:
-        sample[2] = sample[2].split('/')[-1]
-      except IndexError:
-        sample.append('')    
-    return samples
+def searchReads(csv):
+    try:
+        with open(csv, 'r') as infile:
+            samples = [row.split(',') for row in infile][1:]
+            for sample in samples:
+                sample[1] = sample[1].split('/')[-1]
+                try:
+                    sample[2] = sample[2].split('/')[-1]
+                except IndexError:
+                    sample.append('')    
+            return samples
+    except IndexError:
+        return []
 
 def createConfig(indir, outdir, files, settings, nfdir=''):
     project = "nextflow"
     config = 'params {{\n\tindir  = "{0}"\n\toutdir = "{1}"\n'.format(indir,outdir)
     config += '\n\tfasta = "${{params.indir}}/{0}"'.format(files['reference-files'][0])
     config += '\n\tgtf   = "${{params.indir}}/{0}"'.format(files['annotation-files'][0])
-    config += '\n\treads = "${{params.indir}}/{0}"'.format(files['reads-files'][0])
+    config += '\n\treads = "${{params.indir}}/{0}"'.format(files['csv-files'][0])
     config += "\n"
     for setting in settings:
         if type(settings[setting]) == str:
@@ -44,8 +45,8 @@ def createConfig(indir, outdir, files, settings, nfdir=''):
     with open(path, 'w') as outfile:
        outfile.write(config)
 
-def createNextflow(nfdir, pipeline, outfile, env='', resuming=False):
-    with open(outfile, 'w') as writer:
+def createNextflow(nfdir, pipeline, env='', resuming=False):
+    with open('start.sh', 'w') as writer:
         writer.write('#!/bin/bash\n')
         if env is not '':
             writer.write('source activate {0}\n'.format(env))

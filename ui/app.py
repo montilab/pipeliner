@@ -16,6 +16,7 @@ app = Flask(__name__)
 socketio = SocketIO(app)
 
 # ======== Routing =========================================================== #
+
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html', async_mode=socketio.async_mode)
@@ -23,59 +24,53 @@ def index():
 @app.route('/input', methods=['POST'])
 def input():
     path = request.form['input']
-    files = helpers.createFiles()
+    filexts = helpers.filexts
+    files = {key: [] for key, val in filexts.items()}
     try:
-        files['annotation-files'] = helpers.searchFiles(path, ['.gtf', '.gff'])
-        files['reference-files']  = helpers.searchFiles(path, ['.fasta', '.fa'])
-        files['reads-files']      = helpers.searchFiles(path, ['.csv'])
-        files['alignment-files']  = helpers.searchFiles(path, ['.sam', '.bam'])
-        return json.dumps({'success': True,  'files': files, 'message': ""})
+        for file, exts in filexts.items():
+            files[file] = helpers.searchFiles(path, exts)
+        return json.dumps({'success': True,  'files': files})
     except FileNotFoundError:
-        return json.dumps({'success': False, 'files': files, 'message': "Path Not Found"})
+        return json.dumps({'success': False, 'files': files, 'message': "Input Path Not Found"})
 
-@app.route('/parse_reads', methods=['POST'])
-def parse_reads():
-    pathtocsv = request.form['pathtocsv']
+@app.route('/reads', methods=['POST'])
+def reads():
+    csv = request.form['csv']
     try:
-      reads = helpers.parseReads(pathtocsv)
-      return json.dumps({'success': True, 'reads': reads})
+        reads = helpers.searchReads(csv)
+        print(reads)
+        return json.dumps({'success': True,  'reads': reads})
     except FileNotFoundError:
-      return json.dumps({'success': False})
-
+        return json.dumps({'success': False})
 
 @app.route('/output', methods=['POST'])
 def output():
     path = request.form['output']
     directory = path.split('/')[-1]
     parent = '/'.join(path.split('/')[:-1])
-    try:
-      if directory not in os.listdir(parent):
-        subprocess.call(['mkdir', path])  
-      return json.dumps({'success': True})
-    except FileNotFoundError:
-      return json.dumps({'success': False})
-
+    if os.path.isdir(parent):
+        message = ''
+        if directory not in os.listdir(parent):
+            subprocess.call(['mkdir', path])
+            message = 'Output Directory Created'
+        return json.dumps({'success': True, 'message': message})
+    else:
+        return json.dumps({'success': False, 'message': "Output Path Not Found"})
 
 @app.route('/config', methods=['POST'])
 def config():
-    indir = request.form['indir']
-    outdir = request.form['outdir']
-    files = json.loads(request.form['files'])
-    settings = json.loads(request.form['settings'])
-    nfdir = request.form['nfdir']
-    helpers.createConfig(indir, outdir, files, settings, nfdir)
+    kwargs = json.loads(request.form['kwargs'])
+    helpers.createConfig(**kwargs)
     return json.dumps({'success': True})
 
 @app.route('/nextflow', methods=['POST'])
 def nextflow():
     validation = {}
-    for key, value in request.form.items():
-        validation[key] = False
+    for key, val in request.form.items():
         if key == 'nextflow-path':
-            if os.path.isfile(value):
-                validation[key] = True
+            validation[key] = os.path.isfile(val)
         else:
-            validation[key] = bool(value)
+            validation[key] = bool(val)
     return json.dumps({'success': True, 'validation': validation})
 
 # ======== Sockets =========================================================== #
@@ -96,11 +91,8 @@ def start(script):
 
 @socketio.on('nextflow_start')
 def nextflow_start(message):
-    resuming = message['resuming']
-    nfdir    = message['nfdir']
-    pipeline = message['pipeline']
-    env      = message['env']
-    helpers.createNextflow(nfdir, pipeline, env=env, outfile='start.sh', resuming=resuming)
+    kwargs = message['kwargs']
+    helpers.createNextflow(**kwargs)
     if os.path.isfile('start.sh'):
         global T
         try:       

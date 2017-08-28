@@ -17,7 +17,7 @@ var STEPS = {"input"    : false,
 
 const filetypes = ['annotation-files', 
                    'reference-files', 
-                   'reads-files', 
+                   'csv-files', 
                    'alignment-files']
 
 const option_1 = [filetypes[0], filetypes[1], filetypes[2]]
@@ -31,10 +31,10 @@ const FAILURE = "active large red remove icon"
 // -------------------------------------------------------------------------- //
 // Helper Functions                                                           //
 // -------------------------------------------------------------------------- //
-function showMessage(message, cleanup=false) {
-  document.getElementById('message').innerHTML = message;
+function message(msg, cleanup=false) {
+  document.getElementById('message').innerHTML = msg;
   if (!cleanup) {
-    setTimeout(function(){showMessage(" ", true)}, 3000)
+    setTimeout(function(){message(" ", true)}, 3000)
   }
 }
 function eledit(id, attr, edit) {
@@ -54,31 +54,38 @@ $(document).on("click", ".input.delete.icon", function (event) {
     }
   }
   refreshInput() 
+  try {
+    addReads($("#csv-files").children()[0].id)
+  } catch (TypeError){
+    clearReads()
+  }
 })
-
 //------------------------------------------------------------------------------
-function addSample(s) {
+function sample(s) {
   return "<tr><td>"+s[0]+"</td><td>"+s[1]+"</td><td>"+s[2]+"</td></tr>"
 }
-function parseReads(pathtocsv) {
+function clearReads() {
+  document.getElementById('reads-found').innerHTML = ""
+  document.getElementById('reads-accordion').hidden = true
+}
+function addReads(csv) {
+  clearReads()
   $.post({
     type: "POST",
-    url: "/parse_reads",
-    data: {"pathtocsv": pathtocsv},
+    url: "/reads",
+    data: {"csv": $("#input-path").val()+'/'+csv},
     success: function(response){
       var success = JSON.parse(response)['success']
-      var reads = JSON.parse(response)['reads']
-      document.getElementById('reads-found').innerHTML = ""
       if (success) {
-        document.getElementById('reads-accordian').hidden = false
-        for (var sample in reads) {
-          document.getElementById('reads-found').innerHTML += addSample(reads[sample])
+        reads = JSON.parse(response)['reads']
+        document.getElementById('reads-accordion').hidden = false
+        for (var s in reads) {
+          document.getElementById('reads-found').innerHTML += sample(reads[s])
         }
       }
     }
   })
 }
-
 // -----------------------------------------------------------------------------
 function validateOption(array, dictionary, filetype, bool) {
   if (_.contains(array, filetype)) {
@@ -107,7 +114,6 @@ function validateOptions(callback=stepsComplete) {
   callback()
 }
 function refreshInput(callback=validateOptions) {
-  parseReads($("#input-path").val()+'/'+FILES['reads-files'][0])
   for (var filetype in FILES) {
     validateFiletype(filetype)
   }
@@ -142,9 +148,16 @@ function input() {
       }
       refreshInput()
       var success = JSON.parse(response)['success']
-      var message = JSON.parse(response)['message']
+      if (success) {
+        if (FILES['csv-files'].length > 0) {
+          addReads(FILES['csv-files'][0])
+        } else {
+          clearReads()
+        }
+      }
       if (!success) {
-        showMessage(message)
+        message(JSON.parse(response)['message'])
+        clearReads()
       }
     }
   })
@@ -172,11 +185,11 @@ function output() {
         eledit('output-step', 'class', 'step')
         eledit('output-path-status', 'class', FAILURE)
       }
+      message(JSON.parse(response)['message'])
       stepsComplete()
     }
   })
 }
-
 // -------------------------------------------------------------------------- //
 // Compelete                                                                  //
 // -------------------------------------------------------------------------- //
@@ -191,7 +204,6 @@ function stepsComplete() {
     return false    
   }
 }
-
 $(document).on("click", "#nextflow", function(e) {
   if (stepsComplete()) {
     view = e.target.innerHTML
@@ -207,7 +219,6 @@ $(document).on("click", "#nextflow", function(e) {
     }
   }
 })
-
 // -------------------------------------------------------------------------- //
 // Nextflow                                                                   //
 // -------------------------------------------------------------------------- //
@@ -241,7 +252,6 @@ function nextflow() {
 $(document).on("blur", "#output-path", output)
 $(document).on("click", "#input-button", input)
 $(document).on("blur", ".nextflow-input", nextflow)
-
 $(document).keypress(function(e) {
   if (e.which === 13) {
     var focus = document.activeElement.id
@@ -249,21 +259,4 @@ $(document).keypress(function(e) {
     else if (focus == "output-path") {output()}
   }
 })
-
-
-
-/*
-// FOR DEBUGGING 
-$(document).ready(function() {
-  e = document.getElementById("input-button")
-  e.click()
-  e = document.getElementById("output-path")
-  e.focus()
-  e.blur()
-  e = document.getElementById("nextflow")
-  e.click()
-  e = document.getElementById("nextflow-path")
-  e.focus()
-  e.blur()
-})
-*/
+// -------------------------------------------------------------------------- //
