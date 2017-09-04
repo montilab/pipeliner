@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 
 // Pipeline version
-version = 1.1
+version = 1.10
 
 // Configurable variables
 params.indir  = '/home/feds/Documents/pythonvillage/pypliner3/Gallus_example/ggal_data'
