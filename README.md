@@ -7,6 +7,9 @@
 ![Dependencies](https://img.shields.io/badge/dependencies-up%20to%20date-brightgreen.svg)
 [![GitHub Issues](https://img.shields.io/github/issues/Crypto-AI/Gemini.svg)](https://github.com/Crypto-AI/Gemini/issues)
 
+#### Quickstart
+Work through the [tutorial](https://github.com/anfederico/pipeliner/blob/master/documentation/tutorial.md) to get started.
+
 #### Features
 * Modular directory structure: It is designed to generate automated result directory based on the names of the samples and tools used to process them
 * Platform independent: It is bundled with an anaconda repository which contains pre-compiled tools as well as pre-built environments that can use used directly.
