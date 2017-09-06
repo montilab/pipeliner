@@ -3,7 +3,7 @@
 # First install miniconda2
 https://conda.io/miniconda.html
 
-# Edit the path so miniconda3 is invoked when calling 'conda'
+# Edit the path so miniconda2 is invoked when calling 'conda'
 gedit ~/.bashrc
 
 # Create a new environment
