@@ -13,13 +13,13 @@
 * Modular architecture: It allows the expert users to customize, modify processes, or add additional tools based on their needs.
 * Automated job parallelization, job recovery, and reproducibility
 
-#### Pipeline Dependencies
+#### Python Dependencies
 |            | Latest Version |
 |------------|----------------|
 | FastQC      | Python 3.6    |
 | Trim Galore | Python 3.6    |
 | RSeQC       | Python 2.7    |
-| StringTie   |               |
+| StringTie   | Python 2.7    |
 | STAR        | Python 3.6    |
-| Kallisto    |               |
+| Kallisto    | Python 3.6    |
 | MultiQC     | Python 3.5    |
