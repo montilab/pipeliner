@@ -16,9 +16,9 @@ curl -s https://get.nextflow.io | bash
 *Note that Anaconda comes pre-packaged with a Python distribution. Make sure you download the Python 2.7 version to ensure compatability with all packages used throughout the RNA-seq workflow. You will install Python 2.7 explicitly if you choose miniconda.*
 
 If you're using a module system such as on the shared computing cluster (SCC) at Boston University you can just load a preinstalled version:
-```bash
-   module purge
-   module load anaconda2/4.3.0
+```
+module purge
+module load anaconda2/4.3.0
 ```
 
 *3. Create Conda Environment*
