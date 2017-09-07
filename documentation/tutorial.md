@@ -3,6 +3,7 @@
 Pipeliner requires Java, Nextflow, and Anaconda for implementation. All other tools for implementation are wrapped in the conda environment described below. 
 
 *1. Download Nextflow*
+
 Make sure you have Java 7/8 installed and then install Nextflow to a working directory. Test the Nextflow executable before continuuing.
 ```bash
 java -version
@@ -12,7 +13,9 @@ curl -s https://get.nextflow.io | bash
 ```
 
 *2. Download Conda*
+
 `Conda` is available through [Anaconda](https://www.continuum.io/downloads) and [Miniconda](https://conda.io/miniconda.html). 
+
 *Note that Anaconda comes pre-packaged with a Python distribution. Make sure you download the Python 2.7 version to ensure compatability with all packages used throughout the RNA-seq workflow. You will install Python 2.7 explicitly if you choose miniconda.*
 
 If you're using a module system such as on the shared computing cluster (SCC) at Boston University you can just load a preinstalled version:
@@ -22,6 +25,7 @@ module load anaconda2/4.3.0
 ```
 
 *3. Create Conda Environment*
+
 If this is your first time working with conda, you may need to edit your configuration paths to ensure anaconda/miniconda is invoked when calling 'conda'
 ```bash
 gedit ~/.bashrc
