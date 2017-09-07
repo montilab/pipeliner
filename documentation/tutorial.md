@@ -1,5 +1,4 @@
 ## Nextflow Tutorial
----
 #### Pre-requisites
 Pipeliner requires Java, Nextflow, and Anaconda for implementation. All other tools for implementation are wrapped in the conda environment described below. 
 
