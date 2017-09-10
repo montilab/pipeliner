@@ -150,8 +150,6 @@ if (params.aligner == 'star') {
   }
 }
 
-/*
-
 // RSEQC
 def num_bams
 bam_counts.count().subscribe{num_bams=it}
@@ -270,8 +268,6 @@ process stringtie2 {
 
 }
 
-*/
-
 // MULTIQC
 process multiqc {
   publishDir "${params.outdir}/multiqc_files", mode: 'copy'
@@ -280,10 +276,10 @@ process multiqc {
   file ('fastqc/*')     from fastqc_results.flatten().toList()
   file ('trimgalore/*') from trimgalore_results.flatten().toList()
   file ('alignment/*')  from alignment_logs.flatten().toList()
-  //file ('rseqc/*')      from gene_coverage_results.flatten().toList()
-  //file ('rseqc/*')      from junction_annotation_results.flatten().toList()
-  //file ('stringtie/*')  from stringtie_log.flatten().toList()
-  //file ('counts/*')     from fpkm_counts.flatten().toList()
+  file ('rseqc/*')      from gene_coverage_results.flatten().toList()
+  file ('rseqc/*')      from junction_annotation_results.flatten().toList()
+  file ('stringtie/*')  from stringtie_log.flatten().toList()
+  file ('counts/*')     from fpkm_counts.flatten().toList()
 
   output:
   file "*multiqc_report.html"
