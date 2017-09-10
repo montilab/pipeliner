@@ -26,10 +26,10 @@ module load anaconda2/4.3.0
 
 *3. Create Conda Environment*
 
-If this is your first time working with conda, you may need to edit your configuration paths to ensure anaconda/miniconda is invoked when calling 'conda'
+If this is your first time working with conda, you may need to edit your configuration paths to ensure anaconda/miniconda is invoked when calling 'conda'.
 ```bash
-gedit ~/.bashrc #Linux
-gedit ~/.bash_profile #Mac
+gedit ~/.bashrc # linux
+gedit ~/.bash_profile # osx
 ```
 Create a conda environment and install the necessary bioconda packages. 
 ```bash
@@ -40,10 +40,11 @@ conda install -c bioconda fastqc trim-galore star multiqc samtools rseqc stringt
  
 #### Running the pipeline
 *4. Run Test Data*
-Download test data from this repository and test it on Nextlfow
+Download test data from this repository and test it on Nextlfow. Currently need to modify explicit paths to fastq read files, this will be changed soon.
 ```bash
 git clone https://github.com/anfederico/pipeliner
 cd pipeliner/Gallus_gallus
+curl -s https://get.nextflow.io | bash
 ./nextflow main.nf -c config
 ```
 
