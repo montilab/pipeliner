@@ -4,7 +4,7 @@
 https://conda.io/miniconda.html
 
 # Edit the path so miniconda2 is invoked when calling 'conda'
-gedit ~/.bashrc
+gedit ~/.bash_profile
 
 # Create a new environment
 cd ~/miniconda2/envs
