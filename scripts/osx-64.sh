@@ -17,7 +17,7 @@ conda info --envs
 source activate pipeliner
 
 # Install dependencies
-conda install -c bioconda java-jdk fastqc trim-galore star multiqc samtools rseqc stringtie
+conda install -c bioconda java-jdk perl-threaded fastqc trim-galore star multiqc samtools rseqc stringtie
 
 # Make sure Java 7/8 is installed
 java -version
