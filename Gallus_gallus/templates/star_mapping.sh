@@ -1,0 +1,1 @@
+STAR --genomeDir $index --sjdbGTFfile $gtf --readFilesIn $reads --runThreadN ${task.cpus} --outFileNamePrefix '${sampleid}.' --readFilesCommand gunzip -c --outSAMtype BAM SortedByCoordinate --outWigType bedGraph --twopassMode Basic
