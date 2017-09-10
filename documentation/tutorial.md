@@ -35,7 +35,7 @@ Create a conda environment and install the necessary bioconda packages.
 ```bash
 conda create -n pipeliner python=2.7
 source activate pipeliner
-conda install -c bioconda fastqc trim-galore star multiqc samtools rseqc stringtie
+conda install -c bioconda perl-threaded fastqc trim-galore star multiqc samtools rseqc stringtie
  ```
  
 #### Running the pipeline
