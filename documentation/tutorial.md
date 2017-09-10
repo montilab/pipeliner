@@ -28,7 +28,8 @@ module load anaconda2/4.3.0
 
 If this is your first time working with conda, you may need to edit your configuration paths to ensure anaconda/miniconda is invoked when calling 'conda'
 ```bash
-gedit ~/.bashrc
+gedit ~/.bashrc #Linux
+gedit ~/.bash_profile #Mac
 ```
 Create a conda environment and install the necessary bioconda packages. 
 ```bash
