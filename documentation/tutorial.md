@@ -2,9 +2,9 @@
 #### Pre-requisites
 Pipeliner requires Java, Nextflow, and Anaconda for implementation. All other tools for implementation are wrapped in the conda environment described below. 
 
-*1. Download Nextflow*
+*1. Test Nextflow*
 
-Make sure you have Java 7/8 installed and then install Nextflow to a working directory. Test the Nextflow executable before continuuing.
+Make sure you have Java 7/8 installed and then install Nextflow to any working directory. Test the Nextflow executable before continuuing. This is just to make sure your environment is compatible with a nextflow executable. You will download another one later in the tutorial.
 ```bash
 java -version
 cd path/to/wd
@@ -14,35 +14,41 @@ curl -s https://get.nextflow.io | bash
 
 *2. Download Conda*
 
-`Conda` is available through [Anaconda](https://www.continuum.io/downloads) and [Miniconda](https://conda.io/miniconda.html). 
+- Local Machine  
+Conda is available through [Anaconda](https://www.continuum.io/downloads). Download the distribution pre-packaged with Python 2.7. If this is your first time working with conda, you may need to edit your configuration paths to ensure anaconda is invoked when calling `conda`
 
-*Note that Anaconda comes pre-packaged with a Python distribution. Make sure you download the Python 2.7 version to ensure compatability with all packages used throughout the RNA-seq workflow. You will install Python 2.7 explicitly if you choose miniconda.*
+- Shared Computing Cluster
+Enable `conda` by loading a pre-installed version of Anaconda with `module load anaconda2`. This will load the latest pre-installed version pre-packaged with Python 2.7.
 
-*3. Create Conda Environment*
-
-If this is your first time working with conda, you may need to edit your configuration paths to ensure anaconda/miniconda is invoked when calling 'conda'.
-```bash
-gedit ~/.bashrc # linux
-gedit ~/.bash_profile # osx
-```
-Create a conda environment and install the necessary bioconda packages. 
-```bash
-conda create -n pipeliner python=2.7
-source activate pipeliner
-conda install -c bioconda perl-threaded fastqc trim-galore star multiqc samtools rseqc stringtie
- ```
- 
 #### Running the pipeline
-*4. Run Test Data*
-Download test data from this repository and test it on Nextlfow. Currently need to modify explicit paths to fastq read files, this will be changed soon.
 
-After cloning the repository, change paths in the following locations:  
-pipeliner/Gallus_gallus/nextflow.config  
-pipeliner/Gallus_gallus/ggal_date/ggal_alpha.csv  
+*3. Clone Tutorial Repository*
 
 ```bash
 git clone https://github.com/anfederico/pipeliner
 cd pipeliner/Gallus_gallus
+```
+
+*4. Create Conda Environment*
+
+```bash
+conda env create -f envs/linux_env.yml 
+source activate pipeliner
+
+or
+
+conda env create -f envs/osx_env.yml 
+source activate pipeliner
+```
+
+*5. Run Workflow*
+As of now, you must explicitly declare a few input paths in the following files:  
+*pipeliner/Gallus_gallus/nextflow.config*
+*pipeliner/Gallus_gallus/ggal_date/ggal_reads.csv*
+
+Once finished, run the pipeline
+
+```bash
 curl -s https://get.nextflow.io | bash
 ./nextflow main.nf -c nextflow.config
 ```
