@@ -1,7 +1,7 @@
 #### Typical Commands for Shared Computing Cluster (SCC)
 
 ```bash
-ssh <username>@scc4.bu.edu     # BU Kerberos ID and Password
+ssh <username>@scc4.bu.edu     # BU Kerberos username and Password
 qrsh -P <projectname>          # Must specify project for qsub
 module load anaconda2          # Enable conda
 source activate <environment>  # Activate conda environment
