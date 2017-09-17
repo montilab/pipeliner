@@ -48,7 +48,6 @@ if (params.bed) {
 log.info " P I P E L I N E R  ~  v${version}"
 log.info "===================================="
 log.info "Reads         : ${params.reads}"
-log.info "Genome        : ${params.genome}"
 log.info "FASTA         : ${params.fasta}"
 log.info "Annotation    : ${params.gtf}"
 log.info "Input Dir     : ${params.indir}"
@@ -62,9 +61,9 @@ log.info "Current home  : $HOME"
 log.info "Current path  : $PWD"
 log.info "===================================="
 
-log_params(params, "nextflow_paramters.txt")
+log_config(params, "nextflow_paramters.txt")
 
-def log_params(p, n) {
+def log_config(p, n) {
   File file = new File(n)
   file.write "Parameter:\tValue\n"
   for(s in p) {
@@ -136,8 +135,8 @@ if (params.aligner == 'star') {
     publishDir "${params.outdir}/$sampleid/star", mode: 'copy'
 
     input:
-    file index from star_index.first()
-    file gtf from gtf_mapping.first()
+    file index from star_index
+    file gtf from gtf_mapping
     set sampleid, file (reads:'*') from trimmed_reads
 
     output:
@@ -168,16 +167,9 @@ process rseqc {
   file ('*geneBodyCoverage.*') into gene_coverage_results
   stdout into gene_coverage_log
   file ('*junction.*') into junction_annotation_results
-  //file('junc_annot.junction.xls') into junction
-  //file('gene_coverage.geneBodyCoverage.txt') into coverage
     
   script:
-  """
-  samtools index $bamfiles
-  bam_stat.py -i $bamfiles > ${sampleid}.bam_stats
-  geneBody_coverage.py -r $bed -i $bamfiles -o ${sampleid}
-  junction_annotation.py -i $bamfiles -o ${sampleid} -r $bed
-  """
+  template 'rseqc.sh'
 }
 
 // STRINGTIE
@@ -194,14 +186,10 @@ if(params.aligner == "star" | params.aligner == "bowtie") {
     file '*_transcripts.gtf' into gtf_list
 
     script:
-    """
-    stringtie $bamfiles \\
-    -o ${bamfiles}_transcripts.gtf \\
-    -v \\
-    -G $gtf \\
-    """
+    template 'stringtie1.sh'
   }
-  process gtf_mering {
+
+  process gtf_merging {
     publishDir "${params.outdir}/stringtiemerge", mode: 'copy'
 
     input:
@@ -212,14 +200,12 @@ if(params.aligner == "star" | params.aligner == "bowtie") {
     file 'merged.gtf' into merged_gtf
 
     script:
-    """
-    stringtie --merge ${gtfs.flatten().join(' ')} -G $gtf -e -F -T -o merged.gtf
-    """
+    template 'gtf_merging.sh'
   }
 
 bam_stringtie2
     .combine(merged_gtf)
-    .into {stringtie_input}
+    .set {stringtie_input}
 
 process stringtie2 {
     tag "$sampleid"
@@ -235,18 +221,8 @@ process stringtie2 {
     stdout into stringtie_log
 
     script:
-    """
-    stringtie $bamfiles \\
-    -o ${bamfiles}_transcripts.gtf \\
-    -v \\
-    -G $mergedgtf \\
-    -A ${bamfiles}.gene_abund.txt \\
-    -C ${bamfiles}.cov_refs.gtf \\
-    -e \\
-    -b ${bamfiles}_ballgown
-    """
+    template 'stringtie2.sh'
   }
-
 
   // Make gene count and transcript count matrix
   process aggregate_counts {
@@ -265,7 +241,6 @@ process stringtie2 {
      python $PWD/scripts/aggrcounts.py $file_list
      """
   }
-
 }
 
 // MULTIQC
@@ -286,12 +261,8 @@ process multiqc {
   file "*multiqc_data"
 
   script:
-  """
-  multiqc -f ${params.outdir}
-  """
+  template 'multiqc.sh'
 }
-
-
 
 // ---------------------------------------------//
 

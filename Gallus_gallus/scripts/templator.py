@@ -28,7 +28,7 @@ def write_template(template, command):
         script.write(command) 
 
 def main():
-    # Fastqc -----------------------------------------------------------------------
+    # Fastqc -------------------------------------------------------------------
     command = "fastqc"
     command = add_kwargs(command, settings.fastqc)
     if params['paired'] == 'true':
@@ -37,7 +37,7 @@ def main():
         command += (' ${reads[0]}')
     write_template('fastqc.sh', command)
 
-    # Trim Galore ------------------------------------------------------------------
+    # Trim Galore --------------------------------------------------------------
     command = "trim_galore"
     command = add_kwargs(command, settings.trim_galore)
     if params['paired'] == 'true':
@@ -46,15 +46,21 @@ def main():
         command += (' ${reads[0]}')
     write_template('trim_galore.sh', command)
 
-    # Star Indexing ----------------------------------------------------------------
+    # Star Indexing ------------------------------------------------------------
     command = "mkdir star_index\nSTAR --runMode genomeGenerate --runThreadN ${task.cpus} --sjdbGTFfile $gtf --genomeDir star_index/ --genomeFastaFiles $fasta" 
     command = add_kwargs(command, settings.star_indexing)
     write_template('star_indexing.sh', command)
 
-    # Star Mapping -----------------------------------------------------------------
+    # Star Mapping -------------------------------------------------------------
     command = "STAR --genomeDir $index --sjdbGTFfile $gtf --readFilesIn $reads --runThreadN ${task.cpus} --outFileNamePrefix \'${sampleid}.'"
     command = add_kwargs(command, settings.star_mapping)
     write_template('star_mapping.sh', command)
+
+    # Multiqc ------------------------------------------------------------------
+    command = "multiqc ${params.outdir}"
+    command = add_kwargs(command, settings.multiqc)
+    write_template('multiqc.sh', command)
+
 
 if __name__ == "__main__":
     import os

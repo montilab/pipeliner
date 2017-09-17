@@ -10,3 +10,5 @@ star_mapping = {'twopassMode'     : 'Basic',
                 'outWigType'      : 'bedGraph',
                 'outSAMtype'      : 'BAM SortedByCoordinate',
                 'readFilesCommand': 'gunzip -c'}
+
+multiqc = {'force'  : True}
