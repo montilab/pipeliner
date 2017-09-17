@@ -15,14 +15,3 @@ Work through the [tutorial](https://github.com/anfederico/pipeliner/blob/master/
 * Platform independent: It is bundled with an anaconda repository which contains pre-compiled tools as well as pre-built environments that can use used directly.
 * Modular architecture: It allows the expert users to customize, modify processes, or add additional tools based on their needs.
 * Automated job parallelization, job recovery, and reproducibility
-
-#### Python Dependencies
-|            | Latest Version |
-|------------|----------------|
-| FastQC      | Python 3.6    |
-| Trim Galore | Python 3.6    |
-| RSeQC       | Python 2.7    |
-| StringTie   | Python 2.7    |
-| STAR        | Python 3.6    |
-| Kallisto    | Python 3.6    |
-| MultiQC     | Python 3.5    |
