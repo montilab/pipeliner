@@ -43,7 +43,7 @@ source activate pipeliner
 
 *5. Run Workflow*
 As of now, you must explicitly declare a few input paths in the following files:  
-*pipeliner/Gallus_gallus/nextflow.config*
+*pipeliner/Gallus_gallus/nextflow.config*  
 *pipeliner/Gallus_gallus/ggal_date/ggal_reads.csv*
 
 Once finished, run the pipeline
