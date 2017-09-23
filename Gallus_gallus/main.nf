@@ -25,10 +25,10 @@ if (params.paired) {
 }
 
 // Validate inputs
-if (params.star_index && params.aligner == 'star') {
-  star_index = Channel
-    .fromPath(params.star_index)
-    .ifEmpty {exit 1, "STAR index not found: ${params.star_index}"}
+if (params.index && params.aligner == 'star') {
+  index = Channel
+    .fromPath(params.index)
+    .ifEmpty {exit 1, "STAR index not found: ${params.index}"}
     .toList()
 }
 if (params.gtf) {
@@ -53,8 +53,8 @@ log.info "Annotation    : ${params.gtf}"
 log.info "Input Dir     : ${params.indir}"
 log.info "Output Dir    : ${params.outdir}"
 log.info "Aligner       : ${params.aligner}"
-if (params.star_index) {
-  log.info "Index         : ${params.star_index}"
+if (params.index) {
+  log.info "Index         : ${params.index}"
 }
 log.info "Current user  : $USER"
 log.info "Current home  : $HOME"
@@ -108,8 +108,56 @@ process trim_galore {
   template 'trim_galore.sh'
 }
 
+// BOWTIE - BUILD INDEX
+if (params.aligner == 'bowtie' && !params.index && file(params.fasta)) {
+  process bowtie_indexing {
+    publishDir path: "${params.outdir}/bowtie_files", saveAs: { params.save_reference ? it : null }, mode: 'copy'
+    tag "$fasta"
+    cache 'deep'
+
+    input:
+    file fasta from file(params.fasta)
+
+    output:
+    file "bowtie_index*" into bowtie_index
+
+    script:
+    """
+    echo $fasta
+    bowtie2-build $fasta bowtie_index
+    """
+  }
+}
+
+// BOWTIE - MAP READS
+if (params.aligner == 'bowtie') {
+  process bowtie_mapping {
+    tag "$sampleid"
+    cache 'deep'
+    publishDir "${params.outdir}/$sampleid/bowtie", mode: 'copy'
+
+    input:
+    file index from bowtie_index
+    set sampleid, file (reads:'*') from trimmed_reads
+
+    output:
+    file "output.sam" into sam_files
+    file "output.bam" into unsorted_bam_files
+    file "output.sorted.bam" into sorted_bam_files
+    set sampleid, file("output.sorted.bam") into bam_files, bam_counts, bam_stringtie1, bam_stringtie2, bam_rseqc
+
+
+    script:
+    """
+    bowtie2 -x bowtie_index -1 ${reads[0]} -2 ${reads[1]} -S output.sam
+    samtools view -Sb output.sam > output.bam
+    samtools sort output.bam -o output.sorted.bam
+    """
+  }
+}
+
 // STAR - BUILD INDEX
-if (params.aligner == 'star' && !params.star_index && file(params.fasta)) {
+if (params.aligner == 'star' && !params.index && file(params.fasta)) {
   process star_indexing {
     publishDir path: "${params.outdir}/star_files", saveAs: { params.save_reference ? it : null }, mode: 'copy'
     tag "$fasta"
@@ -148,6 +196,7 @@ if (params.aligner == 'star') {
     template 'star_mapping.sh' 
   }
 }
+
 
 // RSEQC
 def num_bams
@@ -250,7 +299,9 @@ process multiqc {
   input:
   file ('fastqc/*')     from fastqc_results.flatten().toList()
   file ('trimgalore/*') from trimgalore_results.flatten().toList()
-  file ('alignment/*')  from alignment_logs.flatten().toList()
+  if(params.aligner == 'star') {
+    file ('alignment/*')  from alignment_logs.flatten().toList()
+  }
   file ('rseqc/*')      from gene_coverage_results.flatten().toList()
   file ('rseqc/*')      from junction_annotation_results.flatten().toList()
   file ('stringtie/*')  from stringtie_log.flatten().toList()
@@ -263,6 +314,7 @@ process multiqc {
   script:
   template 'multiqc.sh'
 }
+
 
 // ---------------------------------------------//
 
