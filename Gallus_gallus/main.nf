@@ -54,11 +54,11 @@ log.info "Input Dir     : ${params.indir}"
 log.info "Output Dir    : ${params.outdir}"
 log.info "Aligner       : ${params.aligner}"
 if (params.index) {
-  log.info "Index         : ${params.index}"
+  log.info "Index       : ${params.index}"
 }
-log.info "Current user  : $USER"
-log.info "Current home  : $HOME"
-log.info "Current path  : $PWD"
+log.info "Current user : $USER"
+log.info "Current home : $HOME"
+log.info "Current path : $PWD"
 log.info "===================================="
 
 log_config(params, "nextflow_paramters.txt")
@@ -299,9 +299,7 @@ process multiqc {
   input:
   file ('fastqc/*')     from fastqc_results.flatten().toList()
   file ('trimgalore/*') from trimgalore_results.flatten().toList()
-  if(params.aligner == 'star') {
-    file ('alignment/*')  from alignment_logs.flatten().toList()
-  }
+  file ('alignment/*') from alignment_logs.flatten().toList()
   file ('rseqc/*')      from gene_coverage_results.flatten().toList()
   file ('rseqc/*')      from junction_annotation_results.flatten().toList()
   file ('stringtie/*')  from stringtie_log.flatten().toList()
@@ -314,7 +312,6 @@ process multiqc {
   script:
   template 'multiqc.sh'
 }
-
 
 // ---------------------------------------------//
 
