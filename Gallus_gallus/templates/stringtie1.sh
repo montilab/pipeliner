@@ -1,1 +1,4 @@
-stringtie $bamfiles -o ${bamfiles}_transcripts.gtf -v -G $gtf
+stringtie ${bamfiles} -o \\
+${bamfiles}_transcripts.gtf \\
+-v \\
+-G ${gtf}

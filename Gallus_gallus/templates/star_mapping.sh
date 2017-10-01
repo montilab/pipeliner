@@ -1,1 +1,17 @@
-STAR --genomeDir $index --sjdbGTFfile $gtf --readFilesIn $reads --runThreadN ${task.cpus} --outFileNamePrefix '${sampleid}.' --readFilesCommand gunzip -c --outSAMtype BAM SortedByCoordinate --outWigType bedGraph --twopassMode Basic
+STAR --genomeDir ${index} \\
+--sjdbGTFfile $gtf \\
+--readFilesIn $reads \\
+--runThreadN ${task.cpus} \\
+--outFileNamePrefix '${sampleid}.' \\
+--readFilesCommand gunzip -c \\
+--outFilterType ${params.star_mapping.outFilterType} \\
+--outSAMtype ${params.star_mapping.outSAMtype} \\
+--outWigType ${params.star_mapping.outWigType} \\
+--twopassMode ${params.star_mapping.twopassMode} \\
+--outFilterMultimapNmax ${params.star_mapping.outFilterMultimapNmax} \\
+--outFilterMismatchNmax ${params.star_mapping.outFilterMismatchNmax} \\
+--outFilterMismatchNoverLmax ${params.star_mapping.outFilterMismatchNoverLmax} \\
+--alignIntronMin ${params.star_mapping.alignIntronMin} \\
+--alignIntronMax ${params.star_mapping.alignIntronMax} \\
+--alignMatesGapMax ${params.star_mapping.alignMatesGapMax} \\
+--alignSJoverhangMin ${params.star_mapping.alignSJoverhangMin}
