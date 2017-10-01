@@ -3,7 +3,7 @@
 
 ### Version 2.0
 
-- add introspection to parameter log
+- add introspection to parameter log and move to workflow completion statement
 	- timestamp
 	- work directory
 	- command
