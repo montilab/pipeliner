@@ -1,6 +1,19 @@
 ### Pipeliner (RNA-Seq)
 ### *Change Log*
 
+### Version 2.0
+
+- add introspection to parameter log
+	- timestamp
+	- work directory
+	- command
+- create a more informative console message on startup
+- update nextflow.config with standard and process-specific paramaters
+- update nextflow.config with comments
+- separated out part of rseqc module temporarily
+- introduced bool `from_bam` to start directly from bamfiles
+- aggrcounts.py -> aggregator.py
+
 ### Version 1.1
 
 - introduced bowtie2 as an alignment option for simple organisms
