@@ -3,6 +3,7 @@
 
 ### Version 2.0
 
+- fixed a bug that required changing the reads.csv header for single end runs
 - add introspection to parameter log and move to workflow completion statement
 	- timestamp
 	- work directory
