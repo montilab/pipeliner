@@ -18,7 +18,7 @@ if (!params.from_bam) {
   } else {
     Channel
       .fromPath(params.reads).splitCsv(header: true)
-      .map {row -> [row.Sample_Name, [row.Read]]}
+      .map {row -> [row.Sample_Name, [row.Read1]]}
       .ifEmpty {error "File ${params.reads} not parsed properly"}
       .into {reads_fastqc; reads_trimgalore}
   }
@@ -75,7 +75,11 @@ if (!params.from_bam) {
     set sampleid, '*_fastqc.{zip,html}' into fastqc_results
 
     script:
-    template 'fastqc.sh'
+    if (params.paired){
+        template 'fastqc/paired.sh'
+    } else {
+      template 'fastqc/single.sh'
+    }
   }
 
   // TRIM GALORE
@@ -92,7 +96,11 @@ if (!params.from_bam) {
     set sampleid, '*trimming_report.txt' into trimgalore_results
 
     script:
-    template 'trim_galore.sh'
+    if (params.paired){
+        template 'trim_galore/paired.sh'
+    } else {
+      template 'trim_galore/single.sh'
+    }
   }
 
   // STAR - BUILD INDEX
