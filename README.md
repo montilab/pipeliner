@@ -5,7 +5,7 @@
 ![Python](https://img.shields.io/badge/Web%20App-Python%203.6-blue.svg)
 ![Compatibility](https://img.shields.io/badge/Compatibility-Linux%20%2F%20OSX-orange.svg)
 ![Dependencies](https://img.shields.io/badge/dependencies-up%20to%20date-brightgreen.svg)
-[![GitHub Issues](https://img.shields.io/github/issues/anfederico/pipeliner.svg)](https://github.com/anfederico/pipeliner/issues)
+[![GitHub Issues](https://img.shields.io/github/issues/montilab/pipeliner.svg)](https://github.com/montilab/pipeliner/issues)
 
 #### Quickstart
 Work through the [tutorial](https://github.com/anfederico/pipeliner/blob/master/documentation/tutorial.md) to get started.
