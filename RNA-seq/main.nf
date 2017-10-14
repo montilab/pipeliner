@@ -4,6 +4,27 @@
 version = 2.1
 
 // ---------------------------------------------//
+//                VALIDATE CONFIG               //
+// ---------------------------------------------//
+
+cmd = workflow.commandLine
+def range = 0..cmd.length()-6
+config = ""
+for (i in range) { 
+  if (cmd[i..i+5] == ".nf -c") {
+      config = cmd[i+7..cmd.length()-1]
+      def src = new File("${config}")
+      def dst = new File("${workflow.start}.config")
+      dst << src.text
+      break
+  }
+}
+if (!config) {
+  log.info "Error: Please specify a configuration file (e.g. -c nextflow.config)"
+  System.exit(0)
+}
+
+// ---------------------------------------------//
 //                VALIDATE FILES                //
 // ---------------------------------------------//
 
@@ -27,7 +48,7 @@ if (!params.from_bam) {
     .fromPath(params.alignments).splitCsv(header: true)
     .map {row -> [row.Sample_Name, file(row.Alignment)]}
     .ifEmpty {error "File ${params.alignments} not parsed properly"}
-    .into {bam_files; bam_counts; bam_stringtie1; bam_stringtie2}
+    .into {bam_files; bam_counts; bam_stringtie1; bam_stringtie2; bam_rseqc}
 }
 
 if (params.gtf) {
@@ -103,6 +124,50 @@ if (!params.from_bam) {
     }
   }
 
+  // HISAT - BUILD INDEX
+  if (params.aligner == 'hisat' && !params.index && file(params.fasta)) {
+    process hisat_indexing {
+      cache params.enable_resume
+      tag "$fasta"
+      publishDir path: "${params.outdir}/hisat_files", saveAs: {params.save_reference ? it : null}, mode: 'copy'
+
+      input:
+      file fasta from file(params.fasta)
+      file gtf from gtf_indexing
+
+      output:
+      file hisat_index into hisat_index
+
+      script:
+      template 'hisat/indexing.sh'
+    }
+  }
+
+  // HISAT - MAP READS
+  if (params.aligner == 'hisat') {
+    process hisat_mapping {
+      cache params.enable_resume    
+      tag "$sampleid"
+      publishDir "${params.outdir}/${sampleid}/hisat", mode: 'copy'
+
+      input:
+      file index from hisat_index
+      file gtf from gtf_mapping
+      set sampleid, file (reads:'*') from trimmed_reads
+
+      output:
+      set sampleid, file("*.bam") into bam_files, bam_counts, bam_stringtie1, bam_stringtie2, bam_rseqc
+      set sampleid, '*.log' into alignment_logs
+
+      script:
+      if (params.paired){
+          template 'hisat/mapping/paired.sh'
+      } else {
+        template 'hisat/mapping/single.sh'
+      }
+    }
+  }
+
   // STAR - BUILD INDEX
   if (params.aligner == 'star' && !params.index && file(params.fasta)) {
     process star_indexing {
@@ -118,7 +183,7 @@ if (!params.from_bam) {
       file "star_index" into star_index
 
       script:
-      template 'star_indexing.sh' 
+      template 'star/indexing.sh' 
     }
   }
 
@@ -135,15 +200,38 @@ if (!params.from_bam) {
       set sampleid, file (reads:'*') from trimmed_reads
 
       output:
-      set sampleid, file("*.bam") into bam_files, bam_counts, bam_stringtie1, bam_stringtie2
-      
+      set sampleid, file("*.bam") into bam_files, bam_counts, bam_stringtie1, bam_stringtie2, bam_rseqc
       set sampleid, '*.out' into alignment_logs
       set sampleid, '*.tab' into alignment_tab
 
       script:
-      template 'star_mapping.sh' 
+      template 'star/mapping.sh'
     }
   }
+}
+
+// RSEQC
+def num_bams
+bam_counts.count().subscribe{num_bams=it}
+
+process rseqc {
+  cache params.enable_resume
+  tag "$sampleid"
+  publishDir "${params.outdir}/$sampleid/rseqc", mode: 'copy'
+
+  input:
+  set sampleid, file(bamfiles) from bam_rseqc
+  file bed from file(params.bed)
+
+  output:
+  file ("*.{txt,pdf,r,xls}") into rseqc_results
+  file ('*.bam_stats') into bam_stats_results
+  file ('*geneBodyCoverage.*') into gene_coverage_results
+  stdout into gene_coverage_log
+  file ('*junction.*') into junction_annotation_results
+
+  script:
+  template 'rseqc.sh'
 }
 
 // STRINGTIE
@@ -227,7 +315,9 @@ if (!params.from_bam) {
     input:
     file ('fastqc/*')     from fastqc_results.flatten().toList()
     file ('trimgalore/*') from trimgalore_results.flatten().toList()
-    file ('star/*')       from alignment_logs.flatten().toList()
+    file ('alignment/*')  from alignment_logs.flatten().toList()
+    file ('rseqc/*')      from gene_coverage_results.flatten().toList()
+    file ('rseqc/*')      from junction_annotation_results.flatten().toList()
     file ('stringtie/*')  from stringtie_log.flatten().toList()
     file ('counts/*')     from fpkm_results.flatten().toList()
 
@@ -244,20 +334,4 @@ if (!params.from_bam) {
 
 workflow.onComplete {
   println (workflow.success ? "Success: Pipeline Completed!" : "Error: Something went wrong.")
-  logger(params, "${params.outdir}/") // Requires outdir exists
-}
-
-def logger(p, dir) {
-  filename = "${workflow.start}.log".replace(':','_')
-  File file = new File(dir+filename)
-  file.write "Work Directory: ${workflow.workDir}\n"
-  file << "Command: ${workflow.commandLine}\n"
-  file << "Start: ${workflow.start}\n"
-  file << "End: ${workflow.complete}\n"
-  file << "Duration: ${workflow.duration}\n"
-  file << "Success: ${workflow.success}\n"
-  file << "\nParameters\n"
-  for (s in p) {
-      file << "${s.key}: ${s.value}\n"
-  } 
 }
