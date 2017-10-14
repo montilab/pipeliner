@@ -1,1 +1,0 @@
-fastqc --quiet --outdir . ${reads[0]}
