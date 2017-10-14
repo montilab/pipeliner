@@ -1,1 +1,0 @@
-trim_galore --gzip ${reads[0]}
