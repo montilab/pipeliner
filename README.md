@@ -17,4 +17,4 @@ Work through the [tutorial](https://github.com/anfederico/pipeliner/blob/master/
 * Automated job parallelization, job recovery, and reproducibility
 
 #### Note
-*Pipeliner is still under active development*
+*Pipeliner is still under active development.*
