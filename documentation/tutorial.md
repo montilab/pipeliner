@@ -25,8 +25,8 @@ Enable `conda` by loading a pre-installed version of Anaconda with `module load 
 *3. Clone Tutorial Repository*
 
 ```bash
-git clone https://github.com/anfederico/pipeliner
-cd pipeliner/Gallus_gallus
+git clone https://github.com/montilab/pipeliner
+cd pipeliner/RNA-seq
 ```
 
 *4. Create Conda Environment*
@@ -43,8 +43,8 @@ source activate pipeliner
 
 *5. Run Workflow*
 As of now, you must explicitly declare a few input paths in the following files:  
-*pipeliner/Gallus_gallus/nextflow.config*  
-*pipeliner/Gallus_gallus/ggal_date/ggal_reads.csv*
+*pipeliner/RNA-seq/nextflow.config*  
+*pipeliner/RNA-seq/ggal_data/ggal_reads.csv*
 
 Once finished, run the pipeline
 
@@ -52,5 +52,3 @@ Once finished, run the pipeline
 curl -s https://get.nextflow.io | bash
 ./nextflow main.nf -c nextflow.config
 ```
-
-Pipeliner consists of a main nextflow script parametrized using a configuration file. The configuration file includes all parameters necessary to run the pipeline including  parameters to direct the path of files and results, as well as selecting specific tools and processes to run. All files necessary to run this example is in the folder *Gallus_gallus*.
