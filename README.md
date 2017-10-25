@@ -1,5 +1,5 @@
 # Pipeliner
-<i>Flexible and robust RNA-seq workflow</i>
+<i>Flexible and robust framework for the specification of high-throughput sequencing data processing workflows</i>
 
 ![Python](https://img.shields.io/badge/Pipeline-Python%202.7-blue.svg)
 ![Python](https://img.shields.io/badge/Web%20App-Python%203.6-blue.svg)
