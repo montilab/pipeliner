@@ -1,12 +1,12 @@
 #### Typical Commands for Shared Computing Cluster (SCC)
 
 ```bash
-ssh <username>@scc4.bu.edu     # BU Kerberos username and password
-qrsh -P <projectname>          # Must specify project for qsub
-module load anaconda2          # Enable conda
-source activate <environment>  # Activate conda environment
-cd path/to/nextflow            # Go to nextflow project
-./nextflow <workflow.nf>       # Run nextflow workflow
+ssh <username>@scc4.bu.edu                   # BU Kerberos username and password
+qrsh -P <projectname>                        # Must specify project for qsub
+module load anaconda2                        # Enable conda
+source activate <environment>                # Activate conda environment
+cd path/to/nextflow                          # Go to nextflow project
+./nextflow <workflow.nf> -c <params.config>  # Run nextflow workflow
 ```
 
 *Resources for New Users*  
