@@ -1,0 +1,1 @@
+bowtie2-build $fasta bowtie_index

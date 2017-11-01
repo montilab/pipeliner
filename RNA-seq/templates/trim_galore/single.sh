@@ -1,1 +1,4 @@
-trim_galore --gzip ${reads[0]}
+trim_galore \\
+--gzip \\
+--quality ${params.trim_galore.quality} \\
+${reads[0]}
