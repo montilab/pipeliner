@@ -1,4 +1,4 @@
 Sample_Name,Read1,Read2
-ggal_alpha,/Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_data/reads/ggal_alpha_1.fq,/Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_data/reads/ggal_alpha_2.fq
-ggal_theta,/Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_data/reads/ggal_theta_1.fq,/Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_data/reads/ggal_theta_2.fq
-ggal_gamma,/Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_data/reads/ggal_gamma_1.fq,/Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_data/reads/ggal_gamma_2.fq
+ggal_alpha,/Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_data/reads/ggal_alpha_1.fq.gz,/Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_data/reads/ggal_alpha_2.fq.gz
+ggal_theta,/Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_data/reads/ggal_theta_1.fq.gz,/Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_data/reads/ggal_theta_2.fq.gz
+ggal_gamma,/Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_data/reads/ggal_gamma_1.fq.gz,/Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_data/reads/ggal_gamma_2.fq.gz
