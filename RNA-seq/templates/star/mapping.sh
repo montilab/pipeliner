@@ -1,7 +1,7 @@
 STAR --genomeDir ${index} \\
 --sjdbGTFfile $gtf \\
 --readFilesIn $reads \\
---runThreadN ${task.cpus} \\
+--runThreadN ${params.star_mapping.cpus} \\
 --outFileNamePrefix '${sampleid}.' \\
 --readFilesCommand gunzip -c \\
 --outFilterType BySJout \\

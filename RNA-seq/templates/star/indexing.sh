@@ -1,6 +1,6 @@
 mkdir star_index
 STAR --runMode genomeGenerate \\
---runThreadN ${task.cpus} \\
+--runThreadN ${params.star_indexing.cpus} \\
 --sjdbGTFfile ${gtf} \\
 --genomeDir star_index/ \\
 --genomeFastaFiles ${fasta} \\
