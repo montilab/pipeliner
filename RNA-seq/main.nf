@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 
 // Pipeline version
-version = 2.3
+version = 2.4
 
 // ---------------------------------------------//
 //                  COPY CONFIG                 //
@@ -91,6 +91,40 @@ log.info "===================================="
 
 if (!params.from_bam) {
   
+  // TRIM GALORE
+  if (!params.trim_galore.skip) {
+    process trim_galore {
+      cache params.caching
+      tag "$sampleid"
+      publishDir "${params.outdir}/${sampleid}/trimgalore", mode: 'copy'
+
+      input:
+      set sampleid, reads from reads_trimgalore
+
+      output:
+      set sampleid, '*fq.gz' into trimmed_reads, trimmed_reads_fastqc
+      set sampleid, '*trimming_report.txt' into trimgalore_results
+
+      script:
+      if (params.trim_galore.custom_adaptors) {
+        if (params.paired){
+            template 'trim_galore/custom/paired.sh'
+        } else {
+          template 'trim_galore/custom/single.sh'
+        }
+      } else {
+        if (params.paired){
+            template 'trim_galore/default/paired.sh'
+        } else {
+          template 'trim_galore/default/single.sh'
+        }        
+      }
+    } 
+  } else {
+    // Send a blank map to trimgalore results
+    Channel.from().set {trimgalore_results}
+  }
+
   // FASTQC
   if (!params.fastqc.skip) {
     process fastqc {
@@ -99,7 +133,7 @@ if (!params.from_bam) {
       publishDir "${params.outdir}/${sampleid}/fastqc", mode: 'copy'
 
       input:
-      set sampleid, reads from reads_fastqc
+      set sampleid, file (reads:'*') from trimmed_reads_fastqc
 
       output:
       set sampleid, '*_fastqc.{zip,html}' into fastqc_results
@@ -114,32 +148,6 @@ if (!params.from_bam) {
   } else {
     // Send a blank map to fastqc results
     Channel.from().set {fastqc_results}
-  }
-
-  // TRIM GALORE
-  if (!params.trim_galore.skip) {
-    process trim_galore {
-      cache params.caching
-      tag "$sampleid"
-      publishDir "${params.outdir}/${sampleid}/trimgalore", mode: 'copy'
-
-      input:
-      set sampleid, reads from reads_trimgalore
-
-      output:
-      set sampleid, '*fq.gz' into trimmed_reads
-      set sampleid, '*trimming_report.txt' into trimgalore_results
-
-      script:
-      if (params.paired){
-          template 'trim_galore/paired.sh'
-      } else {
-        template 'trim_galore/single.sh'
-      }
-    } 
-  } else {
-    // Send a blank map to trimgalore results
-    Channel.from().set {trimgalore_results}
   }
 
   // HISAT - BUILD INDEX
@@ -272,7 +280,6 @@ if (params.counter == 'htseq') {
   script:
   template 'htseq.sh'
   }
-  Channel.from().set {multiqc_ready}
 }
 
 else if (params.counter == 'featurecounts') {
@@ -296,7 +303,7 @@ else if (params.counter == 'featurecounts') {
 
 else {
   // STRINGTIE
-  process stringetie {
+  process stringtie {
     cache params.caching    
     tag "$sampleid"
     publishDir "${params.outdir}/${sampleid}/stringtie1", mode: 'copy'
@@ -312,7 +319,7 @@ else {
     template 'stringtie1.sh'
   }
 
-  process stringetie_merge {
+  process stringtie_merge {
     cache params.caching
     publishDir "${params.outdir}/stringtiemerge", mode: 'copy'
 
@@ -331,7 +338,7 @@ else {
     .combine(merged_gtf)
     .set {stringtie_input}
 
-  process stringetie_eb {
+  process stringtie_eb {
     tag "$sampleid"
     publishDir "${params.outdir}/${sampleid}/stringtie2", mode: 'copy'
 
@@ -375,6 +382,7 @@ if (!params.multiqc.skip) {
     publishDir "${params.outdir}/multiqc_files", mode: 'copy'
 
     input:
+    file ('*') from fastqc_results.flatten().toList()
     file ('*') from quant_results.flatten().toList()
     file ('*') from rseqc_results.flatten().toList()
 
