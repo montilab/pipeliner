@@ -3,6 +3,15 @@
 
 ### Version 2.0
 
+- added the ability to trim a specific adaptor with trimgalore
+- stringetie renamed to stringtie
+- fastqc will come after trimgalore
+- now star from .gz files
+- non-vital processes are optional
+- added paired/single status to run summary
+- configuration file isn't required, but a warning is given if not explicity stated
+- fixed caching bug
+- added paramters for featurecounts, htseq, and hisat
 - reorganized templates
 - integrated hisat aligner support
 - delete param recording function
