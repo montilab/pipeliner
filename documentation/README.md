@@ -140,3 +140,23 @@ If there is an error with your workflow, you can fix it and return where you lef
 ```
 ./nextflow main.nf -resume
 ```
+
+#### Output
+```
+/pipeliner/RNA-seq
+└── /results
+    │
+    ├── /sample_1
+    │   ├── /trimgalore
+    │   ├── /fastqc
+    │   ├── /star
+    │   ├── /rseqc
+    │   └── /stringtie
+    │
+    ├── /counts
+    ├── /star_files
+    ├── /multiqc_files
+    ├── genome_refseq.bed
+    ├── reads.csv
+    └── alignments.csv
+```
