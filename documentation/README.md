@@ -135,7 +135,7 @@ Current path  : /Users/anthonyfederico/Village/pipeliner/RNA-seq
 Success: Pipeline Completed!
 ```
 
-#### Resume Feature
+#### Resume
 If there is an error with your workflow, you can fix it and return where you left off with
 ```
 ./nextflow main.nf -resume
