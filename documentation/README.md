@@ -31,7 +31,7 @@ conda env create -f envs/osx_env.yml
 source activate pipeliner
 ```
 
-# Running the pipeline
+# Setting Up Pipeliner
 
 #### Clone Repository and Download Nextflow Executable
 
@@ -93,19 +93,21 @@ nextflow
 /scripts
 ```
 
-#### Running the Pipeline
+# Running Pipeliner
+
+#### Run
 ```bash
 ./nextflow main.nf -c local.config
 ```
 
-*Expected Output*
+#### Expected Output
 ```text
 Launching `main.nf` [distraught_hugle] - revision: 0e9a7a8940
  P I P E L I N E R  ~  v2.3
 ====================================
 Reads          : /Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_data/ggal_reads.csv
 FASTA          : /Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_data/genome_reference.fa
-Annotation     : /Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_data/genome_annotation.gff
+Annotation     : /Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_data/genome_annotation.gtf
 Input Dir      : /Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_data
 Output Dir     : /Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_results
 ====================================
@@ -131,4 +133,10 @@ Current path  : /Users/anthonyfederico/Village/pipeliner/RNA-seq
 [52/dbaf09] Submitted process > aggregate_counts
 [55/9e3e61] Submitted process > multiqc
 Success: Pipeline Completed!
+```
+
+#### Resume Feature
+If there is an error with your workflow, you can fix it and return where you left off with
+```
+./nextflow main.nf -resume
 ```
