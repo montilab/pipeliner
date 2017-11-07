@@ -228,8 +228,8 @@ Input Dir      : /Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_data
 Output Dir     : /Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_results
 ====================================
 Read Type      : paired-end
-Aligner        : star
-Quantifier     : stringtie
+Aligner        : hisat
+Quantifier     : htseq
 Save Reference : true
 Save Temporary : true
 ====================================
@@ -238,16 +238,23 @@ Current home  : /Users/anthonyfederico
 Current path  : /Users/anthonyfederico/Village/pipeliner/RNA-seq
 ====================================
 [warm up] executor > local
-[2d/f9d761] Submitted process > star_indexing (genome_reference.fa)
-[b5/850c51] Submitted process > trim_galore (ggal_alpha)
-[55/013bb2] Submitted process > fastqc (ggal_alpha)
-[78/cad1fe] Submitted process > star_mapping (ggal_alpha)
-[ed/72ccfa] Submitted process > stringetie (ggal_alpha)
-[d5/e8494d] Submitted process > rseqc (ggal_alpha)
-[f0/8653fb] Submitted process > stringtie_merge
-[b0/b688b5] Submitted process > stringtie_eb (ggal_alpha)
-[52/dbaf09] Submitted process > aggregate_counts
-[55/9e3e61] Submitted process > multiqc
+[32/b1db1d] Submitted process > hisat_indexing (genome_reference.fa)
+[3b/d93c6d] Submitted process > trim_galore (ggal_alpha)
+[9c/3fa50b] Submitted process > trim_galore (ggal_theta)
+[62/25fce0] Submitted process > trim_galore (ggal_gamma)
+[96/2ffc07] Submitted process > fastqc (ggal_alpha)
+[31/89cddb] Submitted process > fastqc (ggal_theta)
+[57/b2fdf0] Submitted process > fastqc (ggal_gamma)
+[66/ccc9db] Submitted process > hisat_mapping (ggal_alpha)
+[28/69fff5] Submitted process > hisat_mapping (ggal_theta)
+[5c/5ed2b6] Submitted process > hisat_mapping (ggal_gamma)
+[bc/6f490c] Submitted process > rseqc (ggal_alpha)
+[71/80aa9e] Submitted process > rseqc (ggal_theta)
+[17/ca0d9f] Submitted process > rseqc (ggal_gamma)
+[d7/7d391b] Submitted process > htseq (ggal_alpha)
+[df/936854] Submitted process > htseq (ggal_theta)
+[11/143c2c] Submitted process > htseq (ggal_gamma)
+[1f/3af548] Submitted process > multiqc
 Success: Pipeline Completed!
 ```
 
