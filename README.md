@@ -60,16 +60,23 @@ Enable conda by loading a pre-installed version of Anaconda with `module load an
 
 ### Create Conda Environment
 
-*Linux*
+*Linux Import*
 ```bash
 conda env create -f envs/linux_env.yml 
 source activate pipeliner
 ```
 
-*Mac*
+*Mac Import*
 ```bash
 conda env create -f envs/osx_env.yml 
 source activate pipeliner
+```
+
+*Manually*
+```bash
+conda create -n pipeliner python=2.7
+source activate pipeliner
+conda install -c bioconda trim-galore fastqc star multiqc samtools rseqc stringtie hisat2 htseq subread
 ```
 
 ---
