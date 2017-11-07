@@ -1,3 +1,18 @@
+# Pipeliner		
+<i>Flexible and robust framework for the specification of high-throughput sequencing data processing workflows</i>		
+ 		
+![Python](https://img.shields.io/badge/Pipeline-Python%202.7-blue.svg)		
+![Python](https://img.shields.io/badge/Web%20App-Python%203.6-blue.svg)		
+![Compatibility](https://img.shields.io/badge/Compatibility-Linux%20%2F%20OSX-orange.svg)		
+![Dependencies](https://img.shields.io/badge/dependencies-up%20to%20date-brightgreen.svg)		
+[![GitHub Issues](https://img.shields.io/github/issues/montilab/pipeliner.svg)](https://github.com/montilab/pipeliner/issues)		
+ 		
+#### Features		
+* Modular directory structure: It is designed to generate automated result directory based on the names of the samples and tools used to process them		
+* Platform independent: It is bundled with an anaconda repository which contains pre-compiled tools as well as pre-built environments that can use used directly.		
+* Modular architecture: It allows the expert users to customize, modify processes, or add additional tools based on their needs.		
+* Automated job parallelization, job recovery, and reproducibility		
+  
 # Table of Contents
 - [Prerequisites](#prerequisites)
   * [Test Nextflow](#test-nextflow)
