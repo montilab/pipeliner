@@ -35,33 +35,39 @@ if (!params.from_bam) {
       .fromPath(params.reads).splitCsv(header: true)
       .map {row -> [row.Sample_Name, [row.Read1, row.Read2]]}
       .ifEmpty {error "File ${params.reads} not parsed properly"}
-      .into {reads_fastqc; reads_trimgalore}
+      .into {reads_fastqc; reads_trimgalore;}
   } else {
     Channel
       .fromPath(params.reads).splitCsv(header: true)
       .map {row -> [row.Sample_Name, [row.Read1]]}
       .ifEmpty {error "File ${params.reads} not parsed properly"}
-      .into {reads_fastqc; reads_trimgalore}
+      .into {reads_fastqc; reads_trimgalore;}
   }
 } else {
   Channel
     .fromPath(params.alignments).splitCsv(header: true)
     .map {row -> [row.Sample_Name, file(row.Alignment)]}
     .ifEmpty {error "File ${params.alignments} not parsed properly"}
-    .into {bam_files; bam_counts; bam_stringtie1; bam_stringtie2; bam_rseqc}
+    .into {bam_files; bam_counts; bam_stringtie1; bam_stringtie2; bam_rseqc;}
+}
+
+if (params.fasta) {
+  Channel
+    .fromPath(params.fasta).ifEmpty {exit 1, "FASTA reference file not found: ${params.fasta}"}
+    .toList().into {fasta_indexing;}
 }
 
 if (params.gtf) {
   Channel
     .fromPath(params.gtf).ifEmpty {exit 1, "GTF annotation file not found: ${params.gtf}"}
-    .toList().into {gtf_indexing; gtf_mapping; gtf_stringtie;}
+    .toList().into {gtf_indexing; gtf_mapping;}
 }
 
 log.info " P I P E L I N E R  ~  v${version}"
 
 log.info "===================================="
 log.info "Reads          : ${params.reads}"
-log.info "FASTA          : ${params.fasta}"
+log.info "Reference      : ${params.fasta}"
 log.info "Annotation     : ${params.gtf}"
 log.info "Input Dir      : ${params.indir}"
 log.info "Output Dir     : ${params.outdir}"
@@ -76,6 +82,7 @@ log.info "Aligner        : ${params.aligner}"
 if (params.pre_indexed) {
   log.info "Index        : ${params.index}"
 }
+log.info "Quantifier     : ${params.quantifier}"
 log.info "Save Reference : ${params.save_reference}"
 log.info "Save Temporary : ${params.save_temps}"
 
@@ -158,7 +165,7 @@ if (!params.from_bam) {
       publishDir path: "${params.outdir}/hisat_files", saveAs: {params.save_reference ? it : null}, mode: 'copy'
 
       input:
-      file fasta from file(params.fasta)
+      file fasta from fasta_indexing
       file gtf from gtf_indexing
 
       output:
@@ -202,14 +209,14 @@ if (!params.from_bam) {
       publishDir path: "${params.outdir}/star_files", saveAs: {params.save_reference ? it : null}, mode: 'copy'
 
       input:
-      file fasta from file(params.fasta)
+      file fasta from fasta_indexing
       file gtf from gtf_indexing
 
       output:
       file "star_index" into star_index
 
       script:
-      template 'star/indexing.sh' 
+      template 'star/indexing.sh'
     }
   }
 
@@ -233,13 +240,30 @@ if (!params.from_bam) {
       script:
       template 'star/mapping.sh'
     }
-  }
+  } 
+} else {
+  Channel.from().set {fastqc_results}
 }
 
 // RSEQC
 if (!params.rseqc.skip) {
-  def num_bams
-  bam_counts.count().subscribe{num_bams=it}
+  process gtftobed {
+    cache params.caching
+    tag "$gtf"
+    publishDir "${params.outdir}/bed_files", mode: 'copy'
+
+    input:
+    file gtf from gtf_mapping
+
+    output:
+    file "*.bed" into bed_files
+
+    script:
+    """
+    python $PWD/scripts/gff_to_bed.py $gtf > out.bed
+    """
+  }
+
   process rseqc {
     cache params.caching
     tag "$sampleid"
@@ -247,14 +271,10 @@ if (!params.rseqc.skip) {
 
     input:
     set sampleid, file(bamfiles) from bam_rseqc
-    file bed from file(params.bed)
+    file bed from bed_files
 
     output:
     file ("*.{txt,pdf,r,xls}") into rseqc_results
-    file ('*.bam_stats') into bam_stats_results
-    file ('*geneBodyCoverage.*') into gene_coverage_results
-    stdout into gene_coverage_log
-    file ('*junction.*') into junction_annotation_results
 
     script:
     template 'rseqc.sh'
@@ -263,7 +283,7 @@ if (!params.rseqc.skip) {
   Channel.from().set {rseqc_results}
 }
 
-if (params.counter == 'htseq') {
+if (params.quantifier == 'htseq') {
   process htseq {
   cache params.caching    
   tag "$sampleid"
@@ -282,7 +302,7 @@ if (params.counter == 'htseq') {
   }
 }
 
-else if (params.counter == 'featurecounts') {
+else if (params.quantifier == 'featurecounts') {
   process featurecounts {
   cache params.caching    
   tag "$sampleid"
@@ -293,8 +313,7 @@ else if (params.counter == 'featurecounts') {
   file gtf from file(params.gtf)
 
   output:
-  file '*counts.txt' into counts
-  stdout into quant_results
+  file '*counts.txt' into quant_results
 
   script:
   template 'featurecounts.sh'
@@ -313,7 +332,7 @@ else {
     file gtf from file(params.gtf)
 
     output:
-    file '*_transcripts.gtf' into gtf_list
+    file '*.gtf' into gtf_list
 
     script:
     template 'stringtie1.sh'
@@ -346,10 +365,9 @@ else {
     set sampleid, file(bamfiles), file(mergedgtf) from stringtie_input
 
     output:
-    file '*_transcripts.gtf' into final_gtf_list
+    file '*.gtf'
     file '*.gene_abund.txt' into gene_abund
-    file '*.cov_refs.gtf'
-    stdout into quant_results
+    file '*.txt' into quant_results
 
     script:
     template 'stringtie2.sh'
@@ -387,8 +405,8 @@ if (!params.multiqc.skip) {
     file ('*') from rseqc_results.flatten().toList()
 
     output:
-    file "*multiqc_report.html"
-    file "*multiqc_data"
+    file "*report.html"
+    file "*data"
 
     script:
     template 'multiqc.sh'
