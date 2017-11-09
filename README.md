@@ -105,7 +105,6 @@ curl -s https://get.nextflow.io | bash
 │   │
 │   ├── genome_annotation.gtf  [^]
 │   ├── genome_reference.fa    [^]
-│   ├── genome_refseq.bed      [^]
 │   ├── reads.csv              [*]
 │   └── alignments.csv         [*]
 │
@@ -126,9 +125,8 @@ curl -s https://get.nextflow.io | bash
 /data/alignments               | path/to/alignments
 /data/genome_annotation.gtf    | genome annotations (.gtf or .gff)
 /data/genome_reference.fa      | genome reference (.fa or .fasta)
-/data/genome_refseq.bed        | genome refseq
 ```
-> Uploading the genome refseq file is only necessary for rseqc. If not using genome refseq, skip the rseqc process in your config file!
+
 
 #### Files to Modify
 ```text
@@ -162,7 +160,6 @@ indir      = "/Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_data"
 outdir     = "/Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_results"
 fasta      = "${params.indir}/genome_reference.fa"
 gtf        = "${params.indir}/genome_annotation.gtf"
-bed        = "${params.indir}/genome_refseq.bed"
 reads      = "${params.indir}/ggal_reads.csv"
 alignments = "${params.indir}/ggal_alignments.csv"
 
@@ -180,13 +177,12 @@ star_mapping.cpus   = 1
 #### Cluster Config
 ```text
 PROJECT  = <scc-project>
-executor = 'sge
+executor = 'sge'
 
 indir      = "/restricted/projectnb/montilab-p/projects/pipeliner/RNA-seq/ggal_data"
 outdir     = "/restricted/projectnb/montilab-p/projects/pipeliner/RNA-seq/ggal_results"
 fasta      = "${params.indir}/genome_reference.fa"
 gtf        = "${params.indir}/genome_annotation.gtf"
-bed        = "${params.indir}/genome_refseq.bed"
 reads      = "${params.indir}/ggal_reads.csv"
 alignments = "${params.indir}/ggal_alignments.csv"
 
@@ -230,7 +226,6 @@ Launching `main.nf` [distraught_hugle] - revision: 0e9a7a8940
 Reads          : /Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_data/ggal_reads.csv
 Reference      : /Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_data/genome_reference.fa
 Annotation     : /Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_data/genome_annotation.gtf
-Refseq         : /Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_data/genome_refseq.bed
 Input Dir      : /Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_data
 Output Dir     : /Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_results
 ====================================
