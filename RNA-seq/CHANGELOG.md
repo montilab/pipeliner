@@ -3,6 +3,14 @@
 
 ### Version 2.0
 
+- updated all dependencies to newest versions
+- `$stringtie.clusterOptions` bug fixed
+- variable styles changed in config
+- no longer required to supply .bed file
+- added a new process to convert .gtf to rseqc-compatible .bed
+- fixed bug preventing some multiqc charts
+- more options with rseqc
+- variable cleanup with outfiles
 - added the ability to trim a specific adaptor with trimgalore
 - stringetie renamed to stringtie
 - fastqc will come after trimgalore
