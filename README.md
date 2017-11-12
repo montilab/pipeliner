@@ -1,6 +1,7 @@
 # Pipeliner   
 <i>Flexible and robust framework for the specification of high-throughput sequencing data processing workflows</i>    
-    
+
+[![Built With](https://img.shields.io/badge/Built%20With-Nextflow-brightgreen.svg)](https://www.nextflow.io/)
 ![Python](https://img.shields.io/badge/Pipeline-Python%202.7-blue.svg)
 ![Python](https://img.shields.io/badge/Web%20App-Python%203.6-blue.svg)
 ![Compatibility](https://img.shields.io/badge/Compatibility-Linux%20%2F%20OSX-orange.svg)
@@ -156,8 +157,8 @@ main.nf                        | nextflow pipeliner
 PROJECT  = <scc-project>
 executor = 'local'
 
-indir      = "/Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_data"
-outdir     = "/Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_results"
+indir      = "/Users/anthonyfederico/pipeliner/RNA-seq/ggal_data"
+outdir     = "/Users/anthonyfederico/pipeliner/RNA-seq/ggal_results"
 fasta      = "${params.indir}/genome_reference.fa"
 gtf        = "${params.indir}/genome_annotation.gtf"
 reads      = "${params.indir}/ggal_reads.csv"
@@ -223,11 +224,11 @@ star_mapping.cpus   = 16
 Launching `main.nf` [distraught_hugle] - revision: 0e9a7a8940
  P I P E L I N E R  ~  v2.3
 ====================================
-Reads          : /Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_data/ggal_reads.csv
-Reference      : /Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_data/genome_reference.fa
-Annotation     : /Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_data/genome_annotation.gtf
-Input Dir      : /Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_data
-Output Dir     : /Users/anthonyfederico/Village/pipeliner/RNA-seq/ggal_results
+Reads          : /Users/anthonyfederico/pipeliner/RNA-seq/ggal_data/ggal_reads.csv
+Reference      : /Users/anthonyfederico/pipeliner/RNA-seq/ggal_data/genome_reference.fa
+Annotation     : /Users/anthonyfederico/pipeliner/RNA-seq/ggal_data/genome_annotation.gtf
+Input Dir      : /Users/anthonyfederico/pipeliner/RNA-seq/ggal_data
+Output Dir     : /Users/anthonyfederico/pipeliner/RNA-seq/ggal_results
 ====================================
 Read Type      : paired-end
 Aligner        : hisat
@@ -237,7 +238,7 @@ Save Temporary : true
 ====================================
 Current user  : anthonyfederico
 Current home  : /Users/anthonyfederico
-Current path  : /Users/anthonyfederico/Village/pipeliner/RNA-seq
+Current path  : /Users/anthonyfederico/pipeliner/RNA-seq
 ====================================
 [warm up] executor > local
 [32/b1db1d] Submitted process > hisat_indexing (genome_reference.fa)
@@ -285,6 +286,10 @@ File: resume.qsub
 ```
 *Resume with* `qsub -P <project> -l h_rt=96:00:00 -e std.err -o std.out resume.qsub`  
 
+```bash
+tail -f std.out
+```
+
 ### Output
 > Trimmed reads can be run again, alignment files can be used again, multiqc report will show quality control stats across all processes, star index can be used again, and aggregated count matrices can be exported for differential expression analysis outside of Pipeliner.
 
@@ -302,9 +307,7 @@ File: resume.qsub
     ├── /counts              | Aggregated count matrices across all samples
     ├── /star_files          | Star index used for alignment
     ├── /multiqc_files       | Aggregated report across all samples
-    ├── /stringtie
-    ├── reads.csv
-    └── alignments.csv
+    └── /stringtie
 ```
 
 ### Modifying Pipeliner
