@@ -8,10 +8,10 @@ STAR --genomeDir ${index} \\
 --outSAMtype BAM SortedByCoordinate \\
 --outWigType bedGraph \\
 --twopassMode ${params.star_mapping.twopassMode} \\
---outFilterMultimapNmax ${params.star_mapping.outFilterMultimapNmax} \\
---outFilterMismatchNmax ${params.star_mapping.outFilterMismatchNmax} \\
---outFilterMismatchNoverLmax ${params.star_mapping.outFilterMismatchNoverLmax} \\
---alignIntronMin ${params.star_mapping.alignIntronMin} \\
---alignIntronMax ${params.star_mapping.alignIntronMax} \\
---alignMatesGapMax ${params.star_mapping.alignMatesGapMax} \\
---alignSJoverhangMin ${params.star_mapping.alignSJoverhangMin}
+--outFilterMultimapNmax ${params.star_mapping.outfilter_multimap_nmax} \\
+--outFilterMismatchNmax ${params.star_mapping.outfilter_mismatch_nmax} \\
+--outFilterMismatchNoverLmax ${params.star_mapping.outfilter_mismatch_relmax} \\
+--alignIntronMin ${params.star_mapping.align_intron_min} \\
+--alignIntronMax ${params.star_mapping.align_intron_max} \\
+--alignMatesGapMax ${params.star_mapping.align_mates_gapmax} \\
+--alignSJoverhangMin ${params.star_mapping.align_sjoverhang_min}

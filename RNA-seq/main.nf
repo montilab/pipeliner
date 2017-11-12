@@ -110,7 +110,7 @@ if (!params.from_bam) {
 
       output:
       set sampleid, '*fq.gz' into trimmed_reads, trimmed_reads_fastqc
-      set sampleid, '*trimming_report.txt' into trimgalore_results
+      set sampleid, '*.txt' into trimgalore_results
 
       script:
       if (params.trim_galore.custom_adaptors) {
@@ -260,7 +260,7 @@ if (!params.rseqc.skip) {
 
     script:
     """
-    python $PWD/scripts/gff_to_bed.py $gtf > out.bed
+    python $PWD/scripts/gfftobed.py $gtf > out.bed
     """
   }
 
@@ -400,6 +400,7 @@ if (!params.multiqc.skip) {
     publishDir "${params.outdir}/multiqc_files", mode: 'copy'
 
     input:
+    file ('*') from trimgalore_results.flatten().toList()
     file ('*') from fastqc_results.flatten().toList()
     file ('*') from quant_results.flatten().toList()
     file ('*') from rseqc_results.flatten().toList()

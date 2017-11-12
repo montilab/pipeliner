@@ -4,4 +4,4 @@ STAR --runMode genomeGenerate \\
 --sjdbGTFfile ${gtf} \\
 --genomeDir star_index/ \\
 --genomeFastaFiles ${fasta} \\
---sjdbOverhang ${params.star_indexing.sjdbOverhang}
+--sjdbOverhang ${params.star_indexing.sjdb_overhang}
