@@ -128,7 +128,6 @@ if (!params.from_bam) {
       }
     } 
   } else {
-    // Send a blank map to trimgalore results
     Channel.from().set {trimgalore_results}
   }
 
@@ -153,7 +152,6 @@ if (!params.from_bam) {
       }
     }
   } else {
-    // Send a blank map to fastqc results
     Channel.from().set {fastqc_results}
   }
 
@@ -243,6 +241,7 @@ if (!params.from_bam) {
   } 
 } else {
   Channel.from().set {fastqc_results}
+  Channel.from().set {trimgalore_results}
 }
 
 // RSEQC
