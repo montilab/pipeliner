@@ -1,2 +1,3 @@
 *.nf linguist-language=Groovy
+*.config linguist-language=Groovy
 ui/* linguist-vendored
