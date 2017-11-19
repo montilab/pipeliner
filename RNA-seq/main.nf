@@ -13,8 +13,13 @@ config = ""
 for (i in range) { 
   if (cmd[i..i+5] == ".nf -c") {
       config = cmd[i+7..cmd.length()-1]
+      def folder = new File('history')
+      if( !folder.exists() ) {
+        folder.mkdirs()
+      }
+      def filename = "${workflow.start}".replaceAll("[ :]", "_");
       def src = new File("${config}")
-      def dst = new File("${workflow.start}.config")
+      def dst = new File("history/${filename}.config")
       dst << src.text
       break
   }
