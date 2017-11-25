@@ -40,13 +40,24 @@ if (!params.from_bam) {
       .fromPath(params.reads).splitCsv(header: true)
       .map {row -> [row.Sample_Name, [row.Read1, row.Read2]]}
       .ifEmpty {error "File ${params.reads} not parsed properly"}
-      .into {reads_fastqc; reads_trimgalore;}
+      .into {reads_check; reads_fastqc; reads_trimgalore;}
   } else {
     Channel
       .fromPath(params.reads).splitCsv(header: true)
       .map {row -> [row.Sample_Name, [row.Read1]]}
       .ifEmpty {error "File ${params.reads} not parsed properly"}
-      .into {reads_fastqc; reads_trimgalore;}
+      .into {reads_check; reads_fastqc; reads_trimgalore;}
+  }
+  process check_reads {
+    cache params.caching
+
+    input:
+    set sampleid, reads from reads_check
+
+    script:
+    """
+    python $PWD/scripts/check_reads.py ${reads[0]} ${reads[1]}
+    """
   }
 } else {
   Channel
