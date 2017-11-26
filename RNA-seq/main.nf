@@ -48,16 +48,25 @@ if (!params.from_bam) {
       .ifEmpty {error "File ${params.reads} not parsed properly"}
       .into {reads_check; reads_fastqc; reads_trimgalore;}
   }
-  process check_reads {
-    cache params.caching
+  if (!params.check_reads.skip) {
+    process check_reads {
+      cache params.caching
+      tag "$sampleid"
 
-    input:
-    set sampleid, reads from reads_check
+      input:
+      set sampleid, reads from reads_check
 
-    script:
-    """
-    python $PWD/scripts/check_reads.py ${reads[0]} ${reads[1]}
-    """
+      script:
+      if (params.paired){
+        """
+        python $PWD/scripts/check_reads.py ${reads[0]} ${reads[1]}
+        """
+      } else {
+        """
+        python $PWD/scripts/check_reads.py ${reads[0]}
+        """
+      }
+    }
   }
 } else {
   Channel
