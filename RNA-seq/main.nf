@@ -33,7 +33,6 @@ if (!config) {
 //                VALIDATE FILES                //
 // ---------------------------------------------//
 
-// Read and map reads with samples using csv file
 if (!params.from_bam) {
   if (params.paired) {
     Channel
@@ -59,11 +58,11 @@ if (!params.from_bam) {
       script:
       if (params.paired){
         """
-        python $PWD/scripts/check_reads.py ${reads[0]} ${reads[1]}
+        python $PWD/scripts/quality/check_reads.py ${reads[0]} ${reads[1]}
         """
       } else {
         """
-        python $PWD/scripts/check_reads.py ${reads[0]}
+        python $PWD/scripts/quality/check_reads.py ${reads[0]}
         """
       }
     }
@@ -117,13 +116,22 @@ log.info "Current home  : $HOME"
 log.info "Current path  : $PWD"
 log.info "===================================="
 
-// ---------------------------------------------//
-//                BEGIN PIPELINE                //
-// ---------------------------------------------//
+
+// -----------------------------------------------------------------------------
+//              PRE-PIPELINE FASTQC
+// -----------------------------------------------------------------------------
+
+
+
+// -----------------------------------------------------------------------------
+//                BEGIN PIPELINE
+// -----------------------------------------------------------------------------
 
 if (!params.from_bam) {
-  
-  // TRIM GALORE
+
+// -----------------------------------------------------------------------------
+// TRIMGALORE - Trims low quality or contaminated reads
+// -----------------------------------------------------------------------------
   if (!params.trim_galore.skip) {
     process trim_galore {
       cache params.caching
@@ -155,8 +163,12 @@ if (!params.from_bam) {
   } else {
     Channel.from().set {trimgalore_results}
   }
+// -----------------------------------------------------------------------------
 
-  // FASTQC
+
+// -----------------------------------------------------------------------------
+// FASTQC - Quality control on read files
+// -----------------------------------------------------------------------------
   if (!params.fastqc.skip) {
     process fastqc {
       cache params.caching
@@ -179,8 +191,12 @@ if (!params.from_bam) {
   } else {
     Channel.from().set {fastqc_results}
   }
+// -----------------------------------------------------------------------------
 
-  // HISAT - BUILD INDEX
+
+// -----------------------------------------------------------------------------
+// HISAT - A method for alignment reads to a reference and annotation file
+// -----------------------------------------------------------------------------
   if (params.aligner == 'hisat' && !params.index && file(params.fasta)) {
     process hisat_indexing {
       cache params.caching
@@ -198,13 +214,11 @@ if (!params.from_bam) {
       template 'hisat/indexing.sh'
     }
   }
-
-  // HISAT - MAP READS
   if (params.aligner == 'hisat') {
     process hisat_mapping {
       cache params.caching    
       tag "$sampleid"
-      publishDir "${params.outdir}/${sampleid}/hisat", mode: 'copy'
+      scratch = true
 
       input:
       file index from hisat_index
@@ -223,8 +237,12 @@ if (!params.from_bam) {
       }
     }
   }
+// -----------------------------------------------------------------------------
 
-  // STAR - BUILD INDEX
+
+// -----------------------------------------------------------------------------
+// STAR - A method for alignment reads to a reference and annotation file
+// -----------------------------------------------------------------------------
   if (params.aligner == 'star' && !params.index && file(params.fasta)) {
     process star_indexing {
       cache params.caching
@@ -242,13 +260,11 @@ if (!params.from_bam) {
       template 'star/indexing.sh'
     }
   }
-
-  // STAR - MAP READS
   if (params.aligner == 'star') {
     process star_mapping {
       cache params.caching    
       tag "$sampleid"
-      publishDir "${params.outdir}/${sampleid}/star", mode: 'copy'
+      scratch = true
 
       input:
       file index from star_index
@@ -258,18 +274,105 @@ if (!params.from_bam) {
       output:
       set sampleid, file("*.bam") into bam_files, bam_counts, bam_stringtie1, bam_stringtie2, bam_rseqc
       set sampleid, '*.out' into alignment_logs
-      set sampleid, '*.tab' into alignment_tab
 
       script:
       template 'star/mapping.sh'
     }
-  } 
+  }
+// -----------------------------------------------------------------------------
+
+
+// -----------------------------------------------------------------------------
+// Writes alignment logs to a specific logging directory
+// -----------------------------------------------------------------------------
+  process write_alignment_logs {
+    cache params.caching    
+    tag "$sampleid"
+    publishDir "${params.outdir}/logs/${params.aligner}", mode: 'copy' 
+
+    input:
+    set sampleid, file (logs:'*') from alignment_logs
+
+    output:
+    set sampleid, '*' into alignment_results
+
+    script:
+    if (params.aligner == 'hisat') {
+      """
+      cp ${logs} ${sampleid}.log
+      """
+    } else if (params.aligner == 'star') {
+      """
+      cp ${logs[0]} ${sampleid}.Log.final.out
+      """
+    }
+  }
+// -----------------------------------------------------------------------------
+
+ 
+// -----------------------------------------------------------------------------
+// Saves alignment files and writes paths to a csv file
+// -----------------------------------------------------------------------------
+  if (params.save_alignments){
+    process save_alignments {
+      cache params.caching    
+      tag "$sampleid"
+      publishDir "${params.outdir}/alignments", mode: 'copy'
+
+      input:
+      set sampleid, file (alignments:'*') from bam_files
+
+      output:
+      set sampleid, file("*.bam") into saved_alignments
+      stdout into saving_out
+
+      script:
+      """
+      cp ${alignments} ${sampleid}.bam
+      """    
+    }
+    process clear_alignment_paths {
+      input:
+      file ('*') from saving_out.flatten().toList()
+
+      output:
+      stdout into clearing_out
+
+      script:
+      String outpath = "${params.outdir}/alignments/alignments.csv"
+      """
+      rm -rf ${params.outdir}/alignments/alignments.csv
+      touch ${params.outdir}/alignments/alignments.csv
+      echo Sample_Name,Alignment >> ${outpath}
+      """   
+    }
+    process write_alignment_paths {
+      cache params.caching    
+      tag "$sampleid"
+      publishDir "${params.outdir}/alignments", mode: 'copy'
+
+      input:
+      set sampleid, file (alignments:'*') from saved_alignments
+      file ('*') from clearing_out.flatten().toList()
+
+      script:
+      String outpath = "${params.outdir}/alignments/alignments.csv"
+      """
+      echo ${sampleid},${params.outdir}/alignments/${sampleid}.bam >> ${outpath}
+      """
+    }
+  }
+// -----------------------------------------------------------------------------
 } else {
   Channel.from().set {fastqc_results}
   Channel.from().set {trimgalore_results}
+  Channel.from().set {alignment_results}
 }
 
-// RSEQC
+
+// -----------------------------------------------------------------------------
+// RSEQC - Quality control on alignment files
+// -----------------------------------------------------------------------------
 if (!params.rseqc.skip) {
   process gtftobed {
     cache params.caching
@@ -284,10 +387,9 @@ if (!params.rseqc.skip) {
 
     script:
     """
-    python $PWD/scripts/gfftobed.py $gtf > out.bed
+    python $PWD/scripts/rseqc/gfftobed.py $gtf > out.bed
     """
   }
-
   process rseqc {
     cache params.caching
     tag "$sampleid"
@@ -298,54 +400,70 @@ if (!params.rseqc.skip) {
     file bed from bed_files
 
     output:
-    file ("*.{txt,pdf,r,xls}") into rseqc_results
-
+    file ("*.{txt,pdf,r,xls}") into rseqc_stats
+    file ("*summary.txt") into rseqc_results
+    
     script:
     template 'rseqc.sh'
   }
 } else {
   Channel.from().set {rseqc_results}
 }
+// -----------------------------------------------------------------------------
 
+
+// -----------------------------------------------------------------------------
+// HTSEQ - Quantification method for generation raw counts
+// -----------------------------------------------------------------------------
 if (params.quantifier == 'htseq') {
   process htseq {
-  cache params.caching    
-  tag "$sampleid"
-  publishDir "${params.outdir}/${sampleid}/htseq", mode: 'copy'
+    cache params.caching    
+    tag "$sampleid"
+    publishDir "${params.outdir}/${sampleid}/htseq", mode: 'copy'
 
-  input:
-  set sampleid, file(bamfiles) from bam_stringtie1
-  file gtf from file(params.gtf)
+    input:
+    set sampleid, file(bamfiles) from bam_stringtie1
+    file gtf from file(params.gtf)
 
-  output:
-  file '*counts.txt' into counts
-  stdout into quant_results
+    output:
+    file '*counts.txt' into counts
+    stdout into quant_results
 
-  script:
-  template 'htseq.sh'
+    script:
+    template 'htseq.sh'
   }
 }
+// -----------------------------------------------------------------------------
 
+
+// -----------------------------------------------------------------------------
+// FEATURECOUNTS - Quantification method for generation raw counts
+// -----------------------------------------------------------------------------
 else if (params.quantifier == 'featurecounts') {
   process featurecounts {
-  cache params.caching    
-  tag "$sampleid"
-  publishDir "${params.outdir}/${sampleid}/featurecounts", mode: 'copy'
+    cache params.caching    
+    tag "$sampleid"
+    publishDir "${params.outdir}/${sampleid}/featurecounts", mode: 'copy'
 
-  input:
-  set sampleid, file(bamfiles) from bam_stringtie1
-  file gtf from file(params.gtf)
+    input:
+    set sampleid, file(bamfiles) from bam_stringtie1
+    file gtf from file(params.gtf)
 
-  output:
-  file '*counts.txt' into quant_results
+    output:
+    file '*counts.txt' into counts
+    stdout into quant_results
 
-  script:
-  template 'featurecounts.sh'
+    script:
+    template 'featurecounts.sh'
   }
 }
+// -----------------------------------------------------------------------------
 
+
+// -----------------------------------------------------------------------------
+// STRINGTIE - Quantification method for generation normalized counts
+// -----------------------------------------------------------------------------
 else {
-  // STRINGTIE
   process stringtie {
     cache params.caching    
     tag "$sampleid"
@@ -412,8 +530,50 @@ else {
     script:
     String files = abundances.flatten().join(' ')
     """
-    python $PWD/scripts/aggregator.py $files
+    python $PWD/scripts/expression/normalize_counts.py $files
     """
+  }
+}
+
+if (params.quantifier == 'htseq' || params.quantifier == 'featurecounts') {
+  process expression_matrix {
+    cache params.caching    
+    publishDir "${params.outdir}/expression_matrix", mode: 'copy'
+
+    input:
+    val counts_files from counts.toList()
+
+    output:
+    file '*expression_matrix.txt' into expression_matrix
+
+    script:
+    String files = counts_files.flatten().join(' ')
+    if (params.expression_set) {
+      """
+      python $PWD/scripts/expression/create_matrix.py -p ${params.phenotypes} ${params.quantifier} ${files}
+      """
+    } else {
+      """
+      python $PWD/scripts/expression/create_matrix.py ${params.quantifier} ${files}
+      """
+    }
+  }
+  if (params.expression_set) {
+    process expression_set {
+      cache params.caching    
+      publishDir "${params.outdir}/expression_set", mode: 'copy'
+
+      input:
+      file matrix from expression_matrix
+
+      output:
+      file '*expression_set.rds' into expression_set
+
+      script:
+      """
+      Rscript $PWD/scripts/expression/create_expressionset.R ${matrix} ${params.phenotypes} ${params.metadata}
+      """
+    }
   }
 }
 
@@ -428,6 +588,7 @@ if (!params.multiqc.skip) {
     file ('*') from fastqc_results.flatten().toList()
     file ('*') from quant_results.flatten().toList()
     file ('*') from rseqc_results.flatten().toList()
+    file ('*') from '${params.outdir}/logs/${params.aligner}'
 
     output:
     file "*report.html"
