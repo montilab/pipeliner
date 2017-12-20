@@ -450,47 +450,29 @@ if (!params.rseqc.skip) {
 
 // -----------------------------------------------------------------------------
 // HTSEQ - Quantification method for generation raw counts
-// -----------------------------------------------------------------------------
-if (params.quantifier == 'htseq') {
-  process htseq {
-    cache params.caching    
-    tag "$sampleid"
-    publishDir "${params.outdir}/${sampleid}/htseq", mode: 'copy'
-
-    input:
-    set sampleid, file(bamfiles) from bam_stringtie1
-    file gtf from file(params.gtf)
-
-    output:
-    file '*counts.txt' into counts
-    stdout into quant_results
-
-    script:
-    template 'htseq.sh'
-  }
-}
-// -----------------------------------------------------------------------------
-
-
-// -----------------------------------------------------------------------------
 // FEATURECOUNTS - Quantification method for generation raw counts
 // -----------------------------------------------------------------------------
-else if (params.quantifier == 'featurecounts') {
-  process featurecounts {
+if (params.quantifier == 'htseq' || params.quantifier == 'featurecounts') {
+  process counting {
     cache params.caching    
     tag "$sampleid"
-    publishDir "${params.outdir}/${sampleid}/featurecounts", mode: 'copy'
+    publishDir "${params.outdir}/${sampleid}/${params.quantifier}", mode: 'copy'
 
     input:
-    set sampleid, file(bamfiles) from bam_stringtie1
+    set sampleid, file(bamfiles) from bam_counts
     file gtf from file(params.gtf)
 
     output:
+    file '*'
     file '*counts.txt' into counts
     stdout into quant_results
 
     script:
-    template 'featurecounts.sh'
+    if (params.quantifier == 'htseq') {
+      template 'htseq.sh'
+    } else {
+      template 'featurecounts.sh'
+    }
   }
 }
 // -----------------------------------------------------------------------------
