@@ -116,12 +116,48 @@ log.info "Current home  : $HOME"
 log.info "Current path  : $PWD"
 log.info "===================================="
 
-
 // -----------------------------------------------------------------------------
 //              PRE-PIPELINE FASTQC
 // -----------------------------------------------------------------------------
 
+if (!params.from_bam) {
+  if (params.pre_fastqc) {
+    process pre_fastqc {
+      cache params.caching
+      tag "$sampleid"
+      publishDir "${params.outdir}/pre_fastqc", mode: 'copy'
 
+      input:
+      set sampleid, reads from reads_fastqc
+
+      output:
+      set sampleid, '*_fastqc.{zip,html}' into pre_fastqc_results
+
+      script:
+      if (params.paired){
+          template 'fastqc/paired.sh'
+      } else {
+        template 'fastqc/single.sh'
+      }
+    }
+    process pre_multiqc {
+      cache params.caching
+      publishDir "${params.outdir}/report/pre_pipeliner", mode: 'copy'
+
+      input:
+      file ('*') from pre_fastqc_results.flatten().toList()
+
+      output:
+      file "*data"
+      file "*report.html"
+
+      script:
+      """
+      multiqc ${params.outdir}/pre_fastqc
+      """
+    }
+  }
+}
 
 // -----------------------------------------------------------------------------
 //                BEGIN PIPELINE
