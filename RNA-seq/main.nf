@@ -142,7 +142,7 @@ if (!params.from_bam) {
     }
     process pre_multiqc {
       cache params.caching
-      publishDir "${params.outdir}/report/pre_pipeliner", mode: 'copy'
+      publishDir "${params.outdir}/reports/pre_pipeliner", mode: 'copy'
 
       input:
       file ('*') from pre_fastqc_results.flatten().toList()
@@ -413,7 +413,7 @@ if (!params.rseqc.skip) {
   process gtftobed {
     cache params.caching
     tag "$gtf"
-    publishDir "${params.outdir}/bed_files", mode: 'copy'
+    publishDir "${params.outdir}/rseqc", mode: 'copy'
 
     input:
     file gtf from gtf_mapping
@@ -423,20 +423,20 @@ if (!params.rseqc.skip) {
 
     script:
     """
-    python $PWD/scripts/rseqc/gfftobed.py $gtf > out.bed
+    python $PWD/scripts/rseqc/gfftobed.py ${gtf} > ${gtf}.bed
     """
   }
   process rseqc {
     cache params.caching
     tag "$sampleid"
-    publishDir "${params.outdir}/$sampleid/rseqc", mode: 'copy'
+    publishDir "${params.outdir}/${sampleid}/rseqc", mode: 'copy'
 
     input:
     set sampleid, file(bamfiles) from bam_rseqc
     file bed from bed_files
 
     output:
-    file ("*.{txt,pdf,r,xls}") into rseqc_stats
+    file ("*.{txt,pdf,r,xls}")
     file ("*summary.txt") into rseqc_results
     
     script:
@@ -617,7 +617,7 @@ if (!params.multiqc.skip) {
   // MULTIQC
   process multiqc {
     cache params.caching
-    publishDir "${params.outdir}/multiqc_files", mode: 'copy'
+    publishDir "${params.outdir}/reports/post_pipeliner", mode: 'copy'
 
     input:
     file ('*') from trimgalore_results.flatten().toList()
