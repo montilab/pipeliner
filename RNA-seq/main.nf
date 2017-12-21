@@ -103,11 +103,8 @@ if (params.paired) {
   log.info "Read Type      : single-end"
 }
 log.info "Aligner        : ${params.aligner}"
-if (params.pre_indexed) {
-  log.info "Index        : ${params.index}"
-}
+
 log.info "Quantifier     : ${params.quantifier}"
-log.info "Save Reference : ${params.save_reference}"
 log.info "Save Temporary : ${params.save_temps}"
 
 log.info "===================================="
@@ -232,91 +229,57 @@ if (!params.from_bam) {
 
 // -----------------------------------------------------------------------------
 // HISAT - A method for alignment reads to a reference and annotation file
+// STAR - A method for alignment reads to a reference and annotation file
 // -----------------------------------------------------------------------------
-  if (params.aligner == 'hisat' && !params.index && file(params.fasta)) {
-    process hisat_indexing {
+  if (params.aligner == 'hisat' || params.aligner == 'star') {
+    process indexing {
       cache params.caching
       tag "$fasta"
-      publishDir path: "${params.outdir}/hisat_files", saveAs: {params.save_reference ? it : null}, mode: 'copy'
+      publishDir path: "${params.outdir}/${params.aligner}", mode: 'copy'
 
       input:
       file fasta from fasta_indexing
       file gtf from gtf_indexing
 
       output:
-      file hisat_index into hisat_index
+      file index into index
 
       script:
-      template 'hisat/indexing.sh'
+      if (params.aligner == 'hisat') {
+        template 'hisat/indexing.sh'
+      } else if (params.aligner == 'star') {
+        template 'star/indexing.sh'
+      }
     }
   }
-  if (params.aligner == 'hisat') {
-    process hisat_mapping {
+  if (params.aligner == 'hisat' || params.aligner == 'star') {
+    process mapping {
       cache params.caching    
       tag "$sampleid"
       scratch = true
 
       input:
-      file index from hisat_index
+      file index from index
       file gtf from gtf_mapping
       set sampleid, file (reads:'*') from trimmed_reads
 
       output:
       set sampleid, file("*.bam") into bam_files, bam_counts, bam_stringtie1, bam_stringtie2, bam_rseqc
-      set sampleid, '*.log' into alignment_logs
+      set sampleid, '*.{log,out}' into alignment_logs
 
       script:
-      if (params.paired){
-          template 'hisat/mapping/paired.sh'
-      } else {
-        template 'hisat/mapping/single.sh'
+      if (params.aligner == 'hisat') {
+        if (params.paired){
+            template 'hisat/mapping/paired.sh'
+        } else {
+          template 'hisat/mapping/single.sh'
+        }
+      } else if (params.aligner == 'star') {
+        template 'star/mapping.sh'
       }
     }
   }
 // -----------------------------------------------------------------------------
-
-
-// -----------------------------------------------------------------------------
-// STAR - A method for alignment reads to a reference and annotation file
-// -----------------------------------------------------------------------------
-  if (params.aligner == 'star' && !params.index && file(params.fasta)) {
-    process star_indexing {
-      cache params.caching
-      tag "$fasta"
-      publishDir path: "${params.outdir}/star_files", saveAs: {params.save_reference ? it : null}, mode: 'copy'
-
-      input:
-      file fasta from fasta_indexing
-      file gtf from gtf_indexing
-
-      output:
-      file "star_index" into star_index
-
-      script:
-      template 'star/indexing.sh'
-    }
-  }
-  if (params.aligner == 'star') {
-    process star_mapping {
-      cache params.caching    
-      tag "$sampleid"
-      scratch = true
-
-      input:
-      file index from star_index
-      file gtf from gtf_mapping
-      set sampleid, file (reads:'*') from trimmed_reads
-
-      output:
-      set sampleid, file("*.bam") into bam_files, bam_counts, bam_stringtie1, bam_stringtie2, bam_rseqc
-      set sampleid, '*.out' into alignment_logs
-
-      script:
-      template 'star/mapping.sh'
-    }
-  }
-// -----------------------------------------------------------------------------
-
 
 // -----------------------------------------------------------------------------
 // Writes alignment logs to a specific logging directory
@@ -449,8 +412,8 @@ if (!params.rseqc.skip) {
 
 
 // -----------------------------------------------------------------------------
-// HTSEQ - Quantification method for generation raw counts
-// FEATURECOUNTS - Quantification method for generation raw counts
+// HTSEQ - Quantification method for generating raw counts
+// FEATURECOUNTS - Quantification method for generating raw counts
 // -----------------------------------------------------------------------------
 if (params.quantifier == 'htseq' || params.quantifier == 'featurecounts') {
   process counting {
@@ -479,7 +442,7 @@ if (params.quantifier == 'htseq' || params.quantifier == 'featurecounts') {
 
 
 // -----------------------------------------------------------------------------
-// STRINGTIE - Quantification method for generation normalized counts
+// STRINGTIE - Quantification method for generating normalized counts
 // -----------------------------------------------------------------------------
 else {
   process stringtie {
