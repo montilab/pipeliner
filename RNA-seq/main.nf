@@ -49,7 +49,7 @@ if (!params.from_bam) {
   }
   if (!params.check_reads.skip) {
     process check_reads {
-      cache params.caching
+      cache "deep"
       tag "$sampleid"
 
       input:
@@ -91,8 +91,11 @@ log.info " P I P E L I N E R  ~  v${version}"
 
 log.info "===================================="
 log.info "Reads          : ${params.reads}"
+log.info "Alignments     : ${params.alignments}"
 log.info "Reference      : ${params.fasta}"
 log.info "Annotation     : ${params.gtf}"
+log.info "Phenotypes     : ${params.phenotypes}"
+log.info "Metadata       : ${params.metadata}"
 log.info "Input Dir      : ${params.indir}"
 log.info "Output Dir     : ${params.outdir}"
 
@@ -103,10 +106,7 @@ if (params.paired) {
   log.info "Read Type      : single-end"
 }
 log.info "Aligner        : ${params.aligner}"
-
 log.info "Quantifier     : ${params.quantifier}"
-log.info "Save Temporary : ${params.save_temps}"
-
 log.info "===================================="
 log.info "Current user  : $USER"
 log.info "Current home  : $HOME"
@@ -120,7 +120,7 @@ log.info "===================================="
 if (!params.from_bam) {
   if (params.pre_fastqc) {
     process pre_fastqc {
-      cache params.caching
+      cache "deep"
       tag "$sampleid"
       publishDir "${params.outdir}/pre_fastqc", mode: 'copy'
 
@@ -138,7 +138,7 @@ if (!params.from_bam) {
       }
     }
     process pre_multiqc {
-      cache params.caching
+      cache "deep"
       publishDir "${params.outdir}/reports/pre_pipeliner", mode: 'copy'
 
       input:
@@ -167,7 +167,7 @@ if (!params.from_bam) {
 // -----------------------------------------------------------------------------
   if (!params.trim_galore.skip) {
     process trim_galore {
-      cache params.caching
+      cache "deep"
       tag "$sampleid"
       publishDir "${params.outdir}/${sampleid}/trimgalore", mode: 'copy'
 
@@ -204,7 +204,7 @@ if (!params.from_bam) {
 // -----------------------------------------------------------------------------
   if (!params.fastqc.skip) {
     process fastqc {
-      cache params.caching
+      cache "deep"
       tag "$sampleid"
       publishDir "${params.outdir}/${sampleid}/fastqc", mode: 'copy'
 
@@ -233,7 +233,7 @@ if (!params.from_bam) {
 // -----------------------------------------------------------------------------
   if (params.aligner == 'hisat' || params.aligner == 'star') {
     process indexing {
-      cache params.caching
+      cache "deep"
       tag "$fasta"
       publishDir path: "${params.outdir}/${params.aligner}", mode: 'copy'
 
@@ -254,7 +254,7 @@ if (!params.from_bam) {
   }
   if (params.aligner == 'hisat' || params.aligner == 'star') {
     process mapping {
-      cache params.caching    
+      cache "deep"    
       tag "$sampleid"
       scratch = true
 
@@ -285,7 +285,7 @@ if (!params.from_bam) {
 // Writes alignment logs to a specific logging directory
 // -----------------------------------------------------------------------------
   process write_alignment_logs {
-    cache params.caching    
+    cache "deep"    
     tag "$sampleid"
     publishDir "${params.outdir}/logs/${params.aligner}", mode: 'copy' 
 
@@ -312,11 +312,11 @@ if (!params.from_bam) {
 // -----------------------------------------------------------------------------
 // Saves alignment files and writes paths to a csv file
 // -----------------------------------------------------------------------------
-  if (params.save_alignments){
+  if (params.bams.save){
     process save_alignments {
-      cache params.caching    
+      cache "deep"   
       tag "$sampleid"
-      publishDir "${params.outdir}/alignments", mode: 'copy'
+      publishDir "${params.bams.path}", mode: 'copy'
 
       input:
       set sampleid, file (alignments:'*') from bam_files
@@ -338,26 +338,26 @@ if (!params.from_bam) {
       stdout into clearing_out
 
       script:
-      String outpath = "${params.outdir}/alignments/alignments.csv"
+      String outpath = "${params.bams.path}/alignments.csv"
       """
-      rm -rf ${params.outdir}/alignments/alignments.csv
-      touch ${params.outdir}/alignments/alignments.csv
+      rm -rf ${params.bams.path}/alignments.csv
+      touch ${params.bams.path}/alignments.csv
       echo Sample_Name,Alignment >> ${outpath}
       """   
     }
     process write_alignment_paths {
-      cache params.caching    
+      cache "deep"    
       tag "$sampleid"
-      publishDir "${params.outdir}/alignments", mode: 'copy'
+      publishDir "${params.bams.path}", mode: 'copy'
 
       input:
       set sampleid, file (alignments:'*') from saved_alignments
       file ('*') from clearing_out.flatten().toList()
 
       script:
-      String outpath = "${params.outdir}/alignments/alignments.csv"
+      String outpath = "${params.bams.path}/alignments.csv"
       """
-      echo ${sampleid},${params.outdir}/alignments/${sampleid}.bam >> ${outpath}
+      echo ${sampleid},${params.bams.path}/${sampleid}.bam >> ${outpath}
       """
     }
   }
@@ -374,7 +374,7 @@ if (!params.from_bam) {
 // -----------------------------------------------------------------------------
 if (!params.rseqc.skip) {
   process gtftobed {
-    cache params.caching
+    cache "deep"
     tag "$gtf"
     publishDir "${params.outdir}/rseqc", mode: 'copy'
 
@@ -390,7 +390,7 @@ if (!params.rseqc.skip) {
     """
   }
   process rseqc {
-    cache params.caching
+    cache "deep"
     tag "$sampleid"
     publishDir "${params.outdir}/${sampleid}/rseqc", mode: 'copy'
 
@@ -417,7 +417,7 @@ if (!params.rseqc.skip) {
 // -----------------------------------------------------------------------------
 if (params.quantifier == 'htseq' || params.quantifier == 'featurecounts') {
   process counting {
-    cache params.caching    
+    cache "deep"    
     tag "$sampleid"
     publishDir "${params.outdir}/${sampleid}/${params.quantifier}", mode: 'copy'
 
@@ -446,7 +446,7 @@ if (params.quantifier == 'htseq' || params.quantifier == 'featurecounts') {
 // -----------------------------------------------------------------------------
 else {
   process stringtie {
-    cache params.caching    
+    cache "deep"    
     tag "$sampleid"
     publishDir "${params.outdir}/${sampleid}/stringtie1", mode: 'copy'
 
@@ -462,7 +462,7 @@ else {
   }
 
   process stringtie_merge {
-    cache params.caching
+    cache "deep"
     publishDir "${params.outdir}/stringtiemerge", mode: 'copy'
 
     input:
@@ -498,7 +498,7 @@ else {
 
   // AGGREGATE COUNTS
   process aggregate_counts {
-    cache params.caching
+    cache "deep"
     publishDir "${params.outdir}/counts", mode: "copy"
 
     input:
@@ -518,7 +518,7 @@ else {
 
 if (params.quantifier == 'htseq' || params.quantifier == 'featurecounts') {
   process expression_matrix {
-    cache params.caching    
+    cache "deep"    
     publishDir "${params.outdir}/expression_matrix", mode: 'copy'
 
     input:
@@ -541,7 +541,7 @@ if (params.quantifier == 'htseq' || params.quantifier == 'featurecounts') {
   }
   if (params.expression_set) {
     process expression_set {
-      cache params.caching    
+      cache "deep"    
       publishDir "${params.outdir}/expression_set", mode: 'copy'
 
       input:
@@ -561,7 +561,7 @@ if (params.quantifier == 'htseq' || params.quantifier == 'featurecounts') {
 if (!params.multiqc.skip) {
   // MULTIQC
   process multiqc {
-    cache params.caching
+    cache "deep"
     publishDir "${params.outdir}/reports/post_pipeliner", mode: 'copy'
 
     input:
