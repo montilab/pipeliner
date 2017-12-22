@@ -2,14 +2,15 @@ suppressPackageStartupMessages(library(Biobase))
 
 args <- commandArgs(trailingOnly = TRUE)
 eFile <- args[1]
-pFile <- args[2]
-mFile <- args[3]
+fFile <- args[2]
+pFile <- args[3]
 
-exprs <- as.matrix(read.table(eFile, header=TRUE, sep="\t", row.names=1, as.is=TRUE))
+eMatrix <- as.matrix(read.table(eFile, header=TRUE, sep="\t", row.names=1, as.is=TRUE))
+fData <- read.table(fFile, row.names=1, header=TRUE, sep="\t")
 pData <- read.table(pFile, row.names=1, header=TRUE, sep="\t")
-mData <- read.table(mFile, row.names=1, header=TRUE, sep="\t")
 
-phenoData <- new("AnnotatedDataFrame", data=pData, varMetadata=mData)
-exampleSet <- ExpressionSet(assayData=exprs, phenoData=phenoData)
+featureData <- new("AnnotatedDataFrame", data=fData)
+phenoData <- new("AnnotatedDataFrame", data=pData)
+exampleSet <- ExpressionSet(assayData=eMatrix, phenoData=phenoData, featureData=featureData)
 
 saveRDS(exampleSet, "expression_set.rds")

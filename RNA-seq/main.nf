@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 
 // Pipeline version
-version = 2.4
+version = 2.5
 
 // ---------------------------------------------//
 //                  COPY CONFIG                 //
@@ -84,7 +84,7 @@ if (params.fasta) {
 if (params.gtf) {
   Channel
     .fromPath(params.gtf).ifEmpty {exit 1, "GTF annotation file not found: ${params.gtf}"}
-    .toList().into {gtf_indexing; gtf_mapping;}
+    .toList().into {gtf_indexing; gtf_mapping; gtf_parsing;}
 }
 
 log.info " P I P E L I N E R  ~  v${version}"
@@ -95,7 +95,6 @@ log.info "Alignments     : ${params.alignments}"
 log.info "Reference      : ${params.fasta}"
 log.info "Annotation     : ${params.gtf}"
 log.info "Phenotypes     : ${params.phenotypes}"
-log.info "Metadata       : ${params.metadata}"
 log.info "Input Dir      : ${params.indir}"
 log.info "Output Dir     : ${params.outdir}"
 
@@ -525,7 +524,8 @@ if (params.quantifier == 'htseq' || params.quantifier == 'featurecounts') {
     val counts_files from counts.toList()
 
     output:
-    file '*expression_matrix.txt' into expression_matrix
+    file '*.txt'
+    file 'expression_matrix.txt' into matrix_parsing, expression_matrix
 
     script:
     String files = counts_files.flatten().join(' ')
@@ -540,19 +540,35 @@ if (params.quantifier == 'htseq' || params.quantifier == 'featurecounts') {
     }
   }
   if (params.expression_set) {
+    process expression_features {
+      cache "deep"    
+      publishDir "${params.outdir}/expression_matrix", mode: 'copy'
+
+      input:
+      file gtf from gtf_parsing
+      file matrix from matrix_parsing
+
+      output:
+      file 'features.txt' into features
+
+      script:
+      """
+      python $PWD/scripts/expression/parse_gtf.py ${gtf} ${matrix}
+      """     
+    }
     process expression_set {
       cache "deep"    
       publishDir "${params.outdir}/expression_set", mode: 'copy'
 
       input:
       file matrix from expression_matrix
-
+      file features from features
       output:
       file '*expression_set.rds' into expression_set
 
       script:
       """
-      Rscript $PWD/scripts/expression/create_expressionset.R ${matrix} ${params.phenotypes} ${params.metadata}
+      Rscript $PWD/scripts/expression/create_expressionset.R ${matrix} ${features} ${params.phenotypes}
       """
     }
   }

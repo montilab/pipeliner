@@ -3,6 +3,7 @@
 
 import pandas as pd
 import sys
+import os
 
 def aggregate_counts(files, method):
     """
@@ -68,6 +69,7 @@ if __name__ == '__main__':
         phenotypes = sys.argv[2]
         method     = sys.argv[3]
         files      = sys.argv[4:]
+        os.popen('cp {0} phenotypes.txt'.format(phenotypes))  
         df = aggregate_counts(files, method)
         df = reindex_samples(df, phenotypes)
 
