@@ -439,7 +439,6 @@ if (params.quantifier == 'htseq' || params.quantifier == 'featurecounts') {
 }
 // -----------------------------------------------------------------------------
 
-
 // -----------------------------------------------------------------------------
 // STRINGTIE - Quantification method for generating normalized counts
 // -----------------------------------------------------------------------------
@@ -447,7 +446,7 @@ else {
   process stringtie {
     cache "deep"    
     tag "$sampleid"
-    publishDir "${params.outdir}/${sampleid}/stringtie1", mode: 'copy'
+    publishDir "${params.outdir}/${sampleid}/stringtie", mode: 'copy'
 
     input:
     set sampleid, file(bamfiles) from bam_stringtie1
@@ -459,10 +458,9 @@ else {
     script:
     template 'stringtie1.sh'
   }
-
   process stringtie_merge {
     cache "deep"
-    publishDir "${params.outdir}/stringtiemerge", mode: 'copy'
+    publishDir "${params.outdir}/stringtie", mode: 'copy'
 
     input:
     val gtfs from gtf_list.toList()
@@ -474,103 +472,84 @@ else {
     script:
     template 'gtf_merging.sh'
   }
-
   bam_stringtie2
     .combine(merged_gtf)
     .set {stringtie_input}
-
   process stringtie_eb {
     tag "$sampleid"
-    publishDir "${params.outdir}/${sampleid}/stringtie2", mode: 'copy'
+    publishDir "${params.outdir}/${sampleid}/stringtie", mode: 'copy'
 
     input:
     set sampleid, file(bamfiles), file(mergedgtf) from stringtie_input
 
     output:
     file '*.gtf'
-    file '*.gene_abund.txt' into gene_abund
+    file '*.gene_abund.txt' into counts
     file '*.txt' into quant_results
 
     script:
     template 'stringtie2.sh'
   }
+}
+// -----------------------------------------------------------------------------
 
-  // AGGREGATE COUNTS
-  process aggregate_counts {
-    cache "deep"
-    publishDir "${params.outdir}/counts", mode: "copy"
+// -----------------------------------------------------------------------------
+// EXPRESSION - Creation and ouput of expression matrix and expression set
+// -----------------------------------------------------------------------------
+process expression_matrix {
+  cache "deep"    
+  publishDir "${params.outdir}/expression_matrix", mode: 'copy'
 
-    input:
-    val abundances from gene_abund.toList()
+  input:
+  val counts_files from counts.toList()
 
-    output:
-    file "fpkm.csv" into fpkm_results
-    file "tpm.csv" into tpm_results
+  output:
+  file '*.txt'
+  file '*expression_matrix.txt' into matrix_parsing, expression_matrix
 
-    script:
-    String files = abundances.flatten().join(' ')
+  script:
+  String files = counts_files.flatten().join(' ')
+  if (params.expression_set) {
     """
-    python $PWD/scripts/expression/normalize_counts.py $files
+    python $PWD/scripts/expression/create_matrix.py -p ${params.phenotypes} ${params.quantifier} ${files}
+    """
+  } else {
+    """
+    python $PWD/scripts/expression/create_matrix.py ${params.quantifier} ${files}
     """
   }
 }
-
-if (params.quantifier == 'htseq' || params.quantifier == 'featurecounts') {
-  process expression_matrix {
+if (params.expression_set) {
+  process expression_features {
     cache "deep"    
     publishDir "${params.outdir}/expression_matrix", mode: 'copy'
 
     input:
-    val counts_files from counts.toList()
+    file gtf from gtf_parsing
+    file matrix from matrix_parsing
 
     output:
-    file '*.txt'
-    file 'expression_matrix.txt' into matrix_parsing, expression_matrix
+    file 'features.txt' into features
 
     script:
-    String files = counts_files.flatten().join(' ')
-    if (params.expression_set) {
-      """
-      python $PWD/scripts/expression/create_matrix.py -p ${params.phenotypes} ${params.quantifier} ${files}
-      """
-    } else {
-      """
-      python $PWD/scripts/expression/create_matrix.py ${params.quantifier} ${files}
-      """
-    }
+    """
+    python $PWD/scripts/expression/parse_gtf.py ${gtf} ${matrix}
+    """     
   }
-  if (params.expression_set) {
-    process expression_features {
-      cache "deep"    
-      publishDir "${params.outdir}/expression_matrix", mode: 'copy'
+  process expression_set {
+    cache "deep"    
+    publishDir "${params.outdir}/expression_set", mode: 'copy'
 
-      input:
-      file gtf from gtf_parsing
-      file matrix from matrix_parsing
+    input:
+    file matrix from expression_matrix
+    file features from features
+    output:
+    file '*expression_set.rds' into expression_set
 
-      output:
-      file 'features.txt' into features
-
-      script:
-      """
-      python $PWD/scripts/expression/parse_gtf.py ${gtf} ${matrix}
-      """     
-    }
-    process expression_set {
-      cache "deep"    
-      publishDir "${params.outdir}/expression_set", mode: 'copy'
-
-      input:
-      file matrix from expression_matrix
-      file features from features
-      output:
-      file '*expression_set.rds' into expression_set
-
-      script:
-      """
-      Rscript $PWD/scripts/expression/create_expressionset.R ${matrix} ${features} ${params.phenotypes}
-      """
-    }
+    script:
+    """
+    Rscript $PWD/scripts/expression/create_expressionset.R ${matrix} ${features} ${params.phenotypes}
+    """
   }
 }
 
@@ -596,7 +575,7 @@ if (!params.multiqc.skip) {
   }
 }
 
-// ---------------------------------------------//
+// -----------------------------------------------------------------------------
 
 workflow.onComplete {
   println (workflow.success ? "Success: Pipeline Completed!" : "Error: Something went wrong.")

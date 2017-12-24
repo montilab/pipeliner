@@ -11,6 +11,7 @@ def aggregate_counts(files, method):
 
     Args:
         Param #1 (list): List of paths to count files
+        Param #1 (str): Quantification method
     Returns:
         Pandas dataframe
     """      
@@ -48,6 +49,37 @@ def aggregate_counts(files, method):
     df = pd.DataFrame(counts)
     return df
 
+def normalize_counts(files):
+    """
+    Merges normalized count files into a single pandas dataframe
+
+    Args:
+        Param #1 (list): List of paths to normalized count files
+    Returns:
+        Pandas dataframe
+    """      
+    fpkms, tpms = {}, {}
+    for filename in files:
+        sample = filename.split('/')[-1].split('.')[0]
+        with open(filename) as infile:
+            for l, line in enumerate(infile):
+                if l > 0:
+                    stripped = line.strip('\n')
+                    splitted = stripped.split('\t')
+                    gene = splitted[0]
+                    fpkm = splitted[-2]
+                    tpm = splitted[-1]
+                    try:
+                        fpkms[sample][gene] = fpkm
+                        tpms[sample][gene] = tpm
+                    except KeyError:
+                        fpkms[sample] = {gene: fpkm}
+                        tpms[sample] = {gene: tpm}
+
+    fpkms = pd.DataFrame(fpkms)
+    tpms = pd.DataFrame(tpms)
+    return fpkms, tpms
+
 def reindex_samples(counts, phenotypes):
     """
     Reorders columns in count matrix based on the
@@ -70,12 +102,40 @@ if __name__ == '__main__':
         method     = sys.argv[3]
         files      = sys.argv[4:]
         os.popen('cp {0} phenotypes.txt'.format(phenotypes))  
-        df = aggregate_counts(files, method)
-        df = reindex_samples(df, phenotypes)
+        
+        if method == 'htseq' or method == 'featurecounts':
+            df = aggregate_counts(files, method)
+            df = reindex_samples(df, phenotypes)
+            df.to_csv('count_expression_matrix.txt', sep='\t')
+
+        elif method == 'stringtie':
+            fpkms, tpms = normalize_counts(files)
+            fpkms = reindex_samples(fpkms, phenotypes)
+            tpms = reindex_samples(tpms, phenotypes)
+            fpkms.to_csv('fpkm_expression_matrix.txt', sep='\t')
+            tpms.to_csv('tpm_expression_matrix.txt', sep='\t')
 
     else:
         method     = sys.argv[1]
         files      = sys.argv[2:]
-        df = aggregate_counts(files, method)
 
-    df.to_csv('expression_matrix.txt', sep='\t')
+        if method == 'htseq' or method == 'featurecounts':
+            df = aggregate_counts(files, method)
+            df.to_csv('count_expression_matrix.txt', sep='\t')
+
+        elif method == 'stringtie':
+            fpkms, tpms = normalize_counts(files)
+            fpkms.to_csv('fpkm_expression_matrix.txt', sep='\t')
+            tpms.to_csv('tpm_expression_matrix.txt', sep='\t')
+
+
+
+
+
+
+
+
+
+
+
+
