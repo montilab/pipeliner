@@ -91,7 +91,8 @@ curl -s https://get.nextflow.io | bash
 │   ├── genome_annotation.gtf  [^]
 │   ├── genome_reference.fa    [^]
 │   ├── reads.csv              [*]
-│   └── alignments.csv         [*]
+│   ├── alignments.csv         [*]
+│   └── phenotypes.txt         [*]
 │
 ├── nextflow
 ├── main.nf                    
@@ -117,10 +118,11 @@ curl -s https://get.nextflow.io | bash
 ```text
 /data/reads.csv                | file detailing the global path/to/reads
 /data/alignments.csv           | file detailing the global path/to/alignments
+/data/phenotypes.txt           | file detailing the phenotype data used to create an expression set
 local.config                   | example parameters for local execution
 cluster.config                 | example parameters for cluster execution
 ```
-> You can start with read files or start from alignement files by specifying in one of the config files.  
+> You can start with read files or start from alignment files by specifying in one of the config files.  
 > Look at [reads.csv](https://github.com/montilab/pipeliner/blob/master/RNA-seq/ggal_data/ggal_reads.csv) or [alignments.csv](https://github.com/montilab/pipeliner/blob/master/RNA-seq/ggal_data/ggal_alignments.csv) examples to see how yours should be formatted.
 
 #### Other Files and Folders
@@ -147,11 +149,15 @@ fasta      = "${params.indir}/genome_reference.fa"
 gtf        = "${params.indir}/genome_annotation.gtf"
 reads      = "${params.indir}/ggal_reads.csv"
 alignments = "${params.indir}/ggal_alignments.csv"
+phenotypes = "${params.indir}/ggal_phenotypes.csv"
 
-aligner  = "star"       | choose aligning process ["star" or "hisat"]
-counter  = "stringtie"  | choose counting process ["stringtie" or "htseq" or "featurecounts"]
-paired   = true         | are reads paired or single end?
-from_bam = false        | start directly from alignment files?
+paired = true
+aligner = "star"
+bams.save = true        
+bams.path = "${params.outdir}/alignments"
+quantifier = "htseq"
+expression_set = true
+from_bam = false
 
 hisat_indexing.cpus = 1
 hisat_mapping.cpus  = 1
@@ -171,10 +177,13 @@ gtf        = "${params.indir}/genome_annotation.gtf"
 reads      = "${params.indir}/ggal_reads.csv"
 alignments = "${params.indir}/ggal_alignments.csv"
 
-aligner  = "star"       | choose aligning process ["star" or "hisat"]
-counter  = "stringtie"  | choose counting process ["stringtie" or "htseq" or "featurecounts"]
-paired   = true         | are reads paired or single end?
-from_bam = false        | start directly from alignment files?
+paired = true
+aligner = "star"
+bams.save = true        
+bams.path = "${params.outdir}/alignments"
+quantifier = "htseq"
+expression_set = true
+from_bam = false
 
 hisat_indexing.cpus = 16
 hisat_mapping.cpus  = 16
@@ -284,14 +293,13 @@ tail -f std.out
     ├── /sample_1
     │   ├── /trimgalore      | Trimmed Reads (.fq.gz) for sample_1
     │   ├── /fastqc          
-    │   ├── /star            | Alignment File (.bam) for sample_1
     │   ├── /rseqc          
     │   └── /stringtie
     │
-    ├── /counts              | Aggregated count matrices across all samples
-    ├── /star_files          | Star index used for alignment
-    ├── /multiqc_files       | Aggregated report across all samples
-    └── /stringtie
+    ├── /expression_matrix   | Aggregated count matrix
+    ├── /expression_set      | An expression set (.rds) object
+    ├── /reports             | Aggregated report across all samples
+    └── /logs                | Process-related logs
 ```
 
 ### Modifying Pipeliner
