@@ -1,0 +1,4 @@
+sample	genotype	treated	group
+ggal_alpha	wildtype	yes	control
+ggal_theta	bluetail	yes	test
+ggal_gamma	firetail	yes	test
