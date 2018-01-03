@@ -1,0 +1,2 @@
+cutadapt -a "ACGGGCTAATATTTATCGGTGGAGCATCACGATCTCGTAT" -e 0.25 --match-read-wildcards ${reads[0]} | \
+cutadapt -e 0.34 --match-read-wildcards --no-indels -m 15 -O 6 -n 1 -g "^CAGTCG" -g "^TGACTC" -g "^GCTAGA" -g "^ATCGAT" - > "${sampleid}_trimmed.fq" 2> cutadapt.log

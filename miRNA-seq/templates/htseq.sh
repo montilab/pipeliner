@@ -1,0 +1,1 @@
+samtools view ${bamfiles} | htseq-count - ${gtf} > '${sampleid}.counts.txt'
