@@ -94,4 +94,4 @@ Current path  : /Users/anthonyfederico/pipeliner/RNA-seq
 Success: Pipeline Completed!
 ```
 
-*Please refer to [reports](https://github.com/montilab/pipeliner/blob/master/docs/reports.md) for examples.*
+*Please refer to [reports](https://github.com/montilab/pipeliner/blob/master/docs/reports.md) for examples*
