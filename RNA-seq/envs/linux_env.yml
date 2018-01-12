@@ -1,6 +1,6 @@
 name: pipeliner
 channels:
-- anfederico
+- pipeliner
 - defaults
 dependencies:
 - bcftools=1.6=0
