@@ -16,32 +16,40 @@
 
 ## Quickstart
 *For more information, please refer to the [full documentation](https://github.com/montilab/pipeliner/blob/master/docs/documentation.md)*
-### Clone Repository and Download Nextflow Executable
 
+### Clone Repository
 ```bash
-git clone https://github.com/montilab/pipeliner
-cd pipeliner/RNA-seq
-curl -s https://get.nextflow.io | bash
+$ git clone https://github.com/montilab/pipeliner
 ```
 
 ### Create Conda Environment and Install Dependencies
-
-*Automatically*
 ```bash
-conda env create -f envs/{linux,osx}_env.yml 
-source activate pipeliner
+$ conda env create -f pipeliner/RNA-seq/envs/linux_env.yml
 ```
 
-*Manually*
 ```bash
-conda create -n pipeliner python=2.7
-source activate pipeliner
-conda install -c bioconda trim-galore fastqc star multiqc samtools rseqc stringtie hisat2 htseq subread
+$ conda env create -f pipeliner/RNA-seq/envs/osx_env.yml
+```
+
+### Activate Conda Environment
+```bash
+$ source activate pipeliner
+```
+
+### Update Local Paths
+```bash
+$ python pipeliner/scripts/paths.py
+```
+
+### Download Nextflow Executable
+```
+$ cd pipeliner/RNA-seq
+$ curl -s https://get.nextflow.io | bash
 ```
 
 ### Locally Run Example Data
 ```bash
-./nextflow main.nf -c local.config
+./nextflow main.nf -c nextflow.config
 ```
 
 ### Expected Output
