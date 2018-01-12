@@ -7,9 +7,10 @@ if __name__ == '__main__':
     '''
     Copies the config file with new local indir and outdir
     '''
+
     path_to_pipeliner = os.path.realpath(__file__)
     path_to_pipeliner = '/'.join(path_to_pipeliner.split('/')[:-2])
-
+    print('Updating local paths in {0}/RNA-seq/nextflow.config...'.format(path_to_pipeliner))
     with open('{0}/RNA-seq/temp.config'.format(path_to_pipeliner), 'w') as outfile:
         with open('{0}/RNA-seq/nextflow.config'.format(path_to_pipeliner), 'r') as infile:
             for line in infile:
@@ -27,6 +28,7 @@ if __name__ == '__main__':
     '''
     Updates reads.csv with local paths
     '''
+    print('Updating local paths in {0}/RNA-seq/ggal_data/ggal_reads.csv...'.format(path_to_pipeliner))
     subprocess.call(['rm', '-rf', '{0}/RNA-seq/ggal_data/ggal_reads.csv'.format(path_to_pipeliner)])
     with open('{0}/RNA-seq/ggal_data/ggal_reads.csv'.format(path_to_pipeliner), 'w') as outfile:
         outfile.write('Sample_Name,Read1,Read2\n')
@@ -36,8 +38,11 @@ if __name__ == '__main__':
     '''
     Updates alignments.csv with local paths
     '''
+    print('Updating local paths in {0}/RNA-seq/ggal_data/ggal_alignments.csv...'.format(path_to_pipeliner))
     subprocess.call(['rm', '-rf', '{0}/RNA-seq/ggal_data/ggal_alignments.csv'.format(path_to_pipeliner)])
     with open('{0}/RNA-seq/ggal_data/ggal_alignments.csv'.format(path_to_pipeliner), 'w') as outfile:
         outfile.write('Sample_Name,Alignment\n')
         for sample in ('ggal_alpha', 'ggal_theta', 'ggal_gamma'):
             outfile.write('{0},{1}/RNA-seq/ggal_data/alignments/{0}.bam\n'.format(sample, path_to_pipeliner))
+
+    print('Ready to run test data!')
