@@ -13,16 +13,12 @@ if __name__ == '__main__':
     with open('{0}/RNA-seq/temp.config'.format(path_to_pipeliner), 'w') as outfile:
         with open('{0}/RNA-seq/nextflow.config'.format(path_to_pipeliner), 'r') as infile:
             for line in infile:
-                
                 if line.lstrip().startswith('indir'):
                     outfile.write('  indir  = "{0}/RNA-seq/ggal_data"\n'.format(path_to_pipeliner))
-                
                 elif line.lstrip().startswith('outdir'): 
                     outfile.write('  outdir = "{0}/RNA-seq/ggal_results"\n'.format(path_to_pipeliner))
-                
                 else:
                     outfile.write(line)
-
 
     subprocess.call(['rm', '-rf', '{0}/RNA-seq/nextflow.config'.format(path_to_pipeliner)])
     subprocess.call(['mv', '{0}/RNA-seq/temp.config'.format(path_to_pipeliner),
