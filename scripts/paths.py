@@ -7,7 +7,6 @@ if __name__ == '__main__':
     '''
     Copies the config file with new local indir and outdir
     '''
-
     path_to_pipeliner = os.path.realpath(__file__)
     path_to_pipeliner = '/'.join(path_to_pipeliner.split('/')[:-2])
     print('Updating local paths in {0}/RNA-seq/nextflow.config...'.format(path_to_pipeliner))
