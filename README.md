@@ -9,7 +9,7 @@
 [![GitHub Issues](https://img.shields.io/github/issues/montilab/pipeliner.svg)](https://github.com/montilab/pipeliner/issues)
 
 ## Features   
-* Modular directory structure: It is designed to generate automated result directory based on the names of the samples and tools used to process them   
+* Modular directory structure: It is designed to generate automated result directory based on the names of the samples and tools used to process them.
 * Platform independent: It is bundled with an anaconda repository which contains pre-compiled tools as well as pre-built environments that can use used directly.   
 * Modular architecture: It allows the expert users to customize, modify processes, or add additional tools based on their needs.    
 * Automated job parallelization, job recovery, and reproducibility.
