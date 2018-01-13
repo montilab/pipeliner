@@ -1,1 +1,0 @@
-multiqc ${params.outdir} --force
