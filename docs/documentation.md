@@ -1,7 +1,6 @@
 # Pipeliner Documentation
 - [Prerequisites](#prerequisites)
   * [Test Nextflow](#test-nextflow)
-  * [Setup Conda](#setup-conda)
   * [Create Conda Environment](#create-conda-environment)
 - [Setting Up Pipeliner](#setting-up-pipeliner)
   * [Clone Repository and Download Nextflow Executable](#clone-repository-and-download-nextflow-executable)
@@ -35,33 +34,20 @@ curl -s https://get.nextflow.io | bash
 ./nextflow run hello
 ```
 
-### Setup Conda
-
-*Local Machine*  
-Conda is available through [Anaconda](https://www.continuum.io/downloads). Download the distribution pre-packaged with Python 2.7. If this is your first time working with conda, you may need to edit your configuration paths to ensure anaconda is invoked when calling `conda`.
-
-*Shared Computing Cluster (SCC)*  
-Enable conda by loading a pre-installed version of Anaconda with `module load anaconda2`. This will load the latest pre-installed version pre-packaged with Python 2.7. When referring to SCC commands in the documentation, keep in mind they are specific to [Boston University](https://www.bu.edu/tech/support/research/computing-resources/scc/).
-
 ### Create Conda Environment
+
+> Conda is available through [Anaconda](https://www.continuum.io/downloads). Download the distribution pre-packaged with Python 2.7. If this is your first time working with conda, you may need to edit your configuration paths to ensure anaconda is invoked when calling `conda`.
 
 *Linux Import*
 ```bash
-conda env create -f envs/linux_env.yml 
+conda env create -f pipeliner/RNA-seq/envs/linux_env.yml
 source activate pipeliner
 ```
 
 *Mac Import*
 ```bash
-conda env create -f envs/osx_env.yml 
+conda env create -f pipeliner/RNA-seq/envs/osx_env.yml
 source activate pipeliner
-```
-
-*Manually*
-```bash
-conda create -n pipeliner python=2.7
-source activate pipeliner
-conda install -c bioconda trim-galore fastqc star multiqc samtools rseqc stringtie hisat2 htseq subread
 ```
 
 ---
@@ -69,13 +55,13 @@ conda install -c bioconda trim-galore fastqc star multiqc samtools rseqc stringt
 # Setting Up Pipeliner
 
 ### Clone Repository and Download Nextflow Executable
-
+> You'll be running Nextflow in the directory you clone to, so choose a good spot!
 ```bash
 git clone https://github.com/montilab/pipeliner
+python pipeliner/scripts/paths.py
 cd pipeliner/RNA-seq
 curl -s https://get.nextflow.io | bash
 ```
-> You'll be running Nextflow in the directory you clone to, so choose a good spot!
 
 ### Pipeliner Structure Example
 ```text
@@ -99,6 +85,7 @@ curl -s https://get.nextflow.io | bash
 ├── local.config               [*]
 ├── cluster.config             [*]
 │
+├── /history
 ├── /templates
 └── /scripts
 ```
@@ -122,13 +109,14 @@ curl -s https://get.nextflow.io | bash
 local.config                   | example parameters for local execution
 cluster.config                 | example parameters for cluster execution
 ```
-> You can start with read files or start from alignment files by specifying in one of the config files.  
+> You can start with read files or start from alignment files by specifying in the config file.
 > Look at [reads.csv](https://github.com/montilab/pipeliner/blob/master/RNA-seq/ggal_data/ggal_reads.csv) or [alignments.csv](https://github.com/montilab/pipeliner/blob/master/RNA-seq/ggal_data/ggal_alignments.csv) examples to see how yours should be formatted.
 
 #### Other Files and Folders
 ```text
 nextflow                       | nextflow executable
 main.nf                        | nextflow pipeliner
+/history                       | history of timestamped config files used in previous runs
 /templates                     | shell scripts used by processes within pipeliner
 /scripts                       | other scritps used by processes within pipeliner
 ```
@@ -152,7 +140,7 @@ alignments = "${params.indir}/ggal_alignments.csv"
 phenotypes = "${params.indir}/ggal_phenotypes.csv"
 
 paired = true
-aligner = "star"
+aligner = "hisat"
 bams.save = true        
 bams.path = "${params.outdir}/alignments"
 quantifier = "htseq"
@@ -176,9 +164,10 @@ fasta      = "${params.indir}/genome_reference.fa"
 gtf        = "${params.indir}/genome_annotation.gtf"
 reads      = "${params.indir}/ggal_reads.csv"
 alignments = "${params.indir}/ggal_alignments.csv"
+phenotypes = "${params.indir}/ggal_phenotypes.txt"
 
 paired = true
-aligner = "star"
+aligner = "hisat"
 bams.save = true        
 bams.path = "${params.outdir}/alignments"
 quantifier = "htseq"
@@ -209,7 +198,7 @@ star_mapping.cpus   = 16
 
 ### Run Locally
 ```bash
-./nextflow main.nf -c local.config
+./nextflow main.nf -c nextflow.config
 ```
 
 ### Expected Output
@@ -267,7 +256,7 @@ If there is an error with your workflow, you can fix it and return to where you 
 File: run.qsub
 
 #!/bin/sh
-./nextflow main.nf -c cluster.config
+./nextflow main.nf -c nextflow.config
 ```
 *Run with* `qsub -P <project> -l h_rt=96:00:00 -e std.err -o std.out run.qsub`  
 
@@ -292,13 +281,17 @@ tail -f std.out
     │
     ├── /sample_1
     │   ├── /trimgalore      | Trimmed Reads (.fq.gz) for sample_1
-    │   ├── /fastqc          
+    │   ├── /fastqc 
     │   ├── /rseqc          
-    │   └── /stringtie
+    │   └── /htseq
+    │
+    ├── /alignments          | Where (.bams) are saved
+    ├── /aligner             
+    │   └── /index           | Index created and used during mapping
     │
     ├── /expression_matrix   | Aggregated count matrix
     ├── /expression_set      | An expression set (.rds) object
-    ├── /reports             | Aggregated report across all samples
+    ├── /reports             | Aggregated report across all samples pre/post pipeliner
     └── /logs                | Process-related logs
 ```
 
