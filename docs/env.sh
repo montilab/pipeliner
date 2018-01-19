@@ -24,7 +24,7 @@ $ conda create --prefix=$SCC_CONDA_ENVS/pipeliner python=2.7
 $ source activate pipeliner
 
 # Install pipeliner dependencies
-$ conda install --prefix=$SCC_CONDA_ENVS/pipeliner --channel "anfederico" trim-galore fastqc star multiqc samtools rseqc stringtie hisat2 htseq subread numpy pandas bioconductor-biobase
+$ conda install --prefix=$SCC_CONDA_ENVS/pipeliner --channel "pipeliner" trim-galore fastqc star multiqc samtools rseqc stringtie hisat2 htseq subread numpy pandas bioconductor-biobase
 
 # Check to make sure dependencies are installed correctly
 $ conda list --prefix=$SCC_CONDA_ENVS
