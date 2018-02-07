@@ -81,9 +81,8 @@ curl -s https://get.nextflow.io | bash
 │   └── phenotypes.txt         [*]
 │
 ├── nextflow
-├── main.nf                    
-├── local.config               [*]
-├── cluster.config             [*]
+├── rnaseq.nf                    
+├── rnaseq.config              [*]
 │
 ├── /history
 ├── /templates
@@ -106,8 +105,7 @@ curl -s https://get.nextflow.io | bash
 /data/reads.csv                | file detailing the global path/to/reads
 /data/alignments.csv           | file detailing the global path/to/alignments
 /data/phenotypes.txt           | file detailing the phenotype data used to create an expression set
-local.config                   | example parameters for local execution
-cluster.config                 | example parameters for cluster execution
+rnaseq.config                  | configuration file
 ```
 > You can start with read files or start from alignment files by specifying in the config file.
 > Look at [reads.csv](https://github.com/montilab/pipeliner/blob/master/RNA-seq/ggal_data/ggal_reads.csv) or [alignments.csv](https://github.com/montilab/pipeliner/blob/master/RNA-seq/ggal_data/ggal_alignments.csv) examples to see how yours should be formatted.
@@ -115,7 +113,7 @@ cluster.config                 | example parameters for cluster execution
 #### Other Files and Folders
 ```text
 nextflow                       | nextflow executable
-main.nf                        | nextflow pipeliner
+rnaseq.nf                      | nextflow pipeliner
 /history                       | history of timestamped config files used in previous runs
 /templates                     | shell scripts used by processes within pipeliner
 /scripts                       | other scritps used by processes within pipeliner
@@ -198,12 +196,12 @@ star_mapping.cpus   = 16
 
 ### Run Locally
 ```bash
-./nextflow main.nf -c nextflow.config
+./nextflow rnaseq.nf -c rnaseq.config
 ```
 
 ### Expected Output
 ```text
-Launching `main.nf` [distraught_hugle] - revision: 0e9a7a8940
+Launching `rnaseq.nf` [distraught_hugle] - revision: 0e9a7a8940
  P I P E L I N E R  ~  v2.3
 ====================================
 Reads          : /Users/anthonyfederico/pipeliner/RNA-seq/ggal_data/ggal_reads.csv
@@ -246,17 +244,17 @@ Success: Pipeline Completed!
 ### Resume
 If there is an error with your workflow, you can fix it and return to where you left off in the last run.
 ```
-./nextflow main.nf -resume
+./nextflow rnaseq.nf -resume
 ```
 
 ### Run on Cluster
-> When running Nextflow on a cluster, individual qsub jobs will be taken care, however main.nf will be running interactively. Try not to do this because interactive jobs will usually be killed after a short period of time. Instead, qsub `./nextflow main.nf -c cluster.config` as well. Therefore, do the following.
+> When running Nextflow on a cluster, individual qsub jobs will be taken care, however rnaseq.nf will be running interactively. Try not to do this because interactive jobs will usually be killed after a short period of time. Instead, qsub `./nextflow rnaseq.nf -c cluster.config` as well. Therefore, do the following.
 
 ```bash
 File: run.qsub
 
 #!/bin/sh
-./nextflow main.nf -c nextflow.config
+./nextflow rnaseq.nf -c rnaseq.config
 ```
 *Run with* `qsub -P <project> -l h_rt=96:00:00 -e std.err -o std.out run.qsub`  
 
@@ -264,7 +262,7 @@ File: run.qsub
 File: resume.qsub
 
 #!/bin/sh
-./nextflow main.nf -resume
+./nextflow rnaseq.nf -resume
 ```
 *Resume with* `qsub -P <project> -l h_rt=96:00:00 -e std.err -o std.out resume.qsub`  
 
