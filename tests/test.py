@@ -19,4 +19,4 @@ if __name__ == '__main__':
             print('Status: Running...')
             subprocess.Popen(['mkdir', '-p', '{0}/logs'.format(path_to_tests)])
             subprocess.Popen(['rm', '-f', '--', '{0}/logs/{1}.txt'.format(path_to_tests, test)])
-            subprocess.Popen(['./nextflow', 'main.nf', '-c', path_to_file])
+            subprocess.Popen(['./nextflow', 'rnaseq.nf', '-c', path_to_file])
