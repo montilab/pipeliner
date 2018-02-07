@@ -128,15 +128,3 @@ if __name__ == '__main__':
             fpkms, tpms = normalize_counts(files)
             fpkms.to_csv('fpkm_expression_matrix.txt', sep='\t')
             tpms.to_csv('tpm_expression_matrix.txt', sep='\t')
-
-
-
-
-
-
-
-
-
-
-
-
