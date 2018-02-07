@@ -49,7 +49,7 @@ $ curl -s https://get.nextflow.io | bash
 
 ### Locally Run Example Data
 ```bash
-$ ./nextflow main.nf -c nextflow.config
+$ ./nextflow rnaseq.nf -c rnaseq.config
 ```
 
 ### Expected Output
