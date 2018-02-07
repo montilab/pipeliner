@@ -1,1 +1,0 @@
-stringtie --merge ${gtfs.flatten().join(' ')} -G $gtf -e -F -T -o merged.gtf
