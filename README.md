@@ -54,7 +54,7 @@ $ ./nextflow rnaseq.nf -c rnaseq.config
 
 ### Expected Output
 ```text
-Launching `main.nf` [distraught_hugle] - revision: 0e9a7a8940
+Launching `rnaseq.nf` [distraught_hugle] - revision: 0e9a7a8940
  P I P E L I N E R  ~  v2.4
 ====================================
 Reads          : /Users/anthonyfederico/pipeliner/RNA-seq/ggal_data/ggal_reads.csv
