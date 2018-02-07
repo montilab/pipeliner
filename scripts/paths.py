@@ -9,9 +9,9 @@ if __name__ == '__main__':
     '''
     path_to_pipeliner = os.path.realpath(__file__)
     path_to_pipeliner = '/'.join(path_to_pipeliner.split('/')[:-2])
-    print('Updating local paths in {0}/RNA-seq/nextflow.config...'.format(path_to_pipeliner))
+    print('Updating local paths in {0}/RNA-seq/rnaseq.config...'.format(path_to_pipeliner))
     with open('{0}/RNA-seq/temp.config'.format(path_to_pipeliner), 'w') as outfile:
-        with open('{0}/RNA-seq/nextflow.config'.format(path_to_pipeliner), 'r') as infile:
+        with open('{0}/RNA-seq/rnaseq.config'.format(path_to_pipeliner), 'r') as infile:
             for line in infile:
                 if line.lstrip().startswith('indir'):
                     outfile.write('  indir  = "{0}/RNA-seq/ggal_data"\n'.format(path_to_pipeliner))
@@ -20,9 +20,9 @@ if __name__ == '__main__':
                 else:
                     outfile.write(line)
 
-    subprocess.call(['rm', '-rf', '{0}/RNA-seq/nextflow.config'.format(path_to_pipeliner)])
+    subprocess.call(['rm', '-rf', '{0}/RNA-seq/rnaseq.config'.format(path_to_pipeliner)])
     subprocess.call(['mv', '{0}/RNA-seq/temp.config'.format(path_to_pipeliner),
-                           '{0}/RNA-seq/nextflow.config'.format(path_to_pipeliner)])
+                           '{0}/RNA-seq/rnaseq.config'.format(path_to_pipeliner)])
 
     '''
     Updates reads.csv with local paths
