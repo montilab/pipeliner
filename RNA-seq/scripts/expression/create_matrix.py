@@ -57,7 +57,7 @@ def normalize_counts(files):
         Param #1 (list): List of paths to normalized count files
     Returns:
         Pandas dataframe
-    """      
+    """
     fpkms, tpms = {}, {}
     for filename in files:
         sample = filename.split('/')[-1].split('.')[0]
@@ -69,12 +69,13 @@ def normalize_counts(files):
                     gene = splitted[0]
                     fpkm = splitted[-2]
                     tpm = splitted[-1]
-                    try:
-                        fpkms[sample][gene] = fpkm
-                        tpms[sample][gene] = tpm
-                    except KeyError:
-                        fpkms[sample] = {gene: fpkm}
-                        tpms[sample] = {gene: tpm}
+                    if gene.startswith('ENSG'):
+                        try:
+                            fpkms[sample][gene] = fpkm
+                            tpms[sample][gene] = tpm
+                        except KeyError:
+                            fpkms[sample] = {gene: fpkm}
+                            tpms[sample] = {gene: tpm}
 
     fpkms = pd.DataFrame(fpkms)
     tpms = pd.DataFrame(tpms)
