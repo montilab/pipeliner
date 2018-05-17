@@ -1,3 +1,2 @@
-*.nf linguist-language=Groovy
-*.config linguist-language=Groovy
+*.config linguist-language=Nextflow
 ui/* linguist-vendored
