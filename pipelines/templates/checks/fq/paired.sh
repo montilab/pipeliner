@@ -1,0 +1,1 @@
+python $PWD/scripts/quality/check_reads.py ${reads[0]} ${reads[1]}
