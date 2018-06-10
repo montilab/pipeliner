@@ -2,6 +2,7 @@
 <i>Flexible and robust framework for the specification of high-throughput sequencing data processing workflows</i>    
 
 [![Built With](https://img.shields.io/badge/Built%20With-Nextflow-brightgreen.svg)](https://www.nextflow.io/)
+![Python](https://img.shields.io/badge/Framework-Python%203.6-blue.svg)
 ![Compatibility](https://img.shields.io/badge/Compatibility-Linux%20%2F%20OSX-orange.svg)
 ![Dependencies](https://img.shields.io/badge/dependencies-up%20to%20date-brightgreen.svg)
 [![GitHub Issues](https://img.shields.io/github/issues/montilab/pipeliner.svg)](https://github.com/montilab/pipeliner/issues)
