@@ -1,0 +1,4 @@
+Sample_Name,Alignment
+A1,/Users/anthonyfederico/Work/pipeliner/pipelines/toy_data/dge/bams/A1_marked.bam
+B2,/Users/anthonyfederico/Work/pipeliner/pipelines/toy_data/dge/bams/B2_marked.bam
+C3,/Users/anthonyfederico/Work/pipeliner/pipelines/toy_data/dge/bams/C3_marked.bam
