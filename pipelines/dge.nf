@@ -77,16 +77,14 @@ process counting {
   file '*.summary' into quant_results
 
   script:
-  """
-  featureCounts \
-  ${params.feature_counts.xargs} \
-  -T ${params.feature_counts.cpus} \
-  -t ${params.feature_counts.type} \
-  -g ${params.feature_counts.id} \
-  -a ${gtf} \
-  -o 'counts.raw.txt' \
-  ${bamfiles}
-  """
+  feature_counts_sargs = ""
+  if (params.paired) {
+    feature_counts_sargs = feature_counts_sargs.concat("-p ")
+  }
+  if (params.remove_dups) {
+    feature_counts_sargs = feature_counts_sargs.concat("--ignoreDup ")
+  }
+  template "feature_counts/vanilla.sh"
 }
 
 /*
@@ -140,9 +138,7 @@ if (!params.skip.multiqc) {
     file "*data"
 
     script:
-    """
-    multiqc ${params.outdir} --force 
-    """
+    template "multiqc/vanilla.sh"
   }
 }
 
