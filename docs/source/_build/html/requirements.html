@@ -1,0 +1,417 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Requirements &mdash; Pipeliner 1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Framework Structure" href="framework-structure.html" />
+    <link rel="prev" title="Pipeliner Documenation" href="index.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Pipeliner
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Requirements</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#testing-nextflow">Testing Nextflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-anaconda">Installing Anaconda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pre-packaged-conda-environment">Pre-Packaged Conda Environment</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#anaconda-cloud">Anaconda Cloud</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#yaml-file">Yaml File</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#setting-up-pipeliner">Setting up Pipeliner</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="framework-structure.html">Framework Structure</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline-structure.html">Pipeline Structure</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline-structure.html#input">Input</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline-structure.html#configuration-file">Configuration File</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-structure.html#file-paths">File Paths</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-structure.html#executor-and-compute-resources">Executor and Compute Resources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-structure.html#pipeline-options-and-parameters">Pipeline Options and Parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline-structure.html#pipeline-script">Pipeline Script</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline-structure.html#template-processes">Template Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline-structure.html#output">Output</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="existing-pipelines.html">Existing Pipelines</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rna-seq.html">RNA-seq</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#check-reads-check-reads">Check Reads <code class="code docutils literal notranslate"><span class="pre">check_reads</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#genome-indexing-hisat-indexing-star-indexing">Genome Indexing <code class="code docutils literal notranslate"><span class="pre">hisat_indexing/star_indexing</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#pre-quality-check-pre-fastqc">Pre-Quality Check <code class="code docutils literal notranslate"><span class="pre">pre_fastqc</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#pre-multiqc-pre-multiqc">Pre-MultiQC <code class="code docutils literal notranslate"><span class="pre">pre_multiqc</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#read-trimming-trim-galore">Read Trimming <code class="code docutils literal notranslate"><span class="pre">trim_galore</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#read-mapping-hisat-mapping-star-mapping">Read Mapping <code class="code docutils literal notranslate"><span class="pre">hisat_mapping/star_mapping</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#reformat-reference-gtftobed">Reformat Reference <code class="code docutils literal notranslate"><span class="pre">gtftobed</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#mapping-quality-rseqc">Mapping Quality <code class="code docutils literal notranslate"><span class="pre">rseqc</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#quantification-counting">Quantification <code class="code docutils literal notranslate"><span class="pre">counting</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#expression-matrix-expression-matrix">Expression Matrix <code class="code docutils literal notranslate"><span class="pre">expression_matrix</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#expression-features-expression-features">Expression Features <code class="code docutils literal notranslate"><span class="pre">expression_features</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#expression-set-expression-set">Expression Set <code class="code docutils literal notranslate"><span class="pre">expression_set</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#summary-report-multiqc">Summary Report <code class="code docutils literal notranslate"><span class="pre">multiqc</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="scrna-seq.html">scRNA-seq</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="scrna-seq.html#check-reads-check-reads">Check Reads <code class="code docutils literal notranslate"><span class="pre">check_reads</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scrna-seq.html#genome-indexing-hisat-indexing-star-indexing">Genome Indexing <code class="code docutils literal notranslate"><span class="pre">hisat_indexing/star_indexing</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scrna-seq.html#quality-check-fastqc">Quality Check <code class="code docutils literal notranslate"><span class="pre">fastqc</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scrna-seq.html#whitelist-whitelist">Whitelist <code class="code docutils literal notranslate"><span class="pre">whitelist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scrna-seq.html#extract-extract">Extract <code class="code docutils literal notranslate"><span class="pre">extract</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scrna-seq.html#read-mapping-hisat-mapping-star-mapping">Read Mapping <code class="code docutils literal notranslate"><span class="pre">hisat_mapping/star_mapping</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scrna-seq.html#reformat-reference-gtftobed">Reformat Reference <code class="code docutils literal notranslate"><span class="pre">gtftobed</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scrna-seq.html#mapping-quality-rseqc">Mapping Quality <code class="code docutils literal notranslate"><span class="pre">rseqc</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scrna-seq.html#quantification-counting">Quantification <code class="code docutils literal notranslate"><span class="pre">counting</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scrna-seq.html#summary-report-multiqc">Summary Report <code class="code docutils literal notranslate"><span class="pre">multiqc</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dge.html">DGE</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dge.html#quantification-counting">Quantification <code class="code docutils literal notranslate"><span class="pre">counting</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dge.html#expression-matrix-expression-matrix">Expression Matrix <code class="code docutils literal notranslate"><span class="pre">expression_matrix</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dge.html#sample-renaming-rename-samples">Sample Renaming <code class="code docutils literal notranslate"><span class="pre">rename_samples</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dge.html#summary-report-multiqc">Summary Report <code class="code docutils literal notranslate"><span class="pre">multiqc</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="extending-pipelines.html">Extending Pipelines</a><ul class="simple">
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Pipeliner</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Requirements</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/requirements.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="requirements">
+<span id="requirements-page"></span><h1>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<p>The <cite>Pipeliner</cite> framework requires <cite>Nextflow</cite> and <cite>Anaconda</cite>. <cite>Nextflow</cite> can be used on any POSIX compatible system (Linux, OS X, etc). It requires BASH and <a class="reference external" href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Java 8 (or higher)</a> to be installed. Third-party software tools used by individual pipelines will be installed and managed through a Conda virtual environment.</p>
+<div class="section" id="testing-nextflow">
+<h2>Testing Nextflow<a class="headerlink" href="#testing-nextflow" title="Permalink to this headline">¶</a></h2>
+<p>Before continuuing, test to make sure your environment is compatible with a Nextflow executable.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You will download another one later when you clone the repository</p>
+</div>
+<p>Make sure your Java installation is version 8 or higher:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">java</span> <span class="o">-</span><span class="n">version</span>
+</pre></div>
+</div>
+<p>Create a new directory and install/test <cite>Nextflow</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="n">nf</span><span class="o">-</span><span class="n">test</span>
+<span class="n">cd</span> <span class="n">nf</span><span class="o">-</span><span class="n">test</span>
+<span class="n">curl</span> <span class="o">-</span><span class="n">s</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">get</span><span class="o">.</span><span class="n">nextflow</span><span class="o">.</span><span class="n">io</span> <span class="o">|</span> <span class="n">bash</span>
+<span class="o">./</span><span class="n">nextflow</span> <span class="n">run</span> <span class="n">hello</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>N E X T F L O W  ~  version 0.31.0
+Launching `nextflow-io/hello` [sad_curran] - revision: d4c9ea84de [master]
+[warm up] executor &gt; local
+[4d/479eec] Submitted process &gt; sayHello (4)
+[a8/4bc038] Submitted process &gt; sayHello (2)
+[17/5be64e] Submitted process &gt; sayHello (3)
+[ee/0d879f] Submitted process &gt; sayHello (1)
+Hola world!
+Ciao world!
+Hello world!
+Bonjour world!
+</pre></div>
+</div>
+</div>
+<div class="section" id="installing-anaconda">
+<h2>Installing Anaconda<a class="headerlink" href="#installing-anaconda" title="Permalink to this headline">¶</a></h2>
+<p>Pipeliner uses virtual environments managed by <cite>Conda</cite>, which is available through <a class="reference external" href="https://www.continuum.io/downloads">Anaconda</a>. Download the distribution pre-packaged with Python 2.7.</p>
+<p>Make sure conda is installed and updated:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="o">--</span><span class="n">version</span>
+<span class="n">conda</span> <span class="n">update</span> <span class="n">conda</span>
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">If this is your first time working with <cite>Conda</cite>, you may need to edit your configuration paths to ensure <cite>Anaconda</cite> is invoked when calling <code class="docutils literal notranslate"><span class="pre">conda</span></code></p>
+</div>
+</div>
+<div class="section" id="pre-packaged-conda-environment">
+<h2>Pre-Packaged Conda Environment<a class="headerlink" href="#pre-packaged-conda-environment" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="anaconda-cloud">
+<h3>Anaconda Cloud<a class="headerlink" href="#anaconda-cloud" title="Permalink to this headline">¶</a></h3>
+<p><cite>Environment for both Linux and OS X</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="n">pipeliner</span> <span class="n">python</span><span class="o">=</span><span class="mf">2.7</span>
+<span class="n">source</span> <span class="n">activate</span> <span class="n">pipeliner</span>
+<span class="n">conda</span> <span class="n">install</span> <span class="n">pipeliner</span> <span class="o">--</span><span class="n">channel</span> <span class="s2">&quot;pipeliner&quot;</span> <span class="n">trim</span><span class="o">-</span><span class="n">galore</span> <span class="n">fastqc</span> <span class="n">star</span> <span class="n">multiqc</span> <span class="n">samtools</span> <span class="n">rseqc</span> <span class="n">stringtie</span> <span class="n">hisat2</span> <span class="n">htseq</span> <span class="n">subread</span> <span class="n">numpy</span> <span class="n">pandas</span> <span class="n">bioconductor</span><span class="o">-</span><span class="n">biobase</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="yaml-file">
+<h3>Yaml File<a class="headerlink" href="#yaml-file" title="Permalink to this headline">¶</a></h3>
+<p><cite>Environment for Linux</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">env</span> <span class="n">create</span> <span class="o">-</span><span class="n">f</span> <span class="n">pipeliner</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">linux_env</span><span class="o">.</span><span class="n">yml</span>
+</pre></div>
+</div>
+<p><cite>Environment for OS X</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">env</span> <span class="n">create</span> <span class="o">-</span><span class="n">f</span> <span class="n">pipeliner</span><span class="o">//</span><span class="n">envs</span><span class="o">/</span><span class="n">osx_env</span><span class="o">.</span><span class="n">yml</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="setting-up-pipeliner">
+<h2>Setting up Pipeliner<a class="headerlink" href="#setting-up-pipeliner" title="Permalink to this headline">¶</a></h2>
+<p>With all prerequisites, one can quickly setup Pipeliner by cloning the repository, configuring local paths to toy datasets, activating the conda environment, and downloading the Nextflow executable:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Activate conda environment</span>
+<span class="n">source</span> <span class="n">activate</span> <span class="n">pipeliner</span>
+
+<span class="c1"># Clone Pipeliner</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">montilab</span><span class="o">/</span><span class="n">pipeliner</span>
+
+<span class="c1"># Configure local paths to toy datasets</span>
+<span class="n">python</span> <span class="n">pipeliner</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">paths</span><span class="o">.</span><span class="n">py</span>
+
+<span class="c1"># Move to pipelines directory</span>
+<span class="n">cd</span> <span class="n">pipeliner</span><span class="o">/</span><span class="n">pipelines</span>
+
+<span class="c1"># Download nextflow executable</span>
+<span class="n">curl</span> <span class="o">-</span><span class="n">s</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">get</span><span class="o">.</span><span class="n">nextflow</span><span class="o">.</span><span class="n">io</span> <span class="o">|</span> <span class="n">bash</span>
+
+<span class="c1"># Run RNA-seq pipeline with toy data</span>
+<span class="o">./</span><span class="n">nextflow</span> <span class="n">rnaseq</span><span class="o">.</span><span class="n">nf</span> <span class="o">-</span><span class="n">c</span> <span class="n">rnaseq</span><span class="o">.</span><span class="n">config</span>
+</pre></div>
+</div>
+<p>The output should look like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Launching `rnaseq.nf` [distraught_hugle] - revision: 0e9a7a8940
+ P I P E L I N E R  ~  v2.4
+====================================
+Reads          : /Users/anthonyfederico/pipeliner/RNA-seq/ggal_data/ggal_reads.csv
+Reference      : /Users/anthonyfederico/pipeliner/RNA-seq/ggal_data/genome_reference.fa
+Annotation     : /Users/anthonyfederico/pipeliner/RNA-seq/ggal_data/genome_annotation.gtf
+Input Dir      : /Users/anthonyfederico/pipeliner/RNA-seq/ggal_data
+Output Dir     : /Users/anthonyfederico/pipeliner/RNA-seq/ggal_results
+====================================
+Read Type      : paired-end
+Aligner        : hisat
+Quantifier     : htseq
+Save Reference : true
+Save Temporary : true
+====================================
+Current user  : anthonyfederico
+Current home  : /Users/anthonyfederico
+Current path  : /Users/anthonyfederico/pipeliner/RNA-seq
+====================================
+[warm up] executor &gt; local
+[32/b1db1d] Submitted process &gt; hisat_indexing (genome_reference.fa)
+[3b/d93c6d] Submitted process &gt; trim_galore (ggal_alpha)
+[9c/3fa50b] Submitted process &gt; trim_galore (ggal_theta)
+[62/25fce0] Submitted process &gt; trim_galore (ggal_gamma)
+[96/2ffc07] Submitted process &gt; fastqc (ggal_alpha)
+[31/89cddb] Submitted process &gt; fastqc (ggal_theta)
+[57/b2fdf0] Submitted process &gt; fastqc (ggal_gamma)
+[66/ccc9db] Submitted process &gt; hisat_mapping (ggal_alpha)
+[28/69fff5] Submitted process &gt; hisat_mapping (ggal_theta)
+[5c/5ed2b6] Submitted process &gt; hisat_mapping (ggal_gamma)
+[bc/6f490c] Submitted process &gt; rseqc (ggal_alpha)
+[71/80aa9e] Submitted process &gt; rseqc (ggal_theta)
+[17/ca0d9f] Submitted process &gt; rseqc (ggal_gamma)
+[d7/7d391b] Submitted process &gt; htseq (ggal_alpha)
+[df/936854] Submitted process &gt; htseq (ggal_theta)
+[11/143c2c] Submitted process &gt; htseq (ggal_gamma)
+[1f/3af548] Submitted process &gt; multiqc
+Success: Pipeline Completed!
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="framework-structure.html" class="btn btn-neutral float-right" title="Framework Structure" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Pipeliner Documenation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Anthony Federico, Stefano Monti.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

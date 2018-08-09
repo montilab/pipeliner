@@ -1,0 +1,435 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>scRNA-seq &mdash; Pipeliner 1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="DGE" href="dge.html" />
+    <link rel="prev" title="RNA-seq" href="rna-seq.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Pipeliner
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="requirements.html">Requirements</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="requirements.html#testing-nextflow">Testing Nextflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="requirements.html#installing-anaconda">Installing Anaconda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="requirements.html#pre-packaged-conda-environment">Pre-Packaged Conda Environment</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="requirements.html#anaconda-cloud">Anaconda Cloud</a></li>
+<li class="toctree-l3"><a class="reference internal" href="requirements.html#yaml-file">Yaml File</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="requirements.html#setting-up-pipeliner">Setting up Pipeliner</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="framework-structure.html">Framework Structure</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline-structure.html">Pipeline Structure</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline-structure.html#input">Input</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline-structure.html#configuration-file">Configuration File</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-structure.html#file-paths">File Paths</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-structure.html#executor-and-compute-resources">Executor and Compute Resources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-structure.html#pipeline-options-and-parameters">Pipeline Options and Parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline-structure.html#pipeline-script">Pipeline Script</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline-structure.html#template-processes">Template Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline-structure.html#output">Output</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="existing-pipelines.html">Existing Pipelines</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="rna-seq.html">RNA-seq</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#check-reads-check-reads">Check Reads <code class="code docutils literal notranslate"><span class="pre">check_reads</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#genome-indexing-hisat-indexing-star-indexing">Genome Indexing <code class="code docutils literal notranslate"><span class="pre">hisat_indexing/star_indexing</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#pre-quality-check-pre-fastqc">Pre-Quality Check <code class="code docutils literal notranslate"><span class="pre">pre_fastqc</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#pre-multiqc-pre-multiqc">Pre-MultiQC <code class="code docutils literal notranslate"><span class="pre">pre_multiqc</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#read-trimming-trim-galore">Read Trimming <code class="code docutils literal notranslate"><span class="pre">trim_galore</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#read-mapping-hisat-mapping-star-mapping">Read Mapping <code class="code docutils literal notranslate"><span class="pre">hisat_mapping/star_mapping</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#reformat-reference-gtftobed">Reformat Reference <code class="code docutils literal notranslate"><span class="pre">gtftobed</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#mapping-quality-rseqc">Mapping Quality <code class="code docutils literal notranslate"><span class="pre">rseqc</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#quantification-counting">Quantification <code class="code docutils literal notranslate"><span class="pre">counting</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#expression-matrix-expression-matrix">Expression Matrix <code class="code docutils literal notranslate"><span class="pre">expression_matrix</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#expression-features-expression-features">Expression Features <code class="code docutils literal notranslate"><span class="pre">expression_features</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#expression-set-expression-set">Expression Set <code class="code docutils literal notranslate"><span class="pre">expression_set</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#summary-report-multiqc">Summary Report <code class="code docutils literal notranslate"><span class="pre">multiqc</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">scRNA-seq</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#check-reads-check-reads">Check Reads <code class="code docutils literal notranslate"><span class="pre">check_reads</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#genome-indexing-hisat-indexing-star-indexing">Genome Indexing <code class="code docutils literal notranslate"><span class="pre">hisat_indexing/star_indexing</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#quality-check-fastqc">Quality Check <code class="code docutils literal notranslate"><span class="pre">fastqc</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#whitelist-whitelist">Whitelist <code class="code docutils literal notranslate"><span class="pre">whitelist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#extract-extract">Extract <code class="code docutils literal notranslate"><span class="pre">extract</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#read-mapping-hisat-mapping-star-mapping">Read Mapping <code class="code docutils literal notranslate"><span class="pre">hisat_mapping/star_mapping</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reformat-reference-gtftobed">Reformat Reference <code class="code docutils literal notranslate"><span class="pre">gtftobed</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mapping-quality-rseqc">Mapping Quality <code class="code docutils literal notranslate"><span class="pre">rseqc</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#quantification-counting">Quantification <code class="code docutils literal notranslate"><span class="pre">counting</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#summary-report-multiqc">Summary Report <code class="code docutils literal notranslate"><span class="pre">multiqc</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dge.html">DGE</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dge.html#quantification-counting">Quantification <code class="code docutils literal notranslate"><span class="pre">counting</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dge.html#expression-matrix-expression-matrix">Expression Matrix <code class="code docutils literal notranslate"><span class="pre">expression_matrix</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dge.html#sample-renaming-rename-samples">Sample Renaming <code class="code docutils literal notranslate"><span class="pre">rename_samples</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dge.html#summary-report-multiqc">Summary Report <code class="code docutils literal notranslate"><span class="pre">multiqc</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="extending-pipelines.html">Extending Pipelines</a><ul class="simple">
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Pipeliner</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="existing-pipelines.html">Existing Pipelines</a> &raquo;</li>
+        
+      <li>scRNA-seq</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/scrna-seq.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="scrna-seq">
+<span id="scrna-seq-page"></span><h1>scRNA-seq<a class="headerlink" href="#scrna-seq" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<div class="section" id="check-reads-check-reads">
+<h2>Check Reads <code class="code docutils literal notranslate"><span class="pre">check_reads</span></code><a class="headerlink" href="#check-reads-check-reads" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">input:</th><td class="field-body">List of read files (<cite>.fastq</cite>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">output:</th><td class="field-body">None</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">script:</th><td class="field-body">Ensures correct format of sequencing read files</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="genome-indexing-hisat-indexing-star-indexing">
+<h2>Genome Indexing <code class="code docutils literal notranslate"><span class="pre">hisat_indexing/star_indexing</span></code><a class="headerlink" href="#genome-indexing-hisat-indexing-star-indexing" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">input:</th><td class="field-body">Genome reference file (<cite>.fa</cite>) | Genome annotation file (<cite>.gtf</cite>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">output:</th><td class="field-body">Directory containing indexed genome files</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">script:</th><td class="field-body">Uses either <cite>STAR</cite> or <cite>HISAT2</cite> to build an indexed genome</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="quality-check-fastqc">
+<h2>Quality Check <code class="code docutils literal notranslate"><span class="pre">fastqc</span></code><a class="headerlink" href="#quality-check-fastqc" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">input:</th><td class="field-body">List of read files (<cite>.fastq</cite>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">output:</th><td class="field-body">Report files (<cite>.html</cite>)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">script:</th><td class="field-body">Uses <cite>FastQC</cite> to check quality of read files</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="whitelist-whitelist">
+<h2>Whitelist <code class="code docutils literal notranslate"><span class="pre">whitelist</span></code><a class="headerlink" href="#whitelist-whitelist" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">input:</th><td class="field-body">List of read files (<cite>.fastq</cite>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">output:</th><td class="field-body">A table of white listed barcodes (<cite>.txt</cite>)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">script:</th><td class="field-body">Uses <cite>UMI-tools</cite> to extract and identify true cell barcodes</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="extract-extract">
+<h2>Extract <code class="code docutils literal notranslate"><span class="pre">extract</span></code><a class="headerlink" href="#extract-extract" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">input:</th><td class="field-body">List of read files (<cite>.fastq</cite>) | A table of white listed barcodes (<cite>.txt</cite>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">output:</th><td class="field-body">Extracted read files (<cite>.fastq</cite>)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">script:</th><td class="field-body">Uses <cite>UMI-tools</cite> to extract barcode from reads and append to read name</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="read-mapping-hisat-mapping-star-mapping">
+<h2>Read Mapping <code class="code docutils literal notranslate"><span class="pre">hisat_mapping/star_mapping</span></code><a class="headerlink" href="#read-mapping-hisat-mapping-star-mapping" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">input:</th><td class="field-body">List of read files (<cite>.fastq</cite>) | Genome annotation file (<cite>.gtf</cite>) | Directory containing indexed reference genome files</td>
+</tr>
+<tr class="field-even field"><th class="field-name">output:</th><td class="field-body">A list of alignment files (<cite>.bam</cite>) | Log files (<cite>.log</cite>)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">script:</th><td class="field-body">Uses either <cite>STAR</cite> or <cite>HISAT2</cite> to align reads to a reference genome</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="reformat-reference-gtftobed">
+<h2>Reformat Reference <code class="code docutils literal notranslate"><span class="pre">gtftobed</span></code><a class="headerlink" href="#reformat-reference-gtftobed" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">input:</th><td class="field-body">Genome annotation file (<cite>.gtf</cite>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">output:</th><td class="field-body">Genome annotation file (<cite>.bed</cite>)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">script:</th><td class="field-body">Converts genome annotation file from GTF to BED format</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="mapping-quality-rseqc">
+<h2>Mapping Quality <code class="code docutils literal notranslate"><span class="pre">rseqc</span></code><a class="headerlink" href="#mapping-quality-rseqc" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">input:</th><td class="field-body">A list of alignment files (<cite>.bam</cite>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">output:</th><td class="field-body">Report files (<cite>.txt</cite>)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">script:</th><td class="field-body">Uses <cite>RSeQC</cite> to check quality of alignment files</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="quantification-counting">
+<h2>Quantification <code class="code docutils literal notranslate"><span class="pre">counting</span></code><a class="headerlink" href="#quantification-counting" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">input:</th><td class="field-body">A list of alignment files (<cite>.bam</cite>) | Genome annotation file (<cite>.gtf</cite>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">output:</th><td class="field-body">Read counts (<cite>.txt</cite>) | Log files (<cite>.txt</cite>)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">script:</th><td class="field-body">Uses <cite>featureCounts</cite> to quantify reads</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="summary-report-multiqc">
+<h2>Summary Report <code class="code docutils literal notranslate"><span class="pre">multiqc</span></code><a class="headerlink" href="#summary-report-multiqc" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">input:</th><td class="field-body">Log files and summary reports from all processes</td>
+</tr>
+<tr class="field-even field"><th class="field-name">output:</th><td class="field-body">A summary report (<cite>.html</cite>)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">script:</th><td class="field-body">Uses <cite>MultiQC</cite> to generate a summary report</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="dge.html" class="btn btn-neutral float-right" title="DGE" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="rna-seq.html" class="btn btn-neutral" title="RNA-seq" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Anthony Federico, Stefano Monti.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

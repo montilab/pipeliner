@@ -1,0 +1,272 @@
+
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Index &mdash; Pipeliner 1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="#" />
+    <link rel="search" title="Search" href="search.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Pipeliner
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="requirements.html">Requirements</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="requirements.html#testing-nextflow">Testing Nextflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="requirements.html#installing-anaconda">Installing Anaconda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="requirements.html#pre-packaged-conda-environment">Pre-Packaged Conda Environment</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="requirements.html#anaconda-cloud">Anaconda Cloud</a></li>
+<li class="toctree-l3"><a class="reference internal" href="requirements.html#yaml-file">Yaml File</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="requirements.html#setting-up-pipeliner">Setting up Pipeliner</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="framework-structure.html">Framework Structure</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline-structure.html">Pipeline Structure</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline-structure.html#input">Input</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline-structure.html#configuration-file">Configuration File</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-structure.html#file-paths">File Paths</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-structure.html#executor-and-compute-resources">Executor and Compute Resources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-structure.html#pipeline-options-and-parameters">Pipeline Options and Parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline-structure.html#pipeline-script">Pipeline Script</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline-structure.html#template-processes">Template Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline-structure.html#output">Output</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="existing-pipelines.html">Existing Pipelines</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rna-seq.html">RNA-seq</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#check-reads-check-reads">Check Reads <code class="code docutils literal notranslate"><span class="pre">check_reads</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#genome-indexing-hisat-indexing-star-indexing">Genome Indexing <code class="code docutils literal notranslate"><span class="pre">hisat_indexing/star_indexing</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#pre-quality-check-pre-fastqc">Pre-Quality Check <code class="code docutils literal notranslate"><span class="pre">pre_fastqc</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#pre-multiqc-pre-multiqc">Pre-MultiQC <code class="code docutils literal notranslate"><span class="pre">pre_multiqc</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#read-trimming-trim-galore">Read Trimming <code class="code docutils literal notranslate"><span class="pre">trim_galore</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#read-mapping-hisat-mapping-star-mapping">Read Mapping <code class="code docutils literal notranslate"><span class="pre">hisat_mapping/star_mapping</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#reformat-reference-gtftobed">Reformat Reference <code class="code docutils literal notranslate"><span class="pre">gtftobed</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#mapping-quality-rseqc">Mapping Quality <code class="code docutils literal notranslate"><span class="pre">rseqc</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#quantification-counting">Quantification <code class="code docutils literal notranslate"><span class="pre">counting</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#expression-matrix-expression-matrix">Expression Matrix <code class="code docutils literal notranslate"><span class="pre">expression_matrix</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#expression-features-expression-features">Expression Features <code class="code docutils literal notranslate"><span class="pre">expression_features</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#expression-set-expression-set">Expression Set <code class="code docutils literal notranslate"><span class="pre">expression_set</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rna-seq.html#summary-report-multiqc">Summary Report <code class="code docutils literal notranslate"><span class="pre">multiqc</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="scrna-seq.html">scRNA-seq</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="scrna-seq.html#check-reads-check-reads">Check Reads <code class="code docutils literal notranslate"><span class="pre">check_reads</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scrna-seq.html#genome-indexing-hisat-indexing-star-indexing">Genome Indexing <code class="code docutils literal notranslate"><span class="pre">hisat_indexing/star_indexing</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scrna-seq.html#quality-check-fastqc">Quality Check <code class="code docutils literal notranslate"><span class="pre">fastqc</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scrna-seq.html#whitelist-whitelist">Whitelist <code class="code docutils literal notranslate"><span class="pre">whitelist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scrna-seq.html#extract-extract">Extract <code class="code docutils literal notranslate"><span class="pre">extract</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scrna-seq.html#read-mapping-hisat-mapping-star-mapping">Read Mapping <code class="code docutils literal notranslate"><span class="pre">hisat_mapping/star_mapping</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scrna-seq.html#reformat-reference-gtftobed">Reformat Reference <code class="code docutils literal notranslate"><span class="pre">gtftobed</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scrna-seq.html#mapping-quality-rseqc">Mapping Quality <code class="code docutils literal notranslate"><span class="pre">rseqc</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scrna-seq.html#quantification-counting">Quantification <code class="code docutils literal notranslate"><span class="pre">counting</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scrna-seq.html#summary-report-multiqc">Summary Report <code class="code docutils literal notranslate"><span class="pre">multiqc</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dge.html">DGE</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dge.html#quantification-counting">Quantification <code class="code docutils literal notranslate"><span class="pre">counting</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dge.html#expression-matrix-expression-matrix">Expression Matrix <code class="code docutils literal notranslate"><span class="pre">expression_matrix</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dge.html#sample-renaming-rename-samples">Sample Renaming <code class="code docutils literal notranslate"><span class="pre">rename_samples</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dge.html#summary-report-multiqc">Summary Report <code class="code docutils literal notranslate"><span class="pre">multiqc</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="extending-pipelines.html">Extending Pipelines</a><ul class="simple">
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Pipeliner</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Index</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+
+<h1 id="index">Index</h1>
+
+<div class="genindex-jumpbox">
+ 
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Anthony Federico, Stefano Monti.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
