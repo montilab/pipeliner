@@ -14,25 +14,24 @@
 * Automated job parallelization, job recovery, and reproducibility.
 
 ## Quickstart
-*For more information, please refer to the [full documentation](https://github.com/montilab/pipeliner/blob/master/docs/documentation.md)*
+*For more information, please refer to the [full documentation](https://pipeliner.readthedocs.io/en/latest/)*
 
 ### Clone Repository
 ```bash
 $ git clone https://github.com/montilab/pipeliner
 ```
 
-### Create Conda Environment and Install Dependencies
+### Create Conda Environment
 ```bash
-$ conda env create -f pipeliner/RNA-seq/envs/linux_env.yml
+conda create pipeliner python=2.7
+source activate pipeliner
 ```
 
+### Install Dependencies
 ```bash
-$ conda env create -f pipeliner/RNA-seq/envs/osx_env.yml
-```
-
-### Activate Conda Environment
-```bash
-$ source activate pipeliner
+conda install pipeliner --channel "pipeliner" \
+trim-galore fastqc star multiqc samtools rseqc stringtie \
+hisat2 htseq subread numpy pandas bioconductor-biobase
 ```
 
 ### Update Local Paths
