@@ -91,7 +91,6 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Pipeline Structure</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#input">Input</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#configuration-file">Configuration File</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#file-paths">File Paths</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#executor-and-compute-resources">Executor and Compute Resources</a></li>
@@ -142,7 +141,10 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="extending-pipelines.html">Extending Pipelines</a><ul class="simple">
+<li class="toctree-l1"><a class="reference internal" href="extending-pipelines.html">Extending Pipelines</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="extending-pipelines.html#general-workflow">General Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extending-pipelines.html#configuration-inheriticance">Configuration Inheriticance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extending-pipelines.html#template-process-injections">Template Process Injections</a></li>
 </ul>
 </li>
 </ul>
@@ -213,8 +215,6 @@
 <span id="pipeline-structure-page"></span><h1>Pipeline Structure<a class="headerlink" href="#pipeline-structure" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 </div>
-<div class="section" id="input">
-<h2>Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h2>
 <p>The file paths for all data fed to a pipeline are specified in the configuration file. To ease the development process, Pipeline provides toy datasets for each of the pipelines. This example will cover the RNA-seq pipeline.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -230,7 +230,6 @@
 </ul>
 </dd>
 </dl>
-</div>
 <div class="section" id="configuration-file">
 <h2>Configuration File<a class="headerlink" href="#configuration-file" title="Permalink to this headline">¶</a></h2>
 <p>The configuration file is where all file paths are specified and pipeline processes are paramaterized. The configuration can be broken into three sections, including file paths, executor and compute resources, and pipeline options and parameters.</p>
@@ -261,11 +260,11 @@
   executor = &#39;sge&#39;
   scratch = true
 
-  $trim_galore.clusterOptions            = &quot;-P montilab -l h_rt=24:00:00 -pe omp 8&quot;
-  $star_mapping.clusterOptions           = &quot;-P montilab -l h_rt=24:00:00 -l mem_total=94G -pe omp 16&quot;
-  $counting.clusterOptions               = &quot;-P montilab -l h_rt=24:00:00 -pe omp 8&quot;
-  $expression_matrix.clusterOptions      = &quot;-P montilab -l h_rt=24:00:00 -pe omp 8&quot;
-  $multiqc.clusterOptions                = &quot;-P montilab -l h_rt=24:00:00 -pe omp 8&quot;
+  $trim_galore.clusterOptions       = &quot;-P montilab -l h_rt=24:00:00 -pe omp 8&quot;
+  $star_mapping.clusterOptions      = &quot;-P montilab -l h_rt=24:00:00 -l mem_total=94G -pe omp 16&quot;
+  $counting.clusterOptions          = &quot;-P montilab -l h_rt=24:00:00 -pe omp 8&quot;
+  $expression_matrix.clusterOptions = &quot;-P montilab -l h_rt=24:00:00 -pe omp 8&quot;
+  $multiqc.clusterOptions           = &quot;-P montilab -l h_rt=24:00:00 -pe omp 8&quot;
 }
 </pre></div>
 </div>

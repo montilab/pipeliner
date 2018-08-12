@@ -90,7 +90,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="pipeline-structure.html">Pipeline Structure</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="pipeline-structure.html#input">Input</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pipeline-structure.html#configuration-file">Configuration File</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="pipeline-structure.html#file-paths">File Paths</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline-structure.html#executor-and-compute-resources">Executor and Compute Resources</a></li>
@@ -141,7 +140,11 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Extending Pipelines</a><ul class="simple">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Extending Pipelines</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#general-workflow">General Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration-inheriticance">Configuration Inheriticance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#template-process-injections">Template Process Injections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#testing-module">Testing Module</a></li>
 </ul>
 </li>
 </ul>
@@ -211,6 +214,165 @@
   <div class="section" id="extending-pipelines">
 <span id="extending-pipelines-page"></span><h1>Extending Pipelines<a class="headerlink" href="#extending-pipelines" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
+</div>
+<div class="section" id="general-workflow">
+<h2>General Workflow<a class="headerlink" href="#general-workflow" title="Permalink to this headline">¶</a></h2>
+<p>The frameworks provides multiple resources for the user to extend and create sequencing pipelines. The first is toy datasets for all available pipelines including sequencing files, alignment files, genome reference and annotation files, as well as phenotypic data. Additionally, there are pre-defined scripts, processes, and configuration files that can be inherited and easily modified for various pipelines. Together, users can rapidly develop flexible and scalable pilelines. Lastly, there is a testing module enabling users to frequently test a series of different configurations with each change to the codebase.</p>
+</div>
+<div class="section" id="configuration-inheriticance">
+<h2>Configuration Inheriticance<a class="headerlink" href="#configuration-inheriticance" title="Permalink to this headline">¶</a></h2>
+<p>An important property of configuration files is that they are inheritable. This allows developers to focus soley on the configuration components that are changing with each pipeline execution. Typically there are four components of a configuration file including the following.</p>
+<p>Executor parameters:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">process</span> <span class="p">{</span>
+    <span class="n">executor</span> <span class="o">=</span> <span class="s2">&quot;local&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Input data file paths:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">indir</span>  <span class="o">=</span> <span class="s2">&quot;/Users/anthonyfederico/pipeliner/pipelines/toy_data/rna-seq&quot;</span>
+<span class="n">outdir</span> <span class="o">=</span> <span class="s2">&quot;/Users/anthonyfederico/pipeliner/pipelines/rna-seq-results&quot;</span>
+</pre></div>
+</div>
+<p>Pipeline parameters:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aligner</span>      <span class="o">=</span> <span class="s2">&quot;hisat&quot;</span>
+<span class="n">quantifier</span>   <span class="o">=</span> <span class="s2">&quot;htseq&quot;</span>
+</pre></div>
+</div>
+<p>Process-specific parameters:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">htseq</span><span class="o">.</span><span class="n">type</span>   <span class="o">=</span> <span class="s2">&quot;exon&quot;</span>
+<span class="n">htseq</span><span class="o">.</span><span class="n">mode</span>   <span class="o">=</span> <span class="s2">&quot;union&quot;</span>
+<span class="n">htseq</span><span class="o">.</span><span class="n">idattr</span> <span class="o">=</span> <span class="s2">&quot;gene_id&quot;</span>
+<span class="n">htseq</span><span class="o">.</span><span class="n">order</span>  <span class="o">=</span> <span class="s2">&quot;pos&quot;</span>
+</pre></div>
+</div>
+<p>When developing, typically the only parameters that will be changing are pipeline parameters when testing the full scope of flexibility. Therefore, the development configuration file will look something like the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">//</span> <span class="n">paired</span> <span class="o">/</span> <span class="n">hisat</span> <span class="o">/</span> <span class="n">featurecounts</span>
+
+<span class="n">includeConfig</span> <span class="s2">&quot;local.config&quot;</span>
+<span class="n">includeConfig</span> <span class="s2">&quot;dataio.config&quot;</span>
+
+<span class="n">paired</span>        <span class="o">=</span> <span class="n">true</span>
+<span class="n">aligner</span>       <span class="o">=</span> <span class="s2">&quot;hisat&quot;</span>
+<span class="n">quantifier</span>    <span class="o">=</span> <span class="s2">&quot;featurecounts&quot;</span>
+<span class="n">skip</span><span class="o">.</span><span class="n">counting</span> <span class="o">=</span> <span class="n">false</span>
+<span class="n">skip</span><span class="o">.</span><span class="n">rseqc</span>    <span class="o">=</span> <span class="n">false</span>
+<span class="n">skip</span><span class="o">.</span><span class="n">multiqc</span>  <span class="o">=</span> <span class="n">false</span>
+<span class="n">skip</span><span class="o">.</span><span class="n">eset</span>     <span class="o">=</span> <span class="n">false</span>
+
+<span class="n">includeConfig</span> <span class="s2">&quot;parameters.config&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="template-process-injections">
+<h2>Template Process Injections<a class="headerlink" href="#template-process-injections" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Sometimes it’s better to create a new template rather than heavily modify an existing one</p>
+</div>
+<p>Each pipeline is essentially a series of modules - connected through minimial Nextflow scripting - that execute pre-defined template processes. While templates are generally defined to be applicable to multiple pipelines and are parameterized in a configuration file, they have two additional components contributing to their flexibility.</p>
+<p>The following is an example of a template process for the third-party software tool <cite>featureCounts</cite>:</p>
+<div class="highlight-bash notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22</pre></div></td><td class="code"><div class="highlight"><pre><span></span> featureCounts <span class="se">\\</span>
+
+ <span class="c1"># Common flags directly defined by the user</span>
+ -T <span class="si">${</span><span class="nv">params</span><span class="p">.feature_counts.cpus</span><span class="si">}</span> <span class="se">\\</span>
+ -t <span class="si">${</span><span class="nv">params</span><span class="p">.feature_counts.type</span><span class="si">}</span> <span class="se">\\</span>
+ -g <span class="si">${</span><span class="nv">params</span><span class="p">.feature_counts.id</span><span class="si">}</span> <span class="se">\\</span>
+
+ <span class="c1"># Flags handled by the pipeline</span>
+ -a <span class="si">${</span><span class="nv">gtf</span><span class="si">}</span> <span class="se">\\</span>
+ -o <span class="s2">&quot;counts.raw.txt&quot;</span> <span class="se">\\</span>
+
+ <span class="c1"># Arguments indirectly defined by the user</span>
+ <span class="si">${</span><span class="nv">feature_counts_sargs</span><span class="si">}</span> <span class="se">\\</span>
+
+ <span class="c1"># Extra arguments</span>
+ <span class="si">${</span><span class="nv">params</span><span class="p">.feature_counts.xargs</span><span class="si">}</span> <span class="se">\\</span>
+
+ <span class="c1"># Input data</span>
+ <span class="si">${</span><span class="nv">bamfiles</span><span class="si">}</span><span class="p">;</span>
+
+ <span class="c1"># After injection</span>
+ <span class="si">${</span><span class="nv">params</span><span class="p">.feature_counts.ainj</span><span class="si">}</span>
+</pre></div>
+</td></tr></table></div>
+<dl class="docutils">
+<dt><strong>Lines 4-6</strong></dt>
+<dd>These are <em>common</em> keyword arguments that can be set to string/int/float types by the user and passed <em>directly</em> from the configuration file to the template. The <em>params</em> prefix in the variable means it is initialized in the configuration file.</dd>
+<dt><strong>Lines 9-10</strong></dt>
+<dd>These are flags that are typically non-dynamic and handled interally by the pipeline.</dd>
+<dt><strong>Line 13</strong></dt>
+<dd>These are <em>common</em> flags that must be <em>indirectly</em> defined by the user. For example, featurCounts requires a <code class="docutils literal notranslate"><span class="pre">-p</span></code> flag for paired reads. Because <code class="docutils literal notranslate"><span class="pre">params.paired</span></code> is a boolean, it makes more sense for the pipeline to create a string of supplemental arguments indirectly defined by the configuration file.</dd>
+</dl>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">feature_counts_sargs</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="k">if</span> <span class="o">(</span>params.paired<span class="o">)</span> <span class="o">{</span>
+    <span class="nv">feature_counts_sargs</span> <span class="o">=</span> feature_counts_sargs.concat<span class="o">(</span><span class="s2">&quot;-p &quot;</span><span class="o">)</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt><strong>Line 16</strong></dt>
+<dd><p class="first">These are <em>uncommmon</em> keyword arguments or flags that can be pass <em>directly</em> from the configuration file to the template. Because some software tools can include hundreds of arguments, we explicitly state common arguments, but allow the user to additionally insert any unlimited number of additional arguments to maximize flexibility.</p>
+<p class="last">For example, the user might want to perform a one-off test of the pipeline where they remove duplicate reads and only count fragments that have a length between 50-600 base pairs. These options can be injected into the template by simply defining <code class="docutils literal notranslate"><span class="pre">params.feature_counts.xargs</span> <span class="pre">=</span> <span class="pre">&quot;--ignoreDup</span> <span class="pre">-d</span> <span class="pre">50</span> <span class="pre">-D</span> <span class="pre">600&quot;</span></code> in the configuration file.</p>
+</dd>
+<dt><strong>Line 19</strong></dt>
+<dd>These are required arguments such as input data handled interally by the pipeline.</dd>
+<dt><strong>Line 22</strong></dt>
+<dd>These are code injections - typically one-liner cleanup commands - that can be injected after the main script of a template. For example, the output of featureCounts is a samples x genes matrix and the user may want to try sorting rows by gene names. Setting <code class="docutils literal notranslate"><span class="pre">params.feature_counts.ainj</span></code> to <code class="docutils literal notranslate"><span class="pre">&quot;sort</span> <span class="pre">-n</span> <span class="pre">-k1,1</span> <span class="pre">counts.raw.txt</span> <span class="pre">&gt;</span> <span class="pre">counts.raw.txt;&quot;</span></code> would accomplish such a task.</dd>
+</dl>
+<p>After parameterization, the final result would look something like this:</p>
+<div class="highlight-bash notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span> featureCounts -T <span class="m">1</span> -t <span class="s2">&quot;exon&quot;</span> -g <span class="s2">&quot;gene_id&quot;</span> <span class="se">\</span>
+ -a <span class="s2">&quot;path/to/reference_annotation.gtf&quot;</span> <span class="se">\</span>
+ -o <span class="s2">&quot;counts.raw.txt&quot;</span> <span class="se">\</span>
+ -p --ignoreDup -d <span class="m">50</span> -D <span class="m">600</span> <span class="se">\</span>
+ s1.bam s2.bam s3 bam<span class="p">;</span>
+ sort -n -k1,1 counts.raw.txt &gt; counts.raw.txt<span class="p">;</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="testing-module">
+<h2>Testing Module<a class="headerlink" href="#testing-module" title="Permalink to this headline">¶</a></h2>
+<p>Each major change to a pipeline should be followed with a series of tests. Because pipeliens are so flexible, it’s infeasible to manually test even a limited set of typical configurations. To solve this problem we include an automated testing module.</p>
+<p>Users can automatically test a series of configuration files by specifying a directory of user-defined tests:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/pipeliner
+ └── /tests
+      └── /configs
+           └── /rnaseq
+                ├── /t1.config
+                ├── /t2.config
+                └── /t3.config
+</pre></div>
+</div>
+<p>To run these series of tests, users can execute <code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">pipeliner/test.py</span> <span class="pre">rnaseq</span></code> which will search for the directory <code class="docutils literal notranslate"><span class="pre">pipeliner/tests/configs/rnaseq</span></code> and automatically pair and run each configuration file with a pipeline script named <code class="docutils literal notranslate"><span class="pre">rnaseq.nf</span></code>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The directory name of tests must be the same as the pipeline script they are paired with</p>
+</div>
 </div>
 </div>
 

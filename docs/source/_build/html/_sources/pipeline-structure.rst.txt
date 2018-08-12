@@ -5,10 +5,7 @@ Pipeline Structure
 
 .. toctree::
    :maxdepth: 3
-   :caption: Contents:
-
-Input
------
+   :caption: Conten
 The file paths for all data fed to a pipeline are specified in the configuration file. To ease the development process, Pipeline provides toy datasets for each of the pipelines. This example will cover the RNA-seq pipeline.
 
 
@@ -56,11 +53,11 @@ If the latter is chosen, pipeline processes will be automatically parallelized. 
       executor = 'sge'
       scratch = true
 
-      $trim_galore.clusterOptions            = "-P montilab -l h_rt=24:00:00 -pe omp 8"
-      $star_mapping.clusterOptions           = "-P montilab -l h_rt=24:00:00 -l mem_total=94G -pe omp 16"
-      $counting.clusterOptions               = "-P montilab -l h_rt=24:00:00 -pe omp 8"
-      $expression_matrix.clusterOptions      = "-P montilab -l h_rt=24:00:00 -pe omp 8"
-      $multiqc.clusterOptions                = "-P montilab -l h_rt=24:00:00 -pe omp 8"
+      $trim_galore.clusterOptions       = "-P montilab -l h_rt=24:00:00 -pe omp 8"
+      $star_mapping.clusterOptions      = "-P montilab -l h_rt=24:00:00 -l mem_total=94G -pe omp 16"
+      $counting.clusterOptions          = "-P montilab -l h_rt=24:00:00 -pe omp 8"
+      $expression_matrix.clusterOptions = "-P montilab -l h_rt=24:00:00 -pe omp 8"
+      $multiqc.clusterOptions           = "-P montilab -l h_rt=24:00:00 -pe omp 8"
     }
 
 Pipeline Options and Parameters
