@@ -23,13 +23,13 @@ $ git clone https://github.com/montilab/pipeliner
 
 ### Create Conda Environment
 ```bash
-conda create pipeliner python=2.7
+conda create -n pipeliner python=2.7
 source activate pipeliner
 ```
 
 ### Install Dependencies
 ```bash
-conda install pipeliner --channel "pipeliner" \
+conda install --channel "pipeliner" \
 trim-galore fastqc star multiqc samtools rseqc stringtie \
 hisat2 htseq subread numpy pandas bioconductor-biobase
 ```
@@ -41,7 +41,7 @@ $ python pipeliner/scripts/paths.py
 
 ### Download Nextflow Executable
 ```
-$ cd pipeliner/RNA-seq
+$ cd pipeliner/pipelines
 $ curl -s https://get.nextflow.io | bash
 ```
 
@@ -72,22 +72,28 @@ Current home  : /Users/anthonyfederico
 Current path  : /Users/anthonyfederico/pipeliner/RNA-seq
 ====================================
 [warm up] executor > local
+[31/1b2066] Submitted process > pre_fastqc (ggal_alpha)
+[23/de6d60] Submitted process > pre_fastqc (ggal_theta)
+[7c/28ee53] Submitted process > pre_fastqc (ggal_gamma)
+[97/9ad6c1] Submitted process > check_reads (ggal_alpha)
+[ab/c3eedf] Submitted process > check_reads (ggal_theta)
+[2d/050633] Submitted process > check_reads (ggal_gamma)
+[1d/f3af6d] Submitted process > pre_multiqc
 [32/b1db1d] Submitted process > hisat_indexing (genome_reference.fa)
 [3b/d93c6d] Submitted process > trim_galore (ggal_alpha)
 [9c/3fa50b] Submitted process > trim_galore (ggal_theta)
 [62/25fce0] Submitted process > trim_galore (ggal_gamma)
-[96/2ffc07] Submitted process > fastqc (ggal_alpha)
-[31/89cddb] Submitted process > fastqc (ggal_theta)
-[57/b2fdf0] Submitted process > fastqc (ggal_gamma)
 [66/ccc9db] Submitted process > hisat_mapping (ggal_alpha)
 [28/69fff5] Submitted process > hisat_mapping (ggal_theta)
 [5c/5ed2b6] Submitted process > hisat_mapping (ggal_gamma)
+[b4/e559ab] Submitted process > gtftobed (genome_annotation.gtf)
 [bc/6f490c] Submitted process > rseqc (ggal_alpha)
 [71/80aa9e] Submitted process > rseqc (ggal_theta)
 [17/ca0d9f] Submitted process > rseqc (ggal_gamma)
-[d7/7d391b] Submitted process > htseq (ggal_alpha)
-[df/936854] Submitted process > htseq (ggal_theta)
-[11/143c2c] Submitted process > htseq (ggal_gamma)
+[d7/7d391b] Submitted process > counting (ggal_alpha)
+[df/936854] Submitted process > counting (ggal_theta)
+[11/143c2c] Submitted process > counting (ggal_gamma)
+[31/4c11f9] Submitted process > expression_matrix
 [1f/3af548] Submitted process > multiqc
 Success: Pipeline Completed!
 ```
