@@ -10,10 +10,10 @@ Extending Pipelines
 General Workflow
 ----------------
 
-The frameworks provides multiple resources for the user to extend and create sequencing pipelines. The first is toy datasets for all available pipelines including sequencing files, alignment files, genome reference and annotation files, as well as phenotypic data. Additionally, there are pre-defined scripts, processes, and configuration files that can be inherited and easily modified for various pipelines. Together, users can rapidly develop flexible and scalable pilelines. Lastly, there is a testing module enabling users to frequently test a series of different configurations with each change to the codebase.
+The framework provides multiple resources for the user to extend and create sequencing pipelines. The first is toy datasets for all available pipelines including sequencing files, alignment files, genome reference and annotation files, as well as phenotypic data. Additionally, there are pre-defined scripts, processes, and configuration files that can be inherited and easily modified for various pipelines. Together, users can rapidly develop flexible and scalable pilelines. Lastly, there is a testing module enabling users to frequently test a series of different configurations with each change to the codebase.
 
-Configuration Inheriticance
----------------------------
+Configuration Inheritance
+-------------------------
 
 An important property of configuration files is that they are inheritable. This allows developers to focus soley on the configuration components that are changing with each pipeline execution. Typically there are four components of a configuration file including the following.
 
@@ -63,7 +63,7 @@ Template Process Injections
 
 .. note:: Sometimes it's better to create a new template rather than heavily modify an existing one
 
-Each pipeline is essentially a series of modules - connected through minimial Nextflow scripting - that execute pre-defined template processes. While templates are generally defined to be applicable to multiple pipelines and are parameterized in a configuration file, they have two additional components contributing to their flexibility.
+Each pipeline is essentially a series of modules - connected through minimal Nextflow scripting - that execute pre-defined template processes. While templates are generally defined to be applicable to multiple pipelines and are parameterized in a configuration file, they have two additional components contributing to their flexibility.
 
 The following is an example of a template process for the third-party software tool `featureCounts`:
 
@@ -118,7 +118,7 @@ The following is an example of a template process for the third-party software t
   These are required arguments such as input data handled interally by the pipeline.
 
 **Line 22**
-  These are code injections - typically one-liner cleanup commands - that can be injected after the main script of a template. For example, the output of featureCounts is a samples x genes matrix and the user may want to try sorting rows by gene names. Setting ``params.feature_counts.ainj`` to ``"sort -n -k1,1 counts.raw.txt > counts.raw.txt;"`` would accomplish such a task.
+  These are code injections - typically one-liner cleanup commands - that can be injected after the main script of a template. For example, the output of featureCounts is a `genes x samples` matrix and the user may want to try sorting rows by gene names. Setting ``params.feature_counts.ainj`` to ``"sort -n -k1,1 counts.raw.txt > counts.raw.txt;"`` would accomplish such a task.
 
 
 After parameterization, the final result would look something like this:
@@ -135,7 +135,7 @@ After parameterization, the final result would look something like this:
 
 Testing Module
 --------------
-Each major change to a pipeline should be followed with a series of tests. Because pipeliens are so flexible, it's infeasible to manually test even a limited set of typical configurations. To solve this problem we include an automated testing module.
+Each major change to a pipeline should be followed with a series of tests. Because pipelines are so flexible, it's infeasible to manually test even a limited set of typical configurations. To solve this problem we include an automated testing module.
 
 Users can automatically test a series of configuration files by specifying a directory of user-defined tests::
 
@@ -147,6 +147,7 @@ Users can automatically test a series of configuration files by specifying a dir
                     ├── /t2.config
                     └── /t3.config   
  
-To run these series of tests, users can execute ``python3 pipeliner/test.py rnaseq`` which will search for the directory ``pipeliner/tests/configs/rnaseq`` and automatically pair and run each configuration file with a pipeline script named ``rnaseq.nf``.
+
+To run these series of tests, users can execute ``python pipeliner/test.py rnaseq`` which will search for the directory ``pipeliner/tests/configs/rnaseq`` and automatically pair and run each configuration file with a pipeline script named ``rnaseq.nf``.
 
 .. note:: The directory name of tests must be the same as the pipeline script they are paired with

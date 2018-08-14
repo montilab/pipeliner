@@ -23,16 +23,16 @@ Pipeline is a framework with various moving parts to support the development of 
           └── /rnaseq.config     
 
 **docs**
-  Markdown (MD) and Restructured Text (reST) documentaion files associated with Pipeliner and existing pipelines
+  Markdown and Restructured Text documentaion files associated with Pipeliner and existing pipelines
 
 **envs**
-  Files (YAML) and scripts requires to reproduce Conda environments
+  Yaml files and scripts required to reproduce Conda environments
 
 **scripts**
-  Various helper scripts for framework setup and maintainence
+  Various helper scripts for framework setup and maintenance
 
 **tests**
-  Testing module (Python) for multi-pipeline automatic test execution and reporting
+  Python testing module for multi-pipeline automatic test execution and reporting
 
 **pipelines/configs**
   Base config files inherited by pipeline configurations

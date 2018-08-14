@@ -145,6 +145,7 @@
 <li class="toctree-l2"><a class="reference internal" href="extending-pipelines.html#general-workflow">General Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extending-pipelines.html#configuration-inheriticance">Configuration Inheriticance</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extending-pipelines.html#template-process-injections">Template Process Injections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extending-pipelines.html#testing-module">Testing Module</a></li>
 </ul>
 </li>
 </ul>
@@ -215,7 +216,7 @@
 <span id="pipeline-structure-page"></span><h1>Pipeline Structure<a class="headerlink" href="#pipeline-structure" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 </div>
-<p>The file paths for all data fed to a pipeline are specified in the configuration file. To ease the development process, Pipeline provides toy datasets for each of the pipelines. This example will cover the RNA-seq pipeline.</p>
+<p>The file paths for all data fed to a pipeline are specified in the configuration file. To ease the development process, Pipeline includeds toy datasets for each of the pipelines. This example will cover the RNA-seq pipeline.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Data for this pipeline is located in <strong>pipelines/toy_data/rna-seq</strong></p>
@@ -235,7 +236,7 @@
 <p>The configuration file is where all file paths are specified and pipeline processes are paramaterized. The configuration can be broken into three sections, including file paths, executor and compute resources, and pipeline options and parameters.</p>
 <div class="section" id="file-paths">
 <h3>File Paths<a class="headerlink" href="#file-paths" title="Permalink to this headline">¶</a></h3>
-<p>The configuration file specifies where to find all of the input data. Additionally, it provide a path to an output directory where the pipeline will output results. The following is a typical example for the RNA-seq configuration file:</p>
+<p>The configuration file specifies where to find all of the input data. Additionally, it provides a path to an output directory where the pipeline will output results. The following is a typical example for the RNA-seq configuration file:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">indir</span>  <span class="o">=</span> <span class="s2">&quot;/Users/anthonyfederico/pipeliner/pipelines/toy_data/rna-seq&quot;</span>
 <span class="n">outdir</span> <span class="o">=</span> <span class="s2">&quot;/Users/anthonyfederico/pipeliner/pipelines/rna-seq-results&quot;</span>
 <span class="n">fasta</span>  <span class="o">=</span> <span class="s2">&quot;$</span><span class="si">{params.indir}</span><span class="s2">/genome_reference.fa&quot;</span>
@@ -246,8 +247,8 @@
 </div>
 <div class="section" id="executor-and-compute-resources">
 <h3>Executor and Compute Resources<a class="headerlink" href="#executor-and-compute-resources" title="Permalink to this headline">¶</a></h3>
-<p>An abstraction layer between Nextflow and Pipeliner logic enables platform independence and seamless compatibility with high performance computing&nbsp;executors. This allows users to execute pipelines on their local machine or through a computing cluster by simply specifying in the configuration file.</p>
-<p>Pipeliner provides two base configuration files that can be inherited depending if a pipeline is being executing using local resources or a Sun Grid Engine (SGE) queuing system.</p>
+<p>An abstraction layer between <cite>Nextflow</cite> and <cite>Pipeliner</cite> logic enables platform independence and seamless compatibility with high performance computing&nbsp;executors. This allows users to execute pipelines on their local machine or through a computing cluster by simply specifying in the configuration file.</p>
+<p><cite>Pipeliner</cite> provides two base configuration files that can be inherited depending if a pipeline is being executing using local resources or a Sun Grid Engine (SGE) queuing system.</p>
 <p>If the latter is chosen, pipeline processes will be automatically parallelized. Additionally, each individual process can be allocated specific computing resource instructions when nodes are requested.</p>
 <p><em>Local config example</em>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">process</span> <span class="p">{</span>
@@ -271,7 +272,7 @@
 </div>
 <div class="section" id="pipeline-options-and-parameters">
 <h3>Pipeline Options and Parameters<a class="headerlink" href="#pipeline-options-and-parameters" title="Permalink to this headline">¶</a></h3>
-<p>The rest of the configuration file is dedicated to the different pipeline options and process parameters that can be specified. Some import examples include the following:</p>
+<p>The rest of the configuration file is dedicated to the different pipeline options and process parameters that can be specified. Some important examples include the following:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># General pipeline parameters</span>
 <span class="n">aligner</span>      <span class="o">=</span> <span class="s2">&quot;hisat&quot;</span>
 <span class="n">quantifier</span>   <span class="o">=</span> <span class="s2">&quot;htseq&quot;</span>
@@ -290,7 +291,7 @@
 </div>
 <div class="section" id="template-processes">
 <h2>Template Processes<a class="headerlink" href="#template-processes" title="Permalink to this headline">¶</a></h2>
-<p>Pipelines written in Nextflow consist of a series of processes. Processes specify data I/O and typically wrap around third-party software tools to process this data. Processes are connected through channels – asynchronous FIFO queues – which manage the flow of data throughout the pipeline.</p>
+<p>Pipelines written in <cite>Nextflow</cite> consist of a series of processes. Processes specify data I/O and typically wrap around third-party software tools to process this data. Processes are connected through channels – asynchronous FIFO queues – which manage the flow of data throughout the pipeline.</p>
 <p>Processes have the following basic structure:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">process</span> <span class="o">&lt;</span><span class="n">name</span><span class="o">&gt;</span> <span class="p">{</span>
 

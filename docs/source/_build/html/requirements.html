@@ -91,7 +91,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="pipeline-structure.html">Pipeline Structure</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="pipeline-structure.html#input">Input</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pipeline-structure.html#configuration-file">Configuration File</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="pipeline-structure.html#file-paths">File Paths</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline-structure.html#executor-and-compute-resources">Executor and Compute Resources</a></li>
@@ -142,7 +141,11 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="extending-pipelines.html">Extending Pipelines</a><ul class="simple">
+<li class="toctree-l1"><a class="reference internal" href="extending-pipelines.html">Extending Pipelines</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="extending-pipelines.html#general-workflow">General Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extending-pipelines.html#configuration-inheriticance">Configuration Inheriticance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extending-pipelines.html#template-process-injections">Template Process Injections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extending-pipelines.html#testing-module">Testing Module</a></li>
 </ul>
 </li>
 </ul>
@@ -265,9 +268,11 @@ Bonjour world!
 <div class="section" id="anaconda-cloud">
 <h3>Anaconda Cloud<a class="headerlink" href="#anaconda-cloud" title="Permalink to this headline">¶</a></h3>
 <p><cite>Environment for both Linux and OS X</cite>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="n">pipeliner</span> <span class="n">python</span><span class="o">=</span><span class="mf">2.7</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">-</span><span class="n">n</span> <span class="n">pipeliner</span> <span class="n">python</span><span class="o">=</span><span class="mf">2.7</span>
 <span class="n">source</span> <span class="n">activate</span> <span class="n">pipeliner</span>
-<span class="n">conda</span> <span class="n">install</span> <span class="n">pipeliner</span> <span class="o">--</span><span class="n">channel</span> <span class="s2">&quot;pipeliner&quot;</span> <span class="n">trim</span><span class="o">-</span><span class="n">galore</span> <span class="n">fastqc</span> <span class="n">star</span> <span class="n">multiqc</span> <span class="n">samtools</span> <span class="n">rseqc</span> <span class="n">stringtie</span> <span class="n">hisat2</span> <span class="n">htseq</span> <span class="n">subread</span> <span class="n">numpy</span> <span class="n">pandas</span> <span class="n">bioconductor</span><span class="o">-</span><span class="n">biobase</span>
+<span class="n">conda</span> <span class="n">install</span> <span class="o">--</span><span class="n">channel</span> <span class="s2">&quot;pipeliner&quot;</span> \
+<span class="n">trim</span><span class="o">-</span><span class="n">galore</span> <span class="n">fastqc</span> <span class="n">star</span> <span class="n">multiqc</span> <span class="n">samtools</span> <span class="n">rseqc</span> <span class="n">stringtie</span> \
+<span class="n">hisat2</span> <span class="n">htseq</span> <span class="n">subread</span> <span class="n">numpy</span> <span class="n">pandas</span> <span class="n">bioconductor</span><span class="o">-</span><span class="n">biobase</span>
 </pre></div>
 </div>
 </div>
@@ -306,42 +311,31 @@ Bonjour world!
 </pre></div>
 </div>
 <p>The output should look like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Launching `rnaseq.nf` [distraught_hugle] - revision: 0e9a7a8940
- P I P E L I N E R  ~  v2.4
-====================================
-Reads          : /Users/anthonyfederico/pipeliner/RNA-seq/ggal_data/ggal_reads.csv
-Reference      : /Users/anthonyfederico/pipeliner/RNA-seq/ggal_data/genome_reference.fa
-Annotation     : /Users/anthonyfederico/pipeliner/RNA-seq/ggal_data/genome_annotation.gtf
-Input Dir      : /Users/anthonyfederico/pipeliner/RNA-seq/ggal_data
-Output Dir     : /Users/anthonyfederico/pipeliner/RNA-seq/ggal_results
-====================================
-Read Type      : paired-end
-Aligner        : hisat
-Quantifier     : htseq
-Save Reference : true
-Save Temporary : true
-====================================
-Current user  : anthonyfederico
-Current home  : /Users/anthonyfederico
-Current path  : /Users/anthonyfederico/pipeliner/RNA-seq
-====================================
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>N E X T F L O W  ~  version 0.31.1
+Launching `rnaseq.nf` [nasty_pauling] - revision: cd3f572ab2
 [warm up] executor &gt; local
+[31/1b2066] Submitted process &gt; pre_fastqc (ggal_alpha)
+[23/de6d60] Submitted process &gt; pre_fastqc (ggal_theta)
+[7c/28ee53] Submitted process &gt; pre_fastqc (ggal_gamma)
+[97/9ad6c1] Submitted process &gt; check_reads (ggal_alpha)
+[ab/c3eedf] Submitted process &gt; check_reads (ggal_theta)
+[2d/050633] Submitted process &gt; check_reads (ggal_gamma)
+[1d/f3af6d] Submitted process &gt; pre_multiqc
 [32/b1db1d] Submitted process &gt; hisat_indexing (genome_reference.fa)
 [3b/d93c6d] Submitted process &gt; trim_galore (ggal_alpha)
 [9c/3fa50b] Submitted process &gt; trim_galore (ggal_theta)
 [62/25fce0] Submitted process &gt; trim_galore (ggal_gamma)
-[96/2ffc07] Submitted process &gt; fastqc (ggal_alpha)
-[31/89cddb] Submitted process &gt; fastqc (ggal_theta)
-[57/b2fdf0] Submitted process &gt; fastqc (ggal_gamma)
 [66/ccc9db] Submitted process &gt; hisat_mapping (ggal_alpha)
 [28/69fff5] Submitted process &gt; hisat_mapping (ggal_theta)
 [5c/5ed2b6] Submitted process &gt; hisat_mapping (ggal_gamma)
+[b4/e559ab] Submitted process &gt; gtftobed (genome_annotation.gtf)
 [bc/6f490c] Submitted process &gt; rseqc (ggal_alpha)
 [71/80aa9e] Submitted process &gt; rseqc (ggal_theta)
 [17/ca0d9f] Submitted process &gt; rseqc (ggal_gamma)
-[d7/7d391b] Submitted process &gt; htseq (ggal_alpha)
-[df/936854] Submitted process &gt; htseq (ggal_theta)
-[11/143c2c] Submitted process &gt; htseq (ggal_gamma)
+[d7/7d391b] Submitted process &gt; counting (ggal_alpha)
+[df/936854] Submitted process &gt; counting (ggal_theta)
+[11/143c2c] Submitted process &gt; counting (ggal_gamma)
+[31/4c11f9] Submitted process &gt; expression_matrix
 [1f/3af548] Submitted process &gt; multiqc
 Success: Pipeline Completed!
 </pre></div>

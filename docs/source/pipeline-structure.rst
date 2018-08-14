@@ -5,9 +5,9 @@ Pipeline Structure
 
 .. toctree::
    :maxdepth: 3
-   :caption: Conten
-The file paths for all data fed to a pipeline are specified in the configuration file. To ease the development process, Pipeline provides toy datasets for each of the pipelines. This example will cover the RNA-seq pipeline.
-
+   :caption: Content
+   
+The file paths for all data fed to a pipeline are specified in the configuration file. To ease the development process, Pipeline includeds toy datasets for each of the pipelines. This example will cover the RNA-seq pipeline.
 
 .. note:: Data for this pipeline is located in **pipelines/toy_data/rna-seq**
 
@@ -24,7 +24,7 @@ The configuration file is where all file paths are specified and pipeline proces
 
 File Paths
 ``````````
-The configuration file specifies where to find all of the input data. Additionally, it provide a path to an output directory where the pipeline will output results. The following is a typical example for the RNA-seq configuration file::
+The configuration file specifies where to find all of the input data. Additionally, it provides a path to an output directory where the pipeline will output results. The following is a typical example for the RNA-seq configuration file::
 
     indir  = "/Users/anthonyfederico/pipeliner/pipelines/toy_data/rna-seq"
     outdir = "/Users/anthonyfederico/pipeliner/pipelines/rna-seq-results"
@@ -35,9 +35,9 @@ The configuration file specifies where to find all of the input data. Additional
 Executor and Compute Resources
 ``````````````````````````````
 
-An abstraction layer between Nextflow and Pipeliner logic enables platform independence and seamless compatibility with high performance computing executors. This allows users to execute pipelines on their local machine or through a computing cluster by simply specifying in the configuration file.
+An abstraction layer between `Nextflow` and `Pipeliner` logic enables platform independence and seamless compatibility with high performance computing executors. This allows users to execute pipelines on their local machine or through a computing cluster by simply specifying in the configuration file.
 
-Pipeliner provides two base configuration files that can be inherited depending if a pipeline is being executing using local resources or a Sun Grid Engine (SGE) queuing system. 
+`Pipeliner` provides two base configuration files that can be inherited depending if a pipeline is being executing using local resources or a Sun Grid Engine (SGE) queuing system. 
 
 If the latter is chosen, pipeline processes will be automatically parallelized. Additionally, each individual process can be allocated specific computing resource instructions when nodes are requested.
 
@@ -63,7 +63,7 @@ If the latter is chosen, pipeline processes will be automatically parallelized. 
 Pipeline Options and Parameters
 ```````````````````````````````
 
-The rest of the configuration file is dedicated to the different pipeline options and process parameters that can be specified. Some import examples include the following::
+The rest of the configuration file is dedicated to the different pipeline options and process parameters that can be specified. Some important examples include the following::
 
     # General pipeline parameters
     aligner      = "hisat"
@@ -81,7 +81,7 @@ Pipeline Script
 Template Processes
 ------------------
 
-Pipelines written in Nextflow consist of a series of processes. Processes specify data I/O and typically wrap around third-party software tools to process this data. Processes are connected through channels – asynchronous FIFO queues – which manage the flow of data throughout the pipeline.
+Pipelines written in `Nextflow` consist of a series of processes. Processes specify data I/O and typically wrap around third-party software tools to process this data. Processes are connected through channels – asynchronous FIFO queues – which manage the flow of data throughout the pipeline.
 
 Processes have the following basic structure::
     

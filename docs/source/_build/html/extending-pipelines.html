@@ -142,7 +142,7 @@
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Extending Pipelines</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#general-workflow">General Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#configuration-inheriticance">Configuration Inheriticance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration-inheritance">Configuration Inheritance</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#template-process-injections">Template Process Injections</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#testing-module">Testing Module</a></li>
 </ul>
@@ -217,10 +217,10 @@
 </div>
 <div class="section" id="general-workflow">
 <h2>General Workflow<a class="headerlink" href="#general-workflow" title="Permalink to this headline">¶</a></h2>
-<p>The frameworks provides multiple resources for the user to extend and create sequencing pipelines. The first is toy datasets for all available pipelines including sequencing files, alignment files, genome reference and annotation files, as well as phenotypic data. Additionally, there are pre-defined scripts, processes, and configuration files that can be inherited and easily modified for various pipelines. Together, users can rapidly develop flexible and scalable pilelines. Lastly, there is a testing module enabling users to frequently test a series of different configurations with each change to the codebase.</p>
+<p>The framework provides multiple resources for the user to extend and create sequencing pipelines. The first is toy datasets for all available pipelines including sequencing files, alignment files, genome reference and annotation files, as well as phenotypic data. Additionally, there are pre-defined scripts, processes, and configuration files that can be inherited and easily modified for various pipelines. Together, users can rapidly develop flexible and scalable pilelines. Lastly, there is a testing module enabling users to frequently test a series of different configurations with each change to the codebase.</p>
 </div>
-<div class="section" id="configuration-inheriticance">
-<h2>Configuration Inheriticance<a class="headerlink" href="#configuration-inheriticance" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="configuration-inheritance">
+<h2>Configuration Inheritance<a class="headerlink" href="#configuration-inheritance" title="Permalink to this headline">¶</a></h2>
 <p>An important property of configuration files is that they are inheritable. This allows developers to focus soley on the configuration components that are changing with each pipeline execution. Typically there are four components of a configuration file including the following.</p>
 <p>Executor parameters:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">process</span> <span class="p">{</span>
@@ -269,7 +269,7 @@
 <p class="first admonition-title">Note</p>
 <p class="last">Sometimes it’s better to create a new template rather than heavily modify an existing one</p>
 </div>
-<p>Each pipeline is essentially a series of modules - connected through minimial Nextflow scripting - that execute pre-defined template processes. While templates are generally defined to be applicable to multiple pipelines and are parameterized in a configuration file, they have two additional components contributing to their flexibility.</p>
+<p>Each pipeline is essentially a series of modules - connected through minimal Nextflow scripting - that execute pre-defined template processes. While templates are generally defined to be applicable to multiple pipelines and are parameterized in a configuration file, they have two additional components contributing to their flexibility.</p>
 <p>The following is an example of a template process for the third-party software tool <cite>featureCounts</cite>:</p>
 <div class="highlight-bash notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -338,7 +338,7 @@
 <dt><strong>Line 19</strong></dt>
 <dd>These are required arguments such as input data handled interally by the pipeline.</dd>
 <dt><strong>Line 22</strong></dt>
-<dd>These are code injections - typically one-liner cleanup commands - that can be injected after the main script of a template. For example, the output of featureCounts is a samples x genes matrix and the user may want to try sorting rows by gene names. Setting <code class="docutils literal notranslate"><span class="pre">params.feature_counts.ainj</span></code> to <code class="docutils literal notranslate"><span class="pre">&quot;sort</span> <span class="pre">-n</span> <span class="pre">-k1,1</span> <span class="pre">counts.raw.txt</span> <span class="pre">&gt;</span> <span class="pre">counts.raw.txt;&quot;</span></code> would accomplish such a task.</dd>
+<dd>These are code injections - typically one-liner cleanup commands - that can be injected after the main script of a template. For example, the output of featureCounts is a <cite>genes x samples</cite> matrix and the user may want to try sorting rows by gene names. Setting <code class="docutils literal notranslate"><span class="pre">params.feature_counts.ainj</span></code> to <code class="docutils literal notranslate"><span class="pre">&quot;sort</span> <span class="pre">-n</span> <span class="pre">-k1,1</span> <span class="pre">counts.raw.txt</span> <span class="pre">&gt;</span> <span class="pre">counts.raw.txt;&quot;</span></code> would accomplish such a task.</dd>
 </dl>
 <p>After parameterization, the final result would look something like this:</p>
 <div class="highlight-bash notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
@@ -357,7 +357,7 @@
 </div>
 <div class="section" id="testing-module">
 <h2>Testing Module<a class="headerlink" href="#testing-module" title="Permalink to this headline">¶</a></h2>
-<p>Each major change to a pipeline should be followed with a series of tests. Because pipeliens are so flexible, it’s infeasible to manually test even a limited set of typical configurations. To solve this problem we include an automated testing module.</p>
+<p>Each major change to a pipeline should be followed with a series of tests. Because pipelines are so flexible, it’s infeasible to manually test even a limited set of typical configurations. To solve this problem we include an automated testing module.</p>
 <p>Users can automatically test a series of configuration files by specifying a directory of user-defined tests:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/pipeliner
  └── /tests
@@ -368,7 +368,7 @@
                 └── /t3.config
 </pre></div>
 </div>
-<p>To run these series of tests, users can execute <code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">pipeliner/test.py</span> <span class="pre">rnaseq</span></code> which will search for the directory <code class="docutils literal notranslate"><span class="pre">pipeliner/tests/configs/rnaseq</span></code> and automatically pair and run each configuration file with a pipeline script named <code class="docutils literal notranslate"><span class="pre">rnaseq.nf</span></code>.</p>
+<p>To run these series of tests, users can execute <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">pipeliner/test.py</span> <span class="pre">rnaseq</span></code> which will search for the directory <code class="docutils literal notranslate"><span class="pre">pipeliner/tests/configs/rnaseq</span></code> and automatically pair and run each configuration file with a pipeline script named <code class="docutils literal notranslate"><span class="pre">rnaseq.nf</span></code>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The directory name of tests must be the same as the pipeline script they are paired with</p>

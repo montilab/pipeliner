@@ -65,7 +65,7 @@ Expression Matrix :code:`expression_matrix`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 :input: A list of count files (`.txt`)
 :output: An expression matrix (`.txt`)
-:script: Reformats a list of count files into a genes x samples matrix
+:script: Reformats a list of count files into a `genes x samples` matrix
 
 Expression Features :code:`expression_features`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -77,7 +77,7 @@ Expression Set :code:`expression_set`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 :input: An expression matrix (`.txt`) | Gene feature data (`.txt`) | Sample phenotypic data (`.txt`)
 :output: An expression set object (`.rds`)
-:script: Creates an expression set object with eData, fData, and pData
+:script: Creates an expression set object with eData, fData, and pData attributes
 
 Summary Report :code:`multiqc`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
