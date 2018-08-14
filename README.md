@@ -52,25 +52,8 @@ $ ./nextflow rnaseq.nf -c rnaseq.config
 
 ### Expected Output
 ```text
-Launching `rnaseq.nf` [distraught_hugle] - revision: 0e9a7a8940
- P I P E L I N E R  ~  v2.4
-====================================
-Reads          : /Users/anthonyfederico/pipeliner/RNA-seq/ggal_data/ggal_reads.csv
-Reference      : /Users/anthonyfederico/pipeliner/RNA-seq/ggal_data/genome_reference.fa
-Annotation     : /Users/anthonyfederico/pipeliner/RNA-seq/ggal_data/genome_annotation.gtf
-Input Dir      : /Users/anthonyfederico/pipeliner/RNA-seq/ggal_data
-Output Dir     : /Users/anthonyfederico/pipeliner/RNA-seq/ggal_results
-====================================
-Read Type      : paired-end
-Aligner        : hisat
-Quantifier     : htseq
-Save Reference : true
-Save Temporary : true
-====================================
-Current user  : anthonyfederico
-Current home  : /Users/anthonyfederico
-Current path  : /Users/anthonyfederico/pipeliner/RNA-seq
-====================================
+N E X T F L O W  ~  version 0.31.1
+Launching `rnaseq.nf` [nasty_pauling] - revision: cd3f572ab2
 [warm up] executor > local
 [31/1b2066] Submitted process > pre_fastqc (ggal_alpha)
 [23/de6d60] Submitted process > pre_fastqc (ggal_theta)
