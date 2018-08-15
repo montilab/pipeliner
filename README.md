@@ -19,19 +19,14 @@
 ### Clone Repository
 ```bash
 $ git clone https://github.com/montilab/pipeliner
-```
 
-### Create Conda Environment
-```bash
-conda create -n pipeliner python=2.7
-source activate pipeliner
 ```
-
 ### Install Dependencies
 ```bash
-conda install --channel "pipeliner" \
-trim-galore fastqc star multiqc samtools rseqc stringtie \
-hisat2 htseq subread numpy pandas bioconductor-biobase
+conda env create -f pipeliner/envs/linux_env.yml # Linux
+```
+```bash
+conda env create -f pipeliner/envs/osx_env.yml # Mac
 ```
 
 ### Update Local Paths
