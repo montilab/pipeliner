@@ -1,7 +1,9 @@
 name: pipeliner
 channels:
-- pipeliner
+- toms
+- bioconda
 - defaults
+- conda-forge
 dependencies:
 - bcftools=1.6=0
 - bioconductor-biobase=2.38.0=r3.4.1_0
@@ -13,11 +15,13 @@ dependencies:
 - hisat2=2.1.0=py27pl5.22.0_0
 - htseq=0.9.1=py27_0
 - htslib=1.6=0
-- multiqc=1.2=py27_0
+- multiqc=1.5=py27_0
+- picard=2.18.7=py27_0
 - pysam=0.13.0=py27_htslib1.6_0
 - python-dateutil=2.3=py27_0
 - r-data.table=1.10.4=r3.4.1_0
 - r-psych=1.7.8=r3.4.1_0
+- regex=2016.06.24=py27_1
 - rseqc=2.6.4=py27_0
 - samtools=1.6=0
 - simplejson=3.8.1=py27_0
@@ -26,12 +30,13 @@ dependencies:
 - subread=1.6.0=0
 - trim-galore=0.4.5=pl5.22.0_0
 - xopen=0.3.2=py27_0
-- colormath=2.1.1=py27_1
+- certifi=2016.9.26=py27_0
+- colormath=3.0.0=py_2
 - dbus=1.10.22=0
 - libedit=3.1.20170329=0
 - lzstring=1.0.3=py27_0
 - perl=5.22.0.1=0
-- spectra=0.0.7=py27_0
+- spectra=0.0.11=py_0
 - appnope=0.1.0=py27hb466136_0
 - asn1crypto=0.23.0=py27h862e517_0
 - backports=1.0=py27hb4f9756_1
@@ -41,7 +46,6 @@ dependencies:
 - bzip2=1.0.6=h649919c_2
 - ca-certificates=2017.08.26=ha1e5d58_0
 - cairo=1.14.8=0
-- certifi=2017.11.5=py27hfa9a1c4_0
 - cffi=1.11.2=py27h21b8a49_0
 - chardet=3.0.4=py27h2842e91_1
 - click=6.7=py27h2b86a94_0
@@ -93,7 +97,7 @@ dependencies:
 - nbconvert=5.3.1=py27h6455e4c_0
 - nbformat=4.4.0=py27hddc86d0_0
 - ncurses=5.9=10
-- networkx=1.11=py27h0a72f81_0
+- networkx=2.0=py27h2503496_0
 - notebook=5.2.2=py27h1f6af2b_0
 - numpy=1.13.1=py27hd567e90_2
 - openjdk=8.0.121=1
@@ -238,8 +242,9 @@ dependencies:
 - r-yaml=2.1.14=r3.4.1_0
 - r-zoo=1.8_0=r3.4.1_0
 - readline=6.2=2
-- requests=2.18.4=py27h9b2b37c_1
+- requests=2.14.2=py27_0
 - scandir=1.6=py27h97aa1ee_0
+- scipy=1.0.0=py27h793f721_0
 - setuptools=36.5.0=py27h2a45cec_0
 - simplegeneric=0.8.1=py27h6db5e31_0
 - singledispatch=3.4.0.3=py27he22c18d_0
@@ -261,3 +266,13 @@ dependencies:
 - yaml=0.1.7=hc338f04_2
 - zeromq=4.1.3=0
 - zlib=1.2.8=3
+- umi_tools=0.5.3=py27_0
+- pip:
+  - backports-abc==0.5
+  - backports.shutil-get-terminal-size==1.0.0
+  - backports.ssl-match-hostname==3.5.0.1
+  - ipython-genutils==0.2.0
+  - jupyter-client==5.2.1
+  - jupyter-core==4.4.0
+  - prompt-toolkit==1.0.15
+  - umi-tools==0.5.3
