@@ -29,6 +29,11 @@ conda env create -f pipeliner/envs/linux_env.yml # Linux
 conda env create -f pipeliner/envs/osx_env.yml # Mac
 ```
 
+### Activate Conda Environment
+```bash
+source activate pipeliner
+```
+
 ### Update Local Paths
 ```bash
 $ python pipeliner/scripts/paths.py
