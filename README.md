@@ -7,6 +7,8 @@
 ![Dependencies](https://img.shields.io/badge/dependencies-up%20to%20date-brightgreen.svg)
 [![GitHub Issues](https://img.shields.io/github/issues/montilab/pipeliner.svg)](https://github.com/montilab/pipeliner/issues)
 
+<p align="center"><img src="https://raw.githubusercontent.com/" width="100%"><p>
+
 ## Features   
 * Modular directory structure: It is designed to generate automated result directory based on the names of the samples and tools used to process them.
 * Platform independent: It is bundled with an anaconda repository which contains pre-compiled tools as well as pre-built environments that can be used directly.   
