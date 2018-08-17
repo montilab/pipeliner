@@ -7,7 +7,7 @@
 ![Dependencies](https://img.shields.io/badge/dependencies-up%20to%20date-brightgreen.svg)
 [![GitHub Issues](https://img.shields.io/github/issues/montilab/pipeliner.svg)](https://github.com/montilab/pipeliner/issues)
 
-<p align="center"><img src="https://raw.githubusercontent.com/montilab/pipeliner/master/media/framework_schematic.png" width="100%"><p>
+<p align="left"><img src="https://raw.githubusercontent.com/montilab/pipeliner/master/media/framework_schematic.png" width="80%"><p>
 
 ## Features   
 * Modular directory structure: It is designed to generate automated result directory based on the names of the samples and tools used to process them.
