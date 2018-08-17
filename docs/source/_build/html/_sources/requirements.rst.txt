@@ -76,7 +76,7 @@ Yaml File
 
 `Environment for OS X`::
 
-   conda env create -f pipeliner//envs/osx_env.yml
+   conda env create -f pipeliner/envs/osx_env.yml
 
 Setting up Pipeliner
 --------------------
