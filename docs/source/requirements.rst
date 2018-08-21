@@ -56,17 +56,6 @@ Make sure conda is installed and updated::
 Pre-Packaged Conda Environment
 ------------------------------
 
-Anaconda Cloud
-``````````````
-
-`Environment for both Linux and OS X`::
-   
-   conda create -n pipeliner python=2.7
-   source activate pipeliner
-   conda install --channel "pipeliner" \
-   trim-galore fastqc star multiqc samtools rseqc stringtie \
-   hisat2 htseq subread numpy pandas bioconductor-biobase
-
 Yaml File
 `````````
 
