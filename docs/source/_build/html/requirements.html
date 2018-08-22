@@ -80,11 +80,9 @@
 <li class="toctree-l2"><a class="reference internal" href="#testing-nextflow">Testing Nextflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#installing-anaconda">Installing Anaconda</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pre-packaged-conda-environment">Pre-Packaged Conda Environment</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#anaconda-cloud">Anaconda Cloud</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#yaml-file">Yaml File</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#setting-up-pipeliner">Setting up Pipeliner</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="framework-structure.html">Framework Structure</a><ul class="simple">
@@ -265,17 +263,6 @@ Bonjour world!
 </div>
 <div class="section" id="pre-packaged-conda-environment">
 <h2>Pre-Packaged Conda Environment<a class="headerlink" href="#pre-packaged-conda-environment" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="anaconda-cloud">
-<h3>Anaconda Cloud<a class="headerlink" href="#anaconda-cloud" title="Permalink to this headline">¶</a></h3>
-<p><cite>Environment for both Linux and OS X</cite>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">-</span><span class="n">n</span> <span class="n">pipeliner</span> <span class="n">python</span><span class="o">=</span><span class="mf">2.7</span>
-<span class="n">source</span> <span class="n">activate</span> <span class="n">pipeliner</span>
-<span class="n">conda</span> <span class="n">install</span> <span class="o">--</span><span class="n">channel</span> <span class="s2">&quot;pipeliner&quot;</span> \
-<span class="n">trim</span><span class="o">-</span><span class="n">galore</span> <span class="n">fastqc</span> <span class="n">star</span> <span class="n">multiqc</span> <span class="n">samtools</span> <span class="n">rseqc</span> <span class="n">stringtie</span> \
-<span class="n">hisat2</span> <span class="n">htseq</span> <span class="n">subread</span> <span class="n">numpy</span> <span class="n">pandas</span> <span class="n">bioconductor</span><span class="o">-</span><span class="n">biobase</span>
-</pre></div>
-</div>
-</div>
 <div class="section" id="yaml-file">
 <h3>Yaml File<a class="headerlink" href="#yaml-file" title="Permalink to this headline">¶</a></h3>
 <p><cite>Environment for Linux</cite>:</p>
@@ -286,10 +273,13 @@ Bonjour world!
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">env</span> <span class="n">create</span> <span class="o">-</span><span class="n">f</span> <span class="n">pipeliner</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">osx_env</span><span class="o">.</span><span class="n">yml</span>
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Copies of pre-compiled binaries are hosted/maintained at <a class="reference external" href="https://anaconda.org/Pipeliner/repo">https://anaconda.org/Pipeliner/repo</a></p>
 </div>
-</div>
-<div class="section" id="setting-up-pipeliner">
-<h2>Setting up Pipeliner<a class="headerlink" href="#setting-up-pipeliner" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://anaconda.org/Pipeliner/repo">https://anaconda.org/Pipeliner/repo</a>
+Setting up Pipeliner
+——————–</p>
 <p>With all prerequisites, one can quickly setup Pipeliner by cloning the repository, configuring local paths to toy datasets, activating the conda environment, and downloading the Nextflow executable:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Activate conda environment</span>
 <span class="n">source</span> <span class="n">activate</span> <span class="n">pipeliner</span>
@@ -339,6 +329,7 @@ Launching `rnaseq.nf` [nasty_pauling] - revision: cd3f572ab2
 [1f/3af548] Submitted process &gt; multiqc
 Success: Pipeline Completed!
 </pre></div>
+</div>
 </div>
 </div>
 </div>

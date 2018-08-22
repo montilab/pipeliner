@@ -67,6 +67,11 @@ Yaml File
 
    conda env create -f pipeliner/envs/osx_env.yml
 
+.. note:: Copies of pre-compiled binaries are hosted/maintained at https://anaconda.org/Pipeliner/repo
+
+
+
+https://anaconda.org/Pipeliner/repo
 Setting up Pipeliner
 --------------------
 
