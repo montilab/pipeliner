@@ -25,15 +25,15 @@ $ git clone https://github.com/montilab/pipeliner
 ```
 ### Install Dependencies
 ```bash
-conda env create -f pipeliner/envs/linux_env.yml # Linux
+$ conda env create -f pipeliner/envs/linux_env.yml # Linux
 ```
 ```bash
-conda env create -f pipeliner/envs/osx_env.yml # Mac
+$ conda env create -f pipeliner/envs/osx_env.yml # Mac
 ```
 
 ### Activate Conda Environment
 ```bash
-source activate pipeliner
+$ source activate pipeliner
 ```
 
 ### Update Local Paths
