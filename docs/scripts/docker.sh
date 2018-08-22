@@ -31,12 +31,12 @@ docker commit c16378f943fe latest
 # Push to docker hub
 docker login
 docker images
-docker tag bb38976d03cf anfederico/pipeliner:latest
-docker push anfederico/pipeliner
+docker tag bb38976d03cf pipeliner/images:latest
+docker push pipeliner/images
 
 # To download on new computer
-docker pull anfederico/pipeliner
-docker run -i -t anfederico/pipeliner /bin/bash
+docker pull pipeliner/images
+docker run -i -t pipeliner/images /bin/bash
 
 # Pipeliner with all dependencies installed
 source activate pipeliner
