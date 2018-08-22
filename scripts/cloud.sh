@@ -2,7 +2,7 @@
 
 # Must first log in to anaconda (anaconda login)
 
-FILES=path/to/conda/pkgs/*.tar.bz2
+path=path/to/conda/pkgs/
 for file in ${path}*.tar.bz2; do
     #echo ${path}${file##*/}
     anaconda upload ${path}${file##*/}
