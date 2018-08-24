@@ -70,6 +70,8 @@ Yaml File
 
 .. note:: Copies of pre-compiled binaries are hosted/maintained at https://anaconda.org/Pipeliner/repo
 
+.. warning:: For those installing on the Shared Computing Cluster (SCC) at Boston University, instructions on how to setup a private conda environment can be `here <https://github.com/montilab/pipeliner/blob/master/scripts/mkenv.sh>`_.
+
 
 Setting up Pipeliner
 --------------------
