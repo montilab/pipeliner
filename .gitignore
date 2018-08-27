@@ -3,3 +3,7 @@ media/*
 __pycache__/
 *.pyc
 .nextflow*
+work/*
+rnaseq_results/*
+scrnaseq_results/*
+dge_results/*
