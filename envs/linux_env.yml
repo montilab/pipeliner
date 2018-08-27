@@ -3,7 +3,6 @@ channels:
   - anaconda
   - toms
   - bioconda
-  - anfederico
   - conda-forge
   - defaults
 dependencies:
