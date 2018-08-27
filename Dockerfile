@@ -1,15 +1,8 @@
-FROM continuumio/miniconda2:latest
+FROM continuumio/miniconda:4.5.4
 
-WORKDIR /
+RUN apt-get update && apt-get install -y procps && apt-get clean -y
 
-# Install requirements
 COPY envs/linux_env.yml /environment.yml
-RUN conda config --add channels conda-forge \
-    && conda env create -n pipeliner -f environment.yml \
-    && rm -rf /opt/conda/pkgs/*
+RUN conda env create -f /environment.yml && conda clean -a
 
-# Install
-RUN chown -R 777 /*
-
-# Activate environment
 ENV PATH /opt/conda/envs/pipeliner/bin:$PATH
