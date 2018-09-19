@@ -1,5 +1,5 @@
 # Pipeliner   
-<i>Flexible and robust framework for the specification of high-throughput sequencing data processing workflows</i>    
+<i>A flexible Nextflow-based framework for the definition of sequencing data processing pipelines</i>    
 
 [![Built With](https://img.shields.io/badge/Built%20With-Nextflow-brightgreen.svg)](https://www.nextflow.io/)
 ![Python](https://img.shields.io/badge/Framework-Python%203.6-blue.svg)
