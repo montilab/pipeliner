@@ -8,7 +8,6 @@ import os
 def aggregate_counts(files, method):
     """
     Merges count files into a single pandas dataframe
-
     Args:
         Param #1 (list): List of paths to count files
         Param #1 (str): Quantification method
@@ -52,7 +51,6 @@ def aggregate_counts(files, method):
 def normalize_counts(files):
     """
     Merges normalized count files into a single pandas dataframe
-
     Args:
         Param #1 (list): List of paths to normalized count files
     Returns:
@@ -85,7 +83,6 @@ def reindex_samples(counts, phenotypes):
     """
     Reorders columns in count matrix based on the
     sample order found in phenotypes file
-
     Args:
         Param #1 (frame): Pandas dataframe of counts
     Returns:
