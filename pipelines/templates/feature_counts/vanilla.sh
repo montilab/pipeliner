@@ -6,4 +6,5 @@ ${params.feature_counts.xargs} \\
 -g ${params.feature_counts.id} \\
 -a ${gtf} \\
 -o 'counts.raw.txt' \\
-${bamfiles}
+${bamfiles};
+${params.feature_counts.ainj}
