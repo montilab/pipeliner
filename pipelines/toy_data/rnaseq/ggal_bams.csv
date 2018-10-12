@@ -1,4 +1,4 @@
 Sample_Name,Alignment
-ggal_alpha,/Users/anthonyfederico/Work/pipeliner/pipelines/toy_data/rnaseq/bams/ggal_alpha.bam
-ggal_theta,/Users/anthonyfederico/Work/pipeliner/pipelines/toy_data/rnaseq/bams/ggal_theta.bam
-ggal_gamma,/Users/anthonyfederico/Work/pipeliner/pipelines/toy_data/rnaseq/bams/ggal_gamma.bam
+ggal_alpha,/Users/anthonyfederico/GitHub/pipeliner/pipelines/toy_data/rnaseq/bams/ggal_alpha.bam
+ggal_theta,/Users/anthonyfederico/GitHub/pipeliner/pipelines/toy_data/rnaseq/bams/ggal_theta.bam
+ggal_gamma,/Users/anthonyfederico/GitHub/pipeliner/pipelines/toy_data/rnaseq/bams/ggal_gamma.bam

@@ -1,4 +1,4 @@
 Sample_Name,Read1,Read2
-ggal_alpha,/Users/anthonyfederico/Work/pipeliner/pipelines/toy_data/rnaseq/reads/ggal_alpha_1.fq.gz,/Users/anthonyfederico/Work/pipeliner/pipelines/toy_data/rnaseq/reads/ggal_alpha_2.fq.gz
-ggal_theta,/Users/anthonyfederico/Work/pipeliner/pipelines/toy_data/rnaseq/reads/ggal_theta_1.fq.gz,/Users/anthonyfederico/Work/pipeliner/pipelines/toy_data/rnaseq/reads/ggal_theta_2.fq.gz
-ggal_gamma,/Users/anthonyfederico/Work/pipeliner/pipelines/toy_data/rnaseq/reads/ggal_gamma_1.fq.gz,/Users/anthonyfederico/Work/pipeliner/pipelines/toy_data/rnaseq/reads/ggal_gamma_2.fq.gz
+ggal_alpha,/Users/anthonyfederico/GitHub/pipeliner/pipelines/toy_data/rnaseq/reads/ggal_alpha_1.fq.gz,/Users/anthonyfederico/GitHub/pipeliner/pipelines/toy_data/rnaseq/reads/ggal_alpha_2.fq.gz
+ggal_theta,/Users/anthonyfederico/GitHub/pipeliner/pipelines/toy_data/rnaseq/reads/ggal_theta_1.fq.gz,/Users/anthonyfederico/GitHub/pipeliner/pipelines/toy_data/rnaseq/reads/ggal_theta_2.fq.gz
+ggal_gamma,/Users/anthonyfederico/GitHub/pipeliner/pipelines/toy_data/rnaseq/reads/ggal_gamma_1.fq.gz,/Users/anthonyfederico/GitHub/pipeliner/pipelines/toy_data/rnaseq/reads/ggal_gamma_2.fq.gz
