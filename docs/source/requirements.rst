@@ -76,6 +76,8 @@ Yaml File
 Setting up Pipeliner
 --------------------
 
+.. tip:: It is recommended to clone Pipeliner to a directory path that does not contain spaces
+
 With all prerequisites, one can quickly setup Pipeliner by cloning the repository, configuring local paths to toy datasets, activating the conda environment, and downloading the Nextflow executable::
 
    # Activate conda environment

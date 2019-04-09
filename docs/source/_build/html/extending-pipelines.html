@@ -393,10 +393,14 @@
                 └── /t3.config
 </pre></div>
 </div>
-<p>To run these series of tests, users can execute <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">pipeliner/test.py</span> <span class="pre">rnaseq</span></code> which will search for the directory <code class="docutils literal notranslate"><span class="pre">pipeliner/tests/configs/rnaseq</span></code> and automatically pair and run each configuration file with a pipeline script named <code class="docutils literal notranslate"><span class="pre">rnaseq.nf</span></code>.</p>
+<p>To run these series of tests, users can execute <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">pipeliner/tests/test.py</span> <span class="pre">rnaseq</span></code> which will search for the directory <code class="docutils literal notranslate"><span class="pre">pipeliner/tests/configs/rnaseq</span></code> and automatically pair and run each configuration file with a pipeline script named <code class="docutils literal notranslate"><span class="pre">rnaseq.nf</span></code>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The directory name of tests must be the same as the pipeline script they are paired with</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">You must execute <code class="docutils literal notranslate"><span class="pre">test.py</span></code> from the /pipelines directory because Nextflow requires its executable to be in the working directory. Therefore the testing command will look like <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">../tests/test.py</span> <span class="pre">rnaseq</span></code></p>
 </div>
 </div>
 </div>

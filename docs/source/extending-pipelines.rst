@@ -151,3 +151,5 @@ Users can automatically test a series of configuration files by specifying a dir
 To run these series of tests, users can execute ``python pipeliner/tests/test.py rnaseq`` which will search for the directory ``pipeliner/tests/configs/rnaseq`` and automatically pair and run each configuration file with a pipeline script named ``rnaseq.nf``.
 
 .. note:: The directory name of tests must be the same as the pipeline script they are paired with
+
+.. warning:: You must execute ``test.py`` from the /pipelines directory because Nextflow requires its executable to be in the working directory. Therefore the testing command will look like ``python ../tests/test.py rnaseq``
