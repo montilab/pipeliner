@@ -148,6 +148,6 @@ Users can automatically test a series of configuration files by specifying a dir
                     └── /t3.config   
  
 
-To run these series of tests, users can execute ``python pipeliner/test.py rnaseq`` which will search for the directory ``pipeliner/tests/configs/rnaseq`` and automatically pair and run each configuration file with a pipeline script named ``rnaseq.nf``.
+To run these series of tests, users can execute ``python pipeliner/tests/test.py rnaseq`` which will search for the directory ``pipeliner/tests/configs/rnaseq`` and automatically pair and run each configuration file with a pipeline script named ``rnaseq.nf``.
 
 .. note:: The directory name of tests must be the same as the pipeline script they are paired with

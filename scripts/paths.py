@@ -121,4 +121,18 @@ if __name__ == '__main__':
         for sample in ['A1_marked', 'B2_marked', 'C3_marked']:
             outfile.write('{0},{1}/pipelines/toy_data/dge/bams/{0}.bam\n'.format(sample, path_to_pipeliner))
 
+    print('Setting paths for testing module')
+
+    '''
+    Updates testing configs with local paths
+    '''
+    print('Updating local paths in {0}/test/configs...'.format(path_to_pipeliner))
+    with open('{0}/tests/configs/rnaseq/helpers/io.config'.format(path_to_pipeliner), 'w') as outfile:
+        outfile.write('params.indir  = "{0}/pipelines/toy_data/rnaseq"\n'.format(path_to_pipeliner))
+        outfile.write('params.outdir = "{0}/tests/rnaseq_results"'.format(path_to_pipeliner))
+    with open('{0}/tests/configs/scrnaseq/helpers/io.config'.format(path_to_pipeliner), 'w') as outfile:
+        outfile.write('params.indir  = "{0}/pipelines/toy_data/scrnaseq"\n'.format(path_to_pipeliner))
+        outfile.write('params.outdir = "{0}/tests/scrnaseq_results"'.format(path_to_pipeliner))
+
     print('Ready to run test data!')
+    
