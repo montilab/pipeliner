@@ -80,11 +80,11 @@ Setting up Pipeliner
 
 With all prerequisites, one can quickly setup Pipeliner by cloning the repository, configuring local paths to toy datasets, activating the conda environment, and downloading the Nextflow executable::
 
-   # Activate conda environment
-   source activate pipeliner
-
    # Clone Pipeliner
    git clone https://github.com/montilab/pipeliner
+
+   # Activate conda environment
+   source activate pipeliner
 
    # Configure local paths to toy datasets
    python pipeliner/scripts/paths.py
