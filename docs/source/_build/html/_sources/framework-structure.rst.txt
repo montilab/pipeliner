@@ -1,7 +1,7 @@
-.. _framework-structure-page:
+.. basic-usage-page:
 
-Framework Structure
-===================
+Basic Usage
+===========
 
 .. toctree::
    :maxdepth: 3

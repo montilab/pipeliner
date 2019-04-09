@@ -29,7 +29,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Existing Pipelines" href="existing-pipelines.html" />
-    <link rel="prev" title="Framework Structure" href="framework-structure.html" /> 
+    <link rel="prev" title="Basic Usage" href="basic-usage.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -80,14 +80,31 @@
 <li class="toctree-l2"><a class="reference internal" href="requirements.html#testing-nextflow">Testing Nextflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="requirements.html#installing-anaconda">Installing Anaconda</a></li>
 <li class="toctree-l2"><a class="reference internal" href="requirements.html#pre-packaged-conda-environment">Pre-Packaged Conda Environment</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="requirements.html#anaconda-cloud">Anaconda Cloud</a></li>
 <li class="toctree-l3"><a class="reference internal" href="requirements.html#yaml-file">Yaml File</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="requirements.html#setting-up-pipeliner">Setting up Pipeliner</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="framework-structure.html">Framework Structure</a><ul class="simple">
+<li class="toctree-l1"><a class="reference internal" href="basic-usage.html">Basic Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="basic-usage.html#framework-stucture">Framework Stucture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="basic-usage.html#pipeline-configuration">Pipeline Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="basic-usage.html#config-inheritance">Config Inheritance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basic-usage.html#data-input-and-output">Data Input and Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basic-usage.html#basic-options">Basic Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basic-usage.html#providing-an-index">Providing an Index</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basic-usage.html#starting-from-bams">Starting from Bams</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basic-usage.html#temporary-files">Temporary Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basic-usage.html#skipping-steps">Skipping Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="basic-usage.html#process-configuration">Process Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="basic-usage.html#descriptive-arguments">Descriptive Arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basic-usage.html#xargs">Xargs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basic-usage.html#ainj">Ainj</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="basic-usage.html#output-and-results">Output and Results</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Pipeline Structure</a><ul>
@@ -143,7 +160,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="extending-pipelines.html">Extending Pipelines</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="extending-pipelines.html#general-workflow">General Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="extending-pipelines.html#configuration-inheriticance">Configuration Inheriticance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extending-pipelines.html#configuration-inheritance">Configuration Inheritance</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extending-pipelines.html#template-process-injections">Template Process Injections</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extending-pipelines.html#testing-module">Testing Module</a></li>
 </ul>
@@ -384,7 +401,7 @@
         <a href="existing-pipelines.html" class="btn btn-neutral float-right" title="Existing Pipelines" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="framework-structure.html" class="btn btn-neutral" title="Framework Structure" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="basic-usage.html" class="btn btn-neutral" title="Basic Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

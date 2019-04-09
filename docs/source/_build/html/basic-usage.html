@@ -27,7 +27,9 @@
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Pipeline Structure" href="pipeline-structure.html" />
+    <link rel="prev" title="Requirements" href="requirements.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -73,7 +75,7 @@
               
             
             
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="requirements.html">Requirements</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="requirements.html#testing-nextflow">Testing Nextflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="requirements.html#installing-anaconda">Installing Anaconda</a></li>
@@ -82,6 +84,35 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="requirements.html#setting-up-pipeliner">Setting up Pipeliner</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Basic Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#framework-stucture">Framework Stucture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pipeline-configuration">Pipeline Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#config-inheritance">Config Inheritance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-input-and-output">Data Input and Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#basic-options">Basic Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#providing-an-index">Providing an Index</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#starting-from-bams">Starting from Bams</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#temporary-files">Temporary Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#skipping-steps">Skipping Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#process-configuration">Process Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#descriptive-arguments">Descriptive Arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xargs">Xargs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ainj">Ainj</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pipeline-execution">Pipeline Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#output-and-results">Output and Results</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sample-folders">Sample Folders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#expression-matrix">Expression Matrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bam-files">Bam Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#alignment-index">Alignment Index</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reports">Reports</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="pipeline-structure.html">Pipeline Structure</a><ul>
@@ -193,7 +224,7 @@
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/framework-structure.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/basic-usage.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -210,6 +241,8 @@
 <h1>Basic Usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 </div>
+<div class="section" id="framework-stucture">
+<h2>Framework Stucture<a class="headerlink" href="#framework-stucture" title="Permalink to this headline">¶</a></h2>
 <p>Pipeline is a framework with various moving parts to support the development of multiple sequencing pipelines. The following is a simplified example of its directory structure:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/pipeliner
  ├── /docs
@@ -248,12 +281,116 @@
 <dd>Configuration file for the RNA-seq pipeline</dd>
 </dl>
 </div>
+<div class="section" id="pipeline-configuration">
+<h2>Pipeline Configuration<a class="headerlink" href="#pipeline-configuration" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">These examples are applicable to all pipelines</p>
+</div>
+<p>In the previous section, we gave instructions for processing the RNA-seq toy dataset. In that example, the configuration options were all preset, however with real data, these settings must be reconfigured. Therefore the configuration file is typically the first thing a user will have to modify to suit their needs. The following is a screenshot of the first half of the RNA-seq configuration file.</p>
+<a class="reference internal image-reference" href="_images/Fig_Basic_Configuration.png"><img alt="_images/Fig_Basic_Configuration.png" src="_images/Fig_Basic_Configuration.png" style="width: 600px;" /></a>
+<div class="section" id="config-inheritance">
+<h3>Config Inheritance<a class="headerlink" href="#config-inheritance" title="Permalink to this headline">¶</a></h3>
+<p><strong>Line 1:</strong> Configuration files can inherit basic properties that are reused across many pipelines. We have defined several inheritable configuration files that are reused repeatedly. These include configs for running pipelines on local machines, Sun Grid Engine clusters, in Docker environments, and on AWS cloud computing.</p>
+</div>
+<div class="section" id="data-input-and-output">
+<h3>Data Input and Output<a class="headerlink" href="#data-input-and-output" title="Permalink to this headline">¶</a></h3>
+<p><strong>Lines 9-15</strong> All data paths are defined in the configuration file. This includes specifying where incoming data resides as well as defining where to output all data produced by the pipeline.</p>
+</div>
+<div class="section" id="basic-options">
+<h3>Basic Options<a class="headerlink" href="#basic-options" title="Permalink to this headline">¶</a></h3>
+<p><strong>Lines 17-19</strong> These are pipeline specific parameters that make large changes to how the data is processed.</p>
+</div>
+<div class="section" id="providing-an-index">
+<h3>Providing an Index<a class="headerlink" href="#providing-an-index" title="Permalink to this headline">¶</a></h3>
+<p><strong>Lines 25-27</strong> A useful feature of a pipeline is the ability to use an existing alignment index.</p>
+</div>
+<div class="section" id="starting-from-bams">
+<h3>Starting from Bams<a class="headerlink" href="#starting-from-bams" title="Permalink to this headline">¶</a></h3>
+<p><strong>Lines 29-30</strong> Another useful feature of a pipeline is the ability to skip pre-processing steps and start directly from the bam files. This allows users to start their pipeline from the counting step.</p>
+</div>
+<div class="section" id="temporary-files">
+<h3>Temporary Files<a class="headerlink" href="#temporary-files" title="Permalink to this headline">¶</a></h3>
+<p><strong>Lines 33-34</strong> By default, bam files are saved after alignment for future use. This can be useful, however these files are quite large and serve only as an intermediate step. Therefore, users can opt-out of storing them.</p>
+</div>
+<div class="section" id="skipping-steps">
+<h3>Skipping Steps<a class="headerlink" href="#skipping-steps" title="Permalink to this headline">¶</a></h3>
+<p><strong>Lines 36-41</strong> Users can skip entire pipeline steps and mix and match options that suit their need. Note that not all combination of steps are compatible.</p>
+</div>
+</div>
+<div class="section" id="process-configuration">
+<h2>Process Configuration<a class="headerlink" href="#process-configuration" title="Permalink to this headline">¶</a></h2>
+<p>While the first half of the configuration is dedicated to controlling the pipeline, the second half is dedicated to modifying specific steps. We call these process-specific settings or parameters.</p>
+<a class="reference internal image-reference" href="_images/Fig_Advanced_Configuration.png"><img alt="_images/Fig_Advanced_Configuration.png" src="_images/Fig_Advanced_Configuration.png" style="width: 600px;" /></a>
+<div class="section" id="descriptive-arguments">
+<h3>Descriptive Arguments<a class="headerlink" href="#descriptive-arguments" title="Permalink to this headline">¶</a></h3>
+<p>Variables for common parameters used in each process are explicitly typed out. For example, <code class="docutils literal notranslate"><span class="pre">trim_galore.quality</span></code> refers to the quality threshold used by Trim Galore and <code class="docutils literal notranslate"><span class="pre">feature_counts.id</span></code> refers to the gene id that Feature Counts refers to in the gtf file header. These variable names match the same variable names given in the original documentation of each tool. Therefore, one can refer to their individual documentation for more information.</p>
+</div>
+<div class="section" id="xargs">
+<h3>Xargs<a class="headerlink" href="#xargs" title="Permalink to this headline">¶</a></h3>
+<p>Because some software tools have hundreds of arguments, they cannot all be listed in the configuration file. Therefore, another variable called <code class="docutils literal notranslate"><span class="pre">xargs</span></code> can be used to extend the flexibility of each tool. Users can add additional arguments as a string that will be injected into the shell command.</p>
+</div>
+<div class="section" id="ainj">
+<h3>Ainj<a class="headerlink" href="#ainj" title="Permalink to this headline">¶</a></h3>
+<p>Sometimes, users may want to add additional processing steps to a process without modifying the pipeline script or template directly. This can be done with the variable called <code class="docutils literal notranslate"><span class="pre">ainj</span></code> that injects a secondary shell command after the original template process.</p>
+</div>
+</div>
+<div class="section" id="pipeline-execution">
+<h2>Pipeline Execution<a class="headerlink" href="#pipeline-execution" title="Permalink to this headline">¶</a></h2>
+<p>When the configuration file is set, run the pipeline with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">nextflow</span> <span class="n">rnaseq</span><span class="o">.</span><span class="n">nf</span> <span class="o">-</span><span class="n">c</span> <span class="n">rnaseq</span><span class="o">.</span><span class="n">config</span>
+</pre></div>
+</div>
+<p>If the pipeline encounters an error, start from where it left off with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">nextflow</span> <span class="n">rnaseq</span><span class="o">.</span><span class="n">nf</span> <span class="o">-</span><span class="n">resume</span> <span class="o">-</span><span class="n">c</span> <span class="n">rnaseq</span><span class="o">.</span><span class="n">config</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">If running Pipeliner on a high performance cluster environment such as Sun Grid Engine, ensure that Nextflow is initially executed on a node that allows for long-running processes.</p>
+</div>
+</div>
+<div class="section" id="output-and-results">
+<h2>Output and Results<a class="headerlink" href="#output-and-results" title="Permalink to this headline">¶</a></h2>
+<p>One the pipeline has finished, all results will be directed to a single output folder specified in the configuration file.</p>
+<a class="reference internal image-reference" href="_images/Fig_Results_Output.png"><img alt="_images/Fig_Results_Output.png" src="_images/Fig_Results_Output.png" style="width: 250px;" /></a>
+<div class="section" id="sample-folders">
+<h3>Sample Folders<a class="headerlink" href="#sample-folders" title="Permalink to this headline">¶</a></h3>
+<p>Each sample contains its own individual folder that holds temporary and processed data that was created by each process. In the screenshot, one can see the gene counts file specific to sample <code class="docutils literal notranslate"><span class="pre">ggal_gamma</span></code> that was generated by HTSeq.</p>
+</div>
+<div class="section" id="expression-matrix">
+<h3>Expression Matrix<a class="headerlink" href="#expression-matrix" title="Permalink to this headline">¶</a></h3>
+<p>The expression matrix folder contains the final count matrix as well as other normalized gene by sample matrices.</p>
+</div>
+<div class="section" id="bam-files">
+<h3>Bam Files<a class="headerlink" href="#bam-files" title="Permalink to this headline">¶</a></h3>
+<p>If the configuration file is set to store bam files, they will show up in the results directory.</p>
+</div>
+<div class="section" id="alignment-index">
+<h3>Alignment Index<a class="headerlink" href="#alignment-index" title="Permalink to this headline">¶</a></h3>
+<p>If an alignment index is built from scratch, it will be saved to the results directory so that it can be reused during future pipeline runs.</p>
+</div>
+<div class="section" id="reports">
+<h3>Reports<a class="headerlink" href="#reports" title="Permalink to this headline">¶</a></h3>
+<p>After a successful run, two reports are generated. A report conducted using the original data before any pre-processing steps as well as a final report run after the entire pipeline has finished. This allows one to see any potential issues that existed in the data before the pipeline as well as if those issues were resolved after the pipeline.</p>
+</div>
+</div>
+</div>
 
 
            </div>
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="pipeline-structure.html" class="btn btn-neutral float-right" title="Pipeline Structure" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="requirements.html" class="btn btn-neutral" title="Requirements" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

@@ -10,7 +10,7 @@ Pipeliner Documenation
    :maxdepth: 4
 
    requirements
-   framework-structure
+   basic-usage
    pipeline-structure
    existing-pipelines
    extending-pipelines
