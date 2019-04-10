@@ -59,6 +59,10 @@ Pre-Packaged Conda Environment
 Yaml File
 `````````
 
+Clone Pipeliner::
+
+   git clone https://github.com/montilab/pipeliner
+
 `Environment for Linux`::
 
    conda env create -f pipeliner/envs/linux_env.yml
