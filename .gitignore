@@ -1,10 +1,11 @@
+pipelines/work/*
+pipelines/rnaseq_results/*
+pipelines/scrnaseq_results/*
+pipelines/dge_results/*
+pipelines/barebones_results/*
 pipelines/nextflow
 media/*
 .DS_Store
 __pycache__/
 *.pyc
 .nextflow*
-work/*
-rnaseq_results/*
-scrnaseq_results/*
-dge_results/*
