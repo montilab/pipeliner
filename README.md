@@ -84,3 +84,7 @@ Success: Pipeline Completed!
 ```
 
 *Please refer to [reports](https://github.com/montilab/pipeliner/blob/master/docs/reports.md) for examples*
+
+## Cite
+
+Federico A, Karagiannis T, Karri K, Kishore D, Koga Y, Campbell J, Monti S (2019) Pipeliner: A Nextflow-based framework for the definition of sequencing data processing pipelines. _Frontiers in Genetics_. https://doi.org/10.3389/fgene.2019.00614.
